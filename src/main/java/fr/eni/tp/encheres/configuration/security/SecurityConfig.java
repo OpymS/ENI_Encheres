@@ -35,7 +35,11 @@ public class SecurityConfig {
 			.requestMatchers("/").permitAll()
 		    .requestMatchers("/css/*").permitAll()
 		    .requestMatchers("/images/**").permitAll()
-		    .requestMatchers("/encheres").hasAnyRole("MEMBRE","ADMIN")
+		    .requestMatchers("/auctions").permitAll()
+		    .requestMatchers("/signup").permitAll()
+		    .requestMatchers("/profil").hasAnyRole("ADMIN", "MEMBRE")
+		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
+		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
 				.anyRequest().authenticated()
 			);
 		
@@ -55,7 +59,7 @@ public class SecurityConfig {
 			form.invalidateHttpSession(true);
 			form.clearAuthentication(true);
 			form.deleteCookies("JSESSIONID");
-			form.logoutSuccessUrl("/login?logout");
+			form.logoutSuccessUrl("/auctions");
 		});
 			
 		return http.build();

@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.com">
 <head>
-<meta charset="UTF-8">
-<title>ENI Enchères</title>
+<meta charset="utf-8">
+<title>ENI - Enchères</title>
+<link rel="stylesheet" th:href="@{/css/general.css}" />
+
 </head>
-
 <body>
-	<h1>TEST TITRE PAGE INDEX !</h1>
-</body>
 
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+
+<main>
+	<h1 style="text-align:center; margin-top:200px;"> Site d'enchère</h1>
+</main>
+
+
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+
+</body>
 </html>

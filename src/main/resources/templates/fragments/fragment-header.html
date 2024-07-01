@@ -1,0 +1,24 @@
+<header data-th-fragment="header">
+	<nav>
+		<div>
+		<!-- 
+		<a th:href="@{/}">
+			<img alt="logo bobine film" src="/images/logoFilmotheque.png">
+		</a>
+		 -->
+		<a class="home link" th:href="@{/}">ENI - Enchères</a>
+		
+		</div>
+		<div sec:authorize="!isAuthenticated()">
+			<a th:href="@{/signup}" class="link">S'inscrire</a>
+			<a th:href="@{/login}" class="link">Se connecter</a>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+			<a th:href="@{/auctions}" class="link">Enchères</a>
+			<a th:href="@{/auctions/newArticle}" class="link">Vendre un article</a>
+			<a th:href="@{/profil}" class="link">Mon profil</a>
+			<a th:href="@{/logout}" class="link">Déconnexion</a>
+		</div>
+	</nav>
+</header>
