@@ -44,7 +44,7 @@ public class SecurityConfig {
 					.loginPage("/login")
 					.permitAll()
 					.defaultSuccessUrl("/")
-					.failureUrl("/login"));
+					.failureUrl("/login?error=true"));
 		
 		
 		http.logout(form ->{
