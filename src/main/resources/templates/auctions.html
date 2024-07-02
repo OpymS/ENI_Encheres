@@ -1,0 +1,92 @@
+<head>
+<meta charset="UTF-8">
+<title>ENI Enchères</title>
+<link rel="stylesheet" href="/css/general.css">
+<link rel="stylesheet" href="/css/auctions.css">
+</head>
+
+<body>
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+	
+	<main>
+		<h1 class="title">LISTE DES ENCHERES</h1>
+		<h2 class="subtitle">Filtres :</h2>
+		<section class="filter-container">
+			<form action="POST">
+				<div class="inputs-container">
+					
+					<input id="inputSearch" type="text" placeholder="Le nom de l'article contient ...">
+					
+					<div class="category">
+						<label for="inputCategory">Catégorie :</label>
+						<select name="inputCategory" id="inputCategory">
+							<option value="">Toutes</option>
+							<option value="0">Informatique</option>
+							<option value="1">Ameublement</option>
+							<option value="2">Vêtement</option>
+							<option value="3">Sport&Loisirs</option>
+						</select>	
+					</div>
+					
+					<div class="achat-vente-container" sec:authorize="isAuthenticated()">
+						<div class="achats-container">
+							<div class="achat-main-check">
+								<input type="radio" id="achats" name="achats">
+								<label for="achats">Achats</label>
+							</div>
+							<div class="sub-container">
+								<div class="subachat-1">
+									<input type="checkbox" id="open" name="open">
+	    							<label for="open">enchères ouvertes</label>
+								</div>
+								<div class="subachat-2">
+									<input type="checkbox" id="current" name="current">
+	    							<label for="current">mes enchères en cours</label>
+								</div>
+								<div class="subachat-3">
+									<input type="checkbox" id="won" name="won">
+	    							<label for="won">mes enchères remportées</label>
+								</div>
+							</div>
+						</div>
+						<div class="ventes-container">
+							<div class="ventes-main-check">
+								<input type="radio" id="ventes" name="ventes">
+								<label for="ventes">Ventes</label>
+							</div>
+							<div class="sub-container">
+								<div class="subvente-1">
+									<input type="checkbox" id="currentVente" name="currentVente">
+	    							<label for="currentVente">mes enchères en cours</label>
+								</div>
+								<div class="subvente-2">
+									<input type="checkbox" id="notstarted" name="notstarted">
+	    							<label for="notstarted">ventes non débutées</label>
+								</div>
+								<div class="subvente-3">
+									<input type="checkbox" id="finished" name="finished">
+	    							<label for="finished">ventes terminées</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="button-container">
+					<button type="submit">Rechercher</button>
+				</div>
+			</form>
+		</section>
+		<section class="articles-cards-container">
+			
+		</section>
+	</main>
+	
+	
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+
+</body>
+
+

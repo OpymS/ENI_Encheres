@@ -1,0 +1,85 @@
+<head>
+<meta charset="UTF-8">
+<title>ENI Enchères</title>
+<link rel="stylesheet" href="/css/general.css">
+<link rel="stylesheet" href="/css/article-create.css">
+</head>
+
+<body>
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+	
+	<main>
+		<h1 class="title">NOUVELLE VENTE</h1>
+		
+		<form action="POST" class="article-create-form">
+			<div class="inputs-container">
+				<div class="article-input">
+					<label for="inputName">Article :</label>
+					<input id="inputName" name="inputName" type="text">
+				</div>
+				<div class="description-input">
+					<label for="inputDesc">Description :</label>
+					<textarea id="inputDesc" name="inputDesc">
+					</textarea>
+				</div>
+				
+				<div class="category-input">
+					<label for="inputCategory">Catégorie :</label>
+					<select name="inputCategory" id="inputCategory">
+						<option value="0">Informatique</option>
+						<option value="1">Ameublement</option>
+						<option value="2">Vêtement</option>
+						<option value="3">Sport&Loisirs</option>
+					</select>	
+				</div>
+				
+				<div class="price-input">
+					<label for="inputPrice">Mise à prix :</label>
+					<input id="inputPrice" name="inputPrice" type="number">
+				</div>
+				
+				<div class="start-input">
+					<label for="inputStartDate">Début de l'enchère :</label>
+					<input id="inputStartDate" name="inputStartDate" type="date">
+				</div>
+				<div class="finish-input">
+					<label for="inputEndDate">Fin de l'enchère :</label>
+					<input id="inputEndDate" name="inputEndDate" type="date">
+				</div>
+				
+				<fieldset class="retrait-input">
+					<legend>Retrait</legend>
+					<div class="street-input">
+						<label for="inputStreet">Rue :</label>
+						<input id="inputStreet" name="inputStreet" type="text">
+					</div>
+					<div class="cpo-input">
+						<label for="inputCpo">Code Postal :</label>
+						<input id="inputCpo" name="inputCpo" type="text">
+					</div>
+					<div class="city-input">
+						<label for="inputCity">Ville :</label>
+						<input id="inputCity" name="inputCity" type="text">
+					</div>
+				</div>
+				
+				<div class="buttons-container">
+					<button type="">Enregistrer</button>
+					<button>Annuler</button>
+					<button style="visibility:hidden;">Annuler la vente</button>
+				</div>
+				
+			</fieldset>
+		
+		</form>
+	
+	</main>
+	
+	
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+
+</body>
+
+
