@@ -1,5 +1,5 @@
 package fr.eni.tp.encheres.bll;
 
-public interface enchereService {
+public interface UserService {
 
 }

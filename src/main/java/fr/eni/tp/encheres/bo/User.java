@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-	private long idUser;
+	private long userId;
 	private String pseudo;
 	private String name;
 	private String firstName;
@@ -27,12 +27,12 @@ public class User {
 		auctions = new ArrayList<Auction>();
 	}
 
-	public long getIdUser() {
-		return idUser;
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setIdUser(long idUser) {
-		this.idUser = idUser;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
 	public String getPseudo() {
@@ -150,8 +150,8 @@ public class User {
 	@Override
 	public String toString() {
 		return String.format(
-				"User [idUser=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, password=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s]",
-				idUser, pseudo, name, firstName, email, phoneNumber, street, zipCode, city, password, credit, admin,
+				"User [userId=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, password=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s]",
+				userId, pseudo, name, firstName, email, phoneNumber, street, zipCode, city, password, credit, admin,
 				purchases, sales, auctions);
 	}
 	

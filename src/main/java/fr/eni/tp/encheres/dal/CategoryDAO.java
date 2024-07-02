@@ -1,5 +1,5 @@
 package fr.eni.tp.encheres.dal;
 
-public interface categorieDAO {
+public interface CategoryDAO {
 
 }
