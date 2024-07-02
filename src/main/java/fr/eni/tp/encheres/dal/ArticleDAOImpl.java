@@ -21,6 +21,8 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	private static final String FIND_BY_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	private static final String FIND_ALL = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie FROM ARTICLES_VENDUS";
+	private static final String FIND_BY_CATEGORY = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId";
+	private static final String FIND_BY_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie FROM ARTICLES_VENDUS WHERE nom_article LIKE :name";
 	private static final String INSERT = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur,no_categorie) VALUES (:name, :description, :startDate, :endDate, :startPrice, :endPrice, :userId, :categoryId)";
 	private static final String DELETE = "DELETE FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
@@ -45,13 +47,18 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByCategory(int categoryId) {
-		return null;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("categoryId", categoryId);
+		
+		return jdbcTemplate.query(FIND_BY_CATEGORY, mapSqlParameterSource, new ArticleRowMapper());
 	}
 
 	@Override
 	public List<Article> findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("name", "%"+name+"%");
+
+		return jdbcTemplate.query(FIND_BY_NAME, mapSqlParameterSource, new ArticleRowMapper());
 	}
 
 	@Override
