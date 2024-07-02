@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -41,17 +40,12 @@ public class SecurityConfig {
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
 				.anyRequest().authenticated()
-			);
+			).formLogin(form -> form
+					.loginPage("/login")
+					.permitAll()
+					.defaultSuccessUrl("/auctions", true)
+					.failureUrl("/login?error=true"));
 		
-		http.formLogin(Customizer.withDefaults());
-		
-		/*
-		http.formLogin(form->{
-			form.loginPage("/login");
-			form.permitAll();
-			form.defaultSuccessUrl("/session");
-		});
-		*/
 		
 		http.logout(form ->{
 			form.permitAll();
