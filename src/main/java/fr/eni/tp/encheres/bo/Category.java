@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
-	private long categoryId;
+	private int categoryId;
 	private String label;
 	private List<Article> articles;
 
@@ -12,11 +12,11 @@ public class Category {
 		articles = new ArrayList<Article>();
 	}
 
-	public long getCategoryId() {
+	public int getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(long categoryId) {
+	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
 

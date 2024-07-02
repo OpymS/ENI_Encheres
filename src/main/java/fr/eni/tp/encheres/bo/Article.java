@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Article {
-	private long articleId;
+	private int articleId;
 	private String articleName;
 	private String description;
 	private LocalDateTime auctionStartDate;
@@ -23,11 +23,11 @@ public class Article {
 		bids = new ArrayList<Auction>();
 	}
 
-	public long getArticleId() {
+	public int getArticleId() {
 		return articleId;
 	}
 
-	public void setArticleId(long articleId) {
+	public void setArticleId(int articleId) {
 		this.articleId = articleId;
 	}
 

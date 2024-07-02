@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-	private long userId;
+	private int userId;
 	private String pseudo;
 	private String name;
 	private String firstName;
@@ -27,11 +27,11 @@ public class User {
 		auctions = new ArrayList<Auction>();
 	}
 
-	public long getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

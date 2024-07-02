@@ -31,7 +31,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	}
 
 	@Override
-	public Article read(long articleId) {
+	public Article read(int articleId) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -44,7 +44,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	}
 
 	@Override
-	public List<Article> findByCategory(long categoryId) {
+	public List<Article> findByCategory(int categoryId) {
 		return null;
 	}
 
@@ -70,13 +70,13 @@ public class ArticleDAOImpl implements ArticleDAO{
 		jdbcTemplate.update(INSERT, mapSqlParameterSource, keyHolder);
 		
 		if (keyHolder != null && keyHolder.getKey() != null) {
-			article.setArticleId(keyHolder.getKey().longValue());
+			article.setArticleId(keyHolder.getKey().intValue());
 		}
 		
 	}
 
 	@Override
-	public void delete(long articleId) {
+	public void delete(int articleId) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -90,7 +90,7 @@ class ArticleRowMapper implements RowMapper<Article> {
 	@Override
 	public Article mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Article article = new Article();
-		article.setArticleId(rs.getLong("no_article"));
+		article.setArticleId(rs.getInt("no_article"));
 		article.setArticleName(rs.getString("nom_article"));
 		article.setDescription(rs.getString("description"));
 		article.setAuctionStartDate(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
@@ -99,11 +99,11 @@ class ArticleRowMapper implements RowMapper<Article> {
 		article.setFinalPrice(rs.getInt("prix_vente"));
 		
 		User seller = new User();
-		seller.setUserId(rs.getLong("no_utilisateur"));
+		seller.setUserId(rs.getInt("no_utilisateur"));
 		article.setSeller(seller);
 		
 		Category category = new Category();
-		category.setCategoryId(rs.getLong("no_categorie"));
+		category.setCategoryId(rs.getInt("no_categorie"));
 		article.setCategory(category);
 		
 		return article;
