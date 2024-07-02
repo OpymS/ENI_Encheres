@@ -35,7 +35,7 @@ public class SecurityConfig {
 		    .requestMatchers("/css/*").permitAll()
 		    .requestMatchers("/images/**").permitAll()
 		    .requestMatchers("/auctions").permitAll()
-		    .requestMatchers("/signup").permitAll()
+		    .requestMatchers("/signup").anonymous()
 		    .requestMatchers("/profil").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
@@ -43,8 +43,8 @@ public class SecurityConfig {
 			).formLogin(form -> form
 					.loginPage("/login")
 					.permitAll()
-					.defaultSuccessUrl("/auctions", true)
-					.failureUrl("/login?error=true"));
+					.defaultSuccessUrl("/")
+					.failureUrl("/login"));
 		
 		
 		http.logout(form ->{

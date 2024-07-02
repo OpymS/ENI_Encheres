@@ -12,7 +12,7 @@
 
 <main>
     <h1 class="title">SE CONNECTER</h1>
-    <form action="@{/login}" method="post">
+    <form th:action="@{/login}" method="post">
         <div class="input-container">
             <label for="username">Identifiant :</label>
             <input type="text" id="username" name="username" required>
@@ -35,7 +35,7 @@
         </div>
     </form>
     <div class="create-account-container">
-        <a href="/signup">Créer un compte</a>
+        <a th:href="@{/signup}">Créer un compte</a>
     </div>
 </main>
 
