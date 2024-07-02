@@ -14,6 +14,7 @@ public class User {
 	private String zipCode;
 	private String city;
 	private String password;
+	private String passwordConfirm;
 	private int credit;
 	private boolean admin;
 	
@@ -106,7 +107,15 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getPasswordConfirm() {
+		return passwordConfirm;
+	}
 
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
+	}
+	
 	public int getCredit() {
 		return credit;
 	}
@@ -150,9 +159,10 @@ public class User {
 	@Override
 	public String toString() {
 		return String.format(
-				"User [userId=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, password=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s]",
-				userId, pseudo, name, firstName, email, phoneNumber, street, zipCode, city, password, credit, admin,
+				"User [userId=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s]",
+				userId, pseudo, name, firstName, email, phoneNumber, street, zipCode, city, credit, admin,
 				purchases, sales, auctions);
 	}
+
 	
 }
