@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
-	private long idCategory;
+	private long categoryId;
 	private String label;
 	private List<Article> articles;
 
@@ -12,12 +12,12 @@ public class Category {
 		articles = new ArrayList<Article>();
 	}
 
-	public long getIdCategory() {
-		return idCategory;
+	public long getCategoryId() {
+		return categoryId;
 	}
 
-	public void setIdCategory(long idCategory) {
-		this.idCategory = idCategory;
+	public void setCategoryId(long categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getLabel() {
@@ -38,7 +38,7 @@ public class Category {
 
 	@Override
 	public String toString() {
-		return String.format("Category [idCategory=%s, label=%s, articles=%s]", idCategory, label, articles);
+		return String.format("Category [categoryId=%s, label=%s, articles=%s]", categoryId, label, articles);
 	}
 
 }

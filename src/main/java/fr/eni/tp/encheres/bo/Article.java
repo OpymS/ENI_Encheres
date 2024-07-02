@@ -1,32 +1,34 @@
 package fr.eni.tp.encheres.bo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Article {
-	private long idArticle;
+	private long articleId;
 	private String articleName;
 	private String description;
-	private LocalDate auctionStartDate;
-	private LocalDate auctionEndDate;
+	private LocalDateTime auctionStartDate;
+	private LocalDateTime auctionEndDate;
 	private int beginningPrice;
 	private int finalPrice;
 	private String state;
 	private Category category;
 	private PickupLocation pickupLocation;
 	private List<Auction> bids;
+	private User seller;
+	private User buyer;
 
 	public Article() {
 		bids = new ArrayList<Auction>();
 	}
 
-	public long getIdArticle() {
-		return idArticle;
+	public long getArticleId() {
+		return articleId;
 	}
 
-	public void setIdArticle(long idArticle) {
-		this.idArticle = idArticle;
+	public void setArticleId(long articleId) {
+		this.articleId = articleId;
 	}
 
 	public String getArticleName() {
@@ -45,19 +47,19 @@ public class Article {
 		this.description = description;
 	}
 
-	public LocalDate getAuctionStartDate() {
+	public LocalDateTime getAuctionStartDate() {
 		return auctionStartDate;
 	}
 
-	public void setAuctionStartDate(LocalDate auctionStartDate) {
+	public void setAuctionStartDate(LocalDateTime auctionStartDate) {
 		this.auctionStartDate = auctionStartDate;
 	}
 
-	public LocalDate getAuctionEndDate() {
+	public LocalDateTime getAuctionEndDate() {
 		return auctionEndDate;
 	}
 
-	public void setAuctionEndDate(LocalDate auctionEndDate) {
+	public void setAuctionEndDate(LocalDateTime auctionEndDate) {
 		this.auctionEndDate = auctionEndDate;
 	}
 
@@ -109,12 +111,27 @@ public class Article {
 		this.pickupLocation = pickupLocation;
 	}
 
+	public User getSeller() {
+		return seller;
+	}
+
+	public void setSeller(User seller) {
+		this.seller = seller;
+	}
+
+	public User getBuyer() {
+		return buyer;
+	}
+
+	public void setBuyer(User buyer) {
+		this.buyer = buyer;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [idArticle=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, finalPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s]",
-				idArticle, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, finalPrice,
-				state, category, pickupLocation, bids);
+				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, finalPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
+				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, finalPrice,
+				state, category, pickupLocation, bids, seller, buyer);
 	}
-
 }

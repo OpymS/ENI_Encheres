@@ -1,22 +1,30 @@
 package fr.eni.tp.encheres.bo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Auction {
-	private LocalDate auctionDate;
+	private LocalDateTime auctionDate;
 	private int bidAmount;
-	
-	public Auction(LocalDate auctionDate, int bidAmount) {
-		this.auctionDate = auctionDate;
-		this.bidAmount = bidAmount;
+	private User user;
+	private Article article;
+
+	public Auction() {
 	}
 
-	public LocalDate getAuctionDate() {
+	public Auction(LocalDateTime auctionDate, int bidAmount, User user, Article article) {
+		this.auctionDate = auctionDate;
+		this.bidAmount = bidAmount;
+		this.user = user;
+		this.article = article;
+	}
+
+	public LocalDateTime getAuctionDate() {
 		return auctionDate;
 	}
 
-	public void setAuctionDate(LocalDate auctionDate) {
+	public void setAuctionDate(LocalDateTime auctionDate) {
 		this.auctionDate = auctionDate;
+		
 	}
 
 	public int getBidAmount() {
@@ -27,9 +35,28 @@ public class Auction {
 		this.bidAmount = bidAmount;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Article getArticle() {
+		return article;
+	}
+
+	public void setArticle(Article article) {
+		this.article = article;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("Auction [auctionDate=%s, bidAmount=%s]", auctionDate, bidAmount);
+		return String.format("Auction [auctionDate=%s, bidAmount=%s, user=%s, article=%s]", auctionDate, bidAmount,
+				user, article);
 	}
+
 	
+
 }
