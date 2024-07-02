@@ -14,53 +14,53 @@
 	<main>
 		<h1 class="title">Mon Profil</h1>
 		
-		<form action="POST" class="user-create-form">
+		<form th:action="@{/signup}" method="POST" th:object="${user}" class="user-create-form">
 			<div class="inputs-container">
 				<div class="pseudo-input">
 					<label for="inputPseudo">Pseudo :</label>
-					<input id="inputPseudo" name="inputPseudo" type="text">
+					<input id="inputPseudo" th:field="*{pseudo}" type="text">
 				</div>
 				<div class="lastname-input">
 					<label for="inputLastName">Nom :</label>
-					<input id="inputLastName" name="inputLastName" type="text">
+					<input id="inputLastName" th:field="*{name}" type="text">
 				</div>
 				<div class="firstname-input">
 					<label for="inputFirstName">Prénom :</label>
-					<input id="inputFirstName" name="inputFirstName" type="text">
+					<input id="inputFirstName" th:field="*{firstName}" type="text">
 				</div>
 				
 				<div class="email-input">
 					<label for="inputEmail">Email :</label>
-					<input id="inputEmail" name="inputEmail" type="email">
+					<input id="inputEmail" th:field="*{email}" type="email">
 				</div>
 				
 				<div class="telephone-input">
 					<label for="inputTelephone">Téléphone :</label>
-					<input id="inputTelephone" name="inputTelephone" type="text">
+					<input id="inputTelephone" th:field="*{phoneNumber}" type="text">
 				</div>
 				
 				<div class="street-input">
 					<label for="inputStreet">Rue :</label>
-					<input id="inputStreet" name="inputStreet" type="text">
+					<input id="inputStreet" th:field="*{street}" type="text">
 				</div>
 				
 				<div class="cpo-input">
 					<label for="inputCpo">Code postal :</label>
-					<input id="inputCpo" name="inputCpo" type="text">
+					<input id="inputCpo" th:field="*{zipCode}" type="text">
 				</div>
 				
 				<div class="city-input">
 					<label for="inputCity">Ville :</label>
-					<input id="inputCity" name="inputCity" type="text">
+					<input id="inputCity" th:field="*{city}" type="text">
 				</div>
 				
 				<div class="password-input">
 					<label for="inputPassword">Mot de passe :</label>
-					<input id="inputPassword" name="inputPassword" type="password">
+					<input id="inputPassword" th:field="*{password}" type="password">
 				</div>
 				<div class="confirm-password-input">
 					<label for="inputPasswordConfirm">Confirmation : </label>
-					<input id="inputPasswordConfirm" name="inputPasswordConfirm" type="password">
+					<input id="inputPasswordConfirm" th:field="*{passwordConfirm}" type="password">
 				</div>
 				
 			</div>
