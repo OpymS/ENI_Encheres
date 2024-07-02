@@ -17,7 +17,7 @@ import fr.eni.tp.encheres.bo.Category;
 
 @Controller
 @RequestMapping("/auctions")
-@SessionAttributes({"categoriesSession"})
+@SessionAttributes({"userSession", "categoriesSession"})
 public class AuctionController {
 	private AuctionService auctionService;
 	
@@ -25,7 +25,6 @@ public class AuctionController {
 		this.auctionService = auctionService;
 	}
 
-	@GetMapping
 	public String showAuctionsPage(Model model) {
 		Article article = new Article();
 		model.addAttribute("article", article);
