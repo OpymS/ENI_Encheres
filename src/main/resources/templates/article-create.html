@@ -60,15 +60,15 @@
 					<legend>Retrait</legend>
 					<div class="street-input">
 						<label for="inputStreet">Rue :</label>
-						<input id="inputStreet" name="inputStreet" type="text">
+						<input id="inputStreet" data-th-value="${userSession.street}" type="text">
 					</div>
 					<div class="cpo-input">
 						<label for="inputCpo">Code Postal :</label>
-						<input id="inputCpo" name="inputCpo" type="text">
+						<input id="inputCpo" data-th-value="${userSession.zipCode}" type="text">
 					</div>
 					<div class="city-input">
 						<label for="inputCity">Ville :</label>
-						<input id="inputCity" name="inputCity" type="text">
+						<input id="inputCity" data-th-value="${userSession.city}" type="text">
 					</div>
 				</div>
 				</fieldset>
