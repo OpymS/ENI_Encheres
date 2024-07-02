@@ -50,9 +50,20 @@
 	margin-right: 30%;
 }
 
-.inputs-container > div input[type="date"] {
+.inputs-container > div .input-dateTime-container{
+	display:flex;
+	justify-content:space-between;
 	width:50%;
 }
+
+.inputs-container > div input[type="date"] {
+	width:60%;
+}
+
+.inputs-container > div input[type="time"] {
+	width:30%;
+}
+
 
 .inputs-container .retrait-input{
 	margin-top:20px;

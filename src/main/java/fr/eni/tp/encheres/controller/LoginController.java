@@ -13,4 +13,9 @@ public class LoginController {
 	public String redirectToAuctions() {
 		return "redirect:/auctions";
 	}
+	
+	@GetMapping("/signup")
+	public String showSignupPage() {
+		return "signup";
+	}
 }

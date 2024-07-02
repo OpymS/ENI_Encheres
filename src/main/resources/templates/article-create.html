@@ -41,11 +41,17 @@
 				
 				<div class="start-input">
 					<label for="inputStartDate">Début de l'enchère :</label>
-					<input id="inputStartDate" name="inputStartDate" type="date">
+					<div class="input-dateTime-container">
+						<input id="inputStartDate" name="inputStartDate" type="date">
+						<input id="inputStartDateTime" name="inputStartDateTime" type="time">
+					</div>
 				</div>
 				<div class="finish-input">
 					<label for="inputEndDate">Fin de l'enchère :</label>
-					<input id="inputEndDate" name="inputEndDate" type="date">
+					<div class="input-dateTime-container">
+						<input id="inputEndDate" name="inputEndDate" type="date">
+						<input id="inputEndDateTime" name="inputEndDateTime" type="time">
+					</div>
 				</div>
 				
 				<fieldset class="retrait-input">
@@ -63,14 +69,14 @@
 						<input id="inputCity" name="inputCity" type="text">
 					</div>
 				</div>
+				</fieldset>
 				
 				<div class="buttons-container">
-					<button type="">Enregistrer</button>
+					<button type="submit">Enregistrer</button>
 					<button>Annuler</button>
 					<button style="visibility:hidden;">Annuler la vente</button>
 				</div>
 				
-			</fieldset>
 		
 		</form>
 	

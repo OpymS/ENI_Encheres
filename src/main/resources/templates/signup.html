@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head>
+<meta charset="UTF-8">
+<title>ENI Enchères</title>
+<link rel="stylesheet" href="/css/general.css">
+<link rel="stylesheet" href="/css/signup.css">
+</head>
+
+<body>
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+	
+	<main>
+		<h1 class="title">Mon Profil</h1>
+		
+		<form action="POST" class="user-create-form">
+			<div class="inputs-container">
+				<div class="pseudo-input">
+					<label for="inputPseudo">Pseudo :</label>
+					<input id="inputPseudo" name="inputPseudo" type="text">
+				</div>
+				<div class="lastname-input">
+					<label for="inputLastName">Nom :</label>
+					<input id="inputLastName" name="inputLastName" type="text">
+				</div>
+				<div class="firstname-input">
+					<label for="inputFirstName">Prénom :</label>
+					<input id="inputFirstName" name="inputFirstName" type="text">
+				</div>
+				
+				<div class="email-input">
+					<label for="inputEmail">Email :</label>
+					<input id="inputEmail" name="inputEmail" type="email">
+				</div>
+				
+				<div class="telephone-input">
+					<label for="inputTelephone">Téléphone :</label>
+					<input id="inputTelephone" name="inputTelephone" type="text">
+				</div>
+				
+				<div class="street-input">
+					<label for="inputStreet">Rue :</label>
+					<input id="inputStreet" name="inputStreet" type="text">
+				</div>
+				
+				<div class="cpo-input">
+					<label for="inputCpo">Code postal :</label>
+					<input id="inputCpo" name="inputCpo" type="text">
+				</div>
+				
+				<div class="city-input">
+					<label for="inputCity">Ville :</label>
+					<input id="inputCity" name="inputCity" type="text">
+				</div>
+				
+				<div class="password-input">
+					<label for="inputPassword">Mot de passe :</label>
+					<input id="inputPassword" name="inputPassword" type="password">
+				</div>
+				<div class="confirm-password-input">
+					<label for="inputPasswordConfirm">Confirmation : </label>
+					<input id="inputPasswordConfirm" name="inputPasswordConfirm" type="password">
+				</div>
+				
+			</div>
+			
+			<div class="buttons-container">
+				<button type="submit" class="button">Créer</button>
+				<a th:href="@{/}" class="button">Annuler</a>
+			</div>
+			
+			
+		
+		</form>
+	
+	</main>
+	
+	
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+
+</body>
+
+
