@@ -1,9 +1,11 @@
 package fr.eni.tp.encheres.dal;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,10 +21,10 @@ import fr.eni.tp.encheres.bo.Category;
 public class CategoryDAOImpl implements CategoryDAO {
 	
 	/** The Constant INSERT. */
-	private static final String INSERT = "INSERT INTO CATEGORIES( no_categie, libelle) VALUES (:idCategory, :libelle)";
+	private static final String INSERT = "INSERT INTO CATEGORIES( no_categorie, libelle) VALUES (:idCategory, :libelle)";
 	
 	/** The Constant FIND_BY_ID. */
-	private static final String FIND_BY_ID = "SELECT libelle FROM CATEGORIES WHERE no_categorie = :id";
+	private static final String FIND_BY_ID = "SELECT no_categorie, libelle FROM CATEGORIES WHERE no_categorie = :id";
 	
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "UPDATE CATEGORIES SET no_categorie = :idCategory, libelle = :libelle WHERE libelle = :libelle";
@@ -68,9 +70,10 @@ public class CategoryDAOImpl implements CategoryDAO {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", id);
 		
-		return jdbcTemplate.queryForObject(FIND_BY_ID, namedParameters, new BeanPropertyRowMapper<>(Category.class));
+		return jdbcTemplate.queryForObject(FIND_BY_ID, namedParameters, new CategoryRowMapper());
 	}
-
+	
+	
 	/**
 	 * Update.
 	 *
@@ -93,7 +96,19 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 */
 	@Override
 	public List<Category> findAll() {
-		return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(Category.class));
+		return jdbcTemplate.query(FIND_ALL, new CategoryRowMapper());
+	}
+	
+	
+	private static class CategoryRowMapper implements RowMapper<Category> {
+		
+		@Override
+		public Category mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Category category = new Category();
+			category.setCategoryId(rs.getInt("no_categorie"));
+			category.setLabel(rs.getString("libelle"));
+			return category;
+		}
 	}
 
 }

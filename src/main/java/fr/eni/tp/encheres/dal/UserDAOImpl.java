@@ -1,9 +1,11 @@
 package fr.eni.tp.encheres.dal;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -88,7 +90,7 @@ public class UserDAOImpl implements UserDAO {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("pseudo", pseudo);
 		
-		return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, namedParameters, new BeanPropertyRowMapper<>(User.class));
+		return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, namedParameters, new UserRowMapper());
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class UserDAOImpl implements UserDAO {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("email", email);
 		
-		return jdbcTemplate.queryForObject(FIND_BY_EMAIL, namedParameters, new BeanPropertyRowMapper<>(User.class));
+		return jdbcTemplate.queryForObject(FIND_BY_EMAIL, namedParameters,  new UserRowMapper());
 	}
 
 
@@ -117,7 +119,7 @@ public class UserDAOImpl implements UserDAO {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", id);
 		
-		return jdbcTemplate.queryForObject(FIND_BY_ID, namedParameters, new BeanPropertyRowMapper<>(User.class));
+		return jdbcTemplate.queryForObject(FIND_BY_ID, namedParameters,  new UserRowMapper());
 	}
 
 
@@ -183,12 +185,33 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public List<User> findAll() {
-		return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(User.class));
+		return jdbcTemplate.query(FIND_ALL,  new UserRowMapper());
 	}
 
 
+	private static class UserRowMapper implements RowMapper<User> {
+		
+		@Override
+		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+		
+			User user = new User();
+			
+			user.setUserId(rs.getInt("no_utilisateur"));
+			user.setPseudo(rs.getString("pseudo"));
+			user.setName(rs.getString("nom"));
+			user.setFirstName(rs.getString("prenom"));
+			user.setEmail(rs.getString("email"));
+			user.setPhoneNumber(rs.getString("telephone"));
+			user.setStreet(rs.getString("rue"));
+			user.setZipCode(rs.getString("code_postal"));
+			user.setCity(rs.getString("ville"));
+			user.setPassword(rs.getString("mot_de_passe"));
+			user.setCredit(rs.getInt("credit"));
+			user.setAdmin(rs.getBoolean("administrateur"));
+			
+			return user;
+		}
 
-
-
+	}
 
 }
