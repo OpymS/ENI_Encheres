@@ -22,7 +22,7 @@ public class UserDAOImpl implements UserDAO {
 	private static final String INSERT = "INSERT INTO UTILISATEURS(pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :mot_de_passe, :credit, :administrateur)";
 	
 	/** The Constant FIND_BY_PSEUDO. */
-	private static final String FIND_BY_PSEUDO = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE email = :pseudo";
+	private static final String FIND_BY_PSEUDO = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = :pseudo";
 	
 	/** The Constant FIND_BY_EMAIL. */
 	private static final String FIND_BY_EMAIL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE email = :email";
@@ -31,10 +31,10 @@ public class UserDAOImpl implements UserDAO {
 	private static final String FIND_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	/** The Constant UPDATE. */
-	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = ;prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur WHERE  email = :email";
+	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur WHERE  email = :email";
 	
 	/** The Constant DELETE_BY_EMAIL. */
-	private static final String DELETE_BY_EMAIL = "DELETE FROM UTILISATEURS WHERE eamil = :email";
+	private static final String DELETE_BY_EMAIL = "DELETE FROM UTILISATEURS WHERE email = :email";
 	
 	/** The Constant DELETE_BY_ID. */
 	private static final String DELETE_BY_ID = "DELETE FROM UTILISATEURS WHERE no_utilisateur = :id";
