@@ -1,0 +1,75 @@
+/* CSS pour la partie profil */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  background-color: #f4f4f4;	
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.profil-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #ffffff;  
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.profil-username {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.profil-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.profil-field label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profil-field span {
+  font-size: 1.2rem;
+}
+
+.modify-profile-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modify-profile-container a {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  background-color: #2196F3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modify-profile-container a:hover {
+  background-color: #1976D2;
+}
