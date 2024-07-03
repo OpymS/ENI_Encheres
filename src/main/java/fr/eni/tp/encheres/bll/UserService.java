@@ -68,23 +68,7 @@ public interface UserService {
 	 */
 	User viewUserProfile(int userId);
 	
-	/**
-	 * Update profile.
-	 *
-	 * @param userId the user id
-	 * @param pseudo the pseudo
-	 * @param name the name
-	 * @param firstName the first name
-	 * @param email the email
-	 * @param phoneNumber the phone number
-	 * @param street the street
-	 * @param zipCode the zip code
-	 * @param city the city
-	 * @param password the password
-	 * @param passwordConfirm the password confirm
-	 */
-	void updateProfile(int userId, String pseudo, String name, String firstName, String email, String phoneNumber, String street, String zipCode, String city, String password, String passwordConfirm);
-
+	
 	/**
 	 * Gets the user by email.
 	 *
@@ -92,4 +76,14 @@ public interface UserService {
 	 * @return the user by email
 	 */
 	User getUserByEmail(String email);
+
+	/**
+	 * Update profile with userWithUpdate and checks with currentUser
+	 *
+	 * @param user
+	 */
+	void updateProfile(User userWithUpdate, User currentUser);
+	
+	
+	User fillUserAttributes(User userToFill, User UserThatFills);
 }

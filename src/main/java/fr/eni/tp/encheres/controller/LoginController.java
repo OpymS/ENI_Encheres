@@ -62,30 +62,12 @@ public class LoginController {
 		User userRecup = userService.getUserByEmail(email);
 		
 		if(userRecup != null) {
-			userSession.setUserId(userRecup.getUserId());
-			userSession.setPseudo(userRecup.getPseudo());
-			userSession.setName(userRecup.getName());
-			userSession.setFirstName(userRecup.getFirstName());
-			userSession.setEmail(userRecup.getEmail());
-			userSession.setPhoneNumber(userRecup.getPhoneNumber());
-			userSession.setStreet(userRecup.getStreet());
-			userSession.setZipCode(userRecup.getZipCode());
-			userSession.setCity(userRecup.getCity());
-			//password ?
-			userSession.setAdmin(userRecup.isAdmin());
+			userService.fillUserAttributes(userSession, userRecup);
+		
 			System.out.println(userSession);
 		}else{
 			userSession.setUserId(0);
-			userSession.setPseudo(null);
-			userSession.setName(null);
-			userSession.setFirstName(null);
 			userSession.setEmail(email);
-			userSession.setPhoneNumber(null);
-			userSession.setStreet(null);
-			userSession.setZipCode(null);
-			userSession.setCity(null);
-			//password ?
-			userSession.setAdmin(false);
 		}
 		
 		return "redirect:/auctions";

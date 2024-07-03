@@ -1,8 +1,6 @@
 package fr.eni.tp.encheres.bo;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +9,7 @@ public class Article {
 	private String articleName;
 	private String description;
 	private LocalDateTime auctionStartDate;
-	private LocalDate startDateTemp;
-	private LocalTime startTimeTemp;
 	private LocalDateTime auctionEndDate;
-	private LocalDate endDateTemp;
-	private LocalTime endTimeTemp;
 	private int beginningPrice;
 	private int currentPrice;
 	private String state;
@@ -61,23 +55,6 @@ public class Article {
 		this.auctionStartDate = auctionStartDate;
 	}
 
-	public LocalDate getStartDateTemp() {
-		return startDateTemp;
-	}
-
-	public void setStartDateTemp(LocalDate startDateTemp) {
-		this.startDateTemp = startDateTemp;
-	}
-
-	public LocalTime getStartTimeTemp() {
-		return startTimeTemp;
-	}
-	
-	public void setStartTimeTemp(LocalTime startTimeTemp) {
-		this.startTimeTemp = startTimeTemp;
-	}
-
-
 	public LocalDateTime getAuctionEndDate() {
 		return auctionEndDate;
 	}
@@ -86,22 +63,6 @@ public class Article {
 		this.auctionEndDate = auctionEndDate;
 	}
 	
-	public LocalTime getEndTimeTemp() {
-		return endTimeTemp;
-	}
-
-	public LocalDate getEndDateTemp() {
-		return endDateTemp;
-	}
-	
-	public void setEndDateTemp(LocalDate endDateTemp) {
-		this.endDateTemp = endDateTemp;
-	}
-	
-	public void setEndTimeTemp(LocalTime endTimeTemp) {
-		this.endTimeTemp = endTimeTemp;
-	}
-
 	public int getBeginningPrice() {
 		return beginningPrice;
 	}
@@ -169,7 +130,7 @@ public class Article {
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, finalPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
+				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
 				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
 				state, category, pickupLocation, bids, seller, buyer);
 	}

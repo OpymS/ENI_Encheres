@@ -110,15 +110,7 @@ class ArticleRowMapper implements RowMapper<Article> {
 		article.setArticleName(rs.getString("nom_article"));
 		article.setDescription(rs.getString("description"));
 		article.setAuctionStartDate(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
-		
-		article.setStartDateTemp(article.getAuctionStartDate().toLocalDate());
-		article.setStartTimeTemp(article.getAuctionStartDate().toLocalTime());
-		
 		article.setAuctionEndDate(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-		
-		article.setEndDateTemp(article.getAuctionEndDate().toLocalDate());
-		article.setEndTimeTemp(article.getAuctionEndDate().toLocalTime());
-		
 		
 		article.setBeginningPrice(rs.getInt("prix_initial"));
 		article.setCurrentPrice(rs.getInt("prix_vente"));

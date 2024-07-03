@@ -125,12 +125,11 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User viewUserProfile(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+		return userDAO.readById(userId);
 	}
 
 	/**
-	 * Update profile.
+	 * Update profile if the pseudo and email are available in DB
 	 *
 	 * @param userId the user id
 	 * @param pseudo the pseudo
@@ -145,10 +144,30 @@ public class UserServiceImpl implements UserService {
 	 * @param passwordConfirm the password confirm
 	 */
 	@Override
-	public void updateProfile(int userId, String pseudo, String name, String firstName, String email,
-			String phoneNumber, String street, String zipCode, String city, String password, String passwordConfirm) {
-		// TODO Auto-generated method stub
-		
+	public void updateProfile(User userWithUpdate, User currentUser) {
+
+		if(userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && userWithUpdate.getEmail().equals(currentUser.getEmail())) {
+			userDAO.update(userWithUpdate);
+		}else if(userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && !userWithUpdate.getEmail().equals(currentUser.getEmail())) {
+			if(checkEmailAvailable(userWithUpdate.getEmail())) {
+				userDAO.update(userWithUpdate);
+			}else {
+				System.err.println("Impossible de modifier l'utilisateur car l'email est déjà pris !");
+			}
+		}else if(!userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && userWithUpdate.getEmail().equals(currentUser.getEmail())){
+			if(checkPseudoAvailable(userWithUpdate.getPseudo())) {
+				userDAO.update(userWithUpdate);
+			}else {
+				System.err.println("Impossible de modifier l'utilisateur car le pseudo est déjà pris !");
+			}
+		}else {
+			if(checkPseudoAvailable(userWithUpdate.getPseudo()) && checkEmailAvailable(userWithUpdate.getEmail())) {
+				userDAO.update(userWithUpdate);
+			}else {
+				System.err.println("Impossible de modifier l'utilisateur car le pseudo ou l'email est déjà pris !");
+			}
+		}
+	
 	}
 
 	/**
@@ -161,6 +180,48 @@ public class UserServiceImpl implements UserService {
 	public User getUserByEmail(String email) {
 		return userDAO.readByEmail(email);
 	}
+	
+	
+	private boolean checkPseudoAvailable(String pseudo) {
+		int nbPseudo = userDAO.countPseudo(pseudo);
+		System.err.println("nbPseudo : "+nbPseudo);
+		
+		if(nbPseudo>=1) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+	private boolean checkEmailAvailable(String email) {
+		int nbEmail = userDAO.countEmail(email);
+		System.err.println("nbEmail : "+nbEmail);
+		
+		if(nbEmail>=1) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+
+	@Override
+	public User fillUserAttributes(User userToFill, User UserThatFills) {
+		userToFill.setUserId(UserThatFills.getUserId());
+		userToFill.setPseudo(UserThatFills.getPseudo());
+		userToFill.setName(UserThatFills.getName());
+		userToFill.setFirstName(UserThatFills.getFirstName());
+		userToFill.setEmail(UserThatFills.getEmail());
+		userToFill.setPhoneNumber(UserThatFills.getPhoneNumber());
+		userToFill.setCredit(UserThatFills.getCredit());
+		userToFill.setStreet(UserThatFills.getStreet());
+		userToFill.setZipCode(UserThatFills.getZipCode());
+		userToFill.setCity(UserThatFills.getCity());
+		//password ?
+		userToFill.setAdmin(UserThatFills.isAdmin());
+		return null;
+	}
+
+
 
 
 
