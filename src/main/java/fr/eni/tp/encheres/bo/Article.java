@@ -11,7 +11,7 @@ public class Article {
 	private LocalDateTime auctionStartDate;
 	private LocalDateTime auctionEndDate;
 	private int beginningPrice;
-	private int finalPrice;
+	private int currentPrice;
 	private String state;
 	private Category category;
 	private PickupLocation pickupLocation;
@@ -62,7 +62,7 @@ public class Article {
 	public void setAuctionEndDate(LocalDateTime auctionEndDate) {
 		this.auctionEndDate = auctionEndDate;
 	}
-
+	
 	public int getBeginningPrice() {
 		return beginningPrice;
 	}
@@ -71,12 +71,12 @@ public class Article {
 		this.beginningPrice = beginningPrice;
 	}
 
-	public int getFinalPrice() {
-		return finalPrice;
+	public int getCurrentPrice() {
+		return currentPrice;
 	}
 
-	public void setFinalPrice(int finalPrice) {
-		this.finalPrice = finalPrice;
+	public void setCurrentPrice(int finalPrice) {
+		this.currentPrice = finalPrice;
 	}
 
 	public String getState() {
@@ -130,8 +130,8 @@ public class Article {
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, finalPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
-				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, finalPrice,
+				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
+				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
 				state, category, pickupLocation, bids, seller, buyer);
 	}
 }

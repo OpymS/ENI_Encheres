@@ -33,8 +33,8 @@ public class UserDAOImpl implements UserDAO {
 	/** The Constant FIND_BY_ID. */
 	private static final String FIND_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
-	/** The Constant UPDATE. */
-	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur WHERE  email = :email";
+	/** The Constant UPDATE. */ //Attention mot_de_passe enlever pour le moment
+	private static final String UPDATE_BY_ID = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, credit = :credit, administrateur = :administrateur WHERE no_utilisateur = :id";
 	
 	/** The Constant DELETE_BY_EMAIL. */
 	private static final String DELETE_BY_EMAIL = "DELETE FROM UTILISATEURS WHERE email = :email";
@@ -44,6 +44,14 @@ public class UserDAOImpl implements UserDAO {
 	
 	/** The Constant FIND_ALL. */
 	private static final String FIND_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS";
+	
+	
+	
+	/** REQUETE POUR VALIDER LE PSEUDO */
+	private static final String COUNT_BY_PSEUDO = "SELECT count(*) FROM UTILISATEURS WHERE pseudo = :pseudo";
+	
+	/** REQUETE POUR VALIDER L'EMAIL */
+	private static final String COUNT_BY_EMAIL = "SELECT count(*) FROM UTILISATEURS WHERE email = :email";
 	
 
 	/** The jdbc template. */
@@ -131,6 +139,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void update(User user) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("id", user.getUserId());
 		namedParameters.addValue("pseudo", user.getPseudo());
 		namedParameters.addValue("nom", user.getName());
 		namedParameters.addValue("prenom", user.getFirstName());
@@ -139,11 +148,11 @@ public class UserDAOImpl implements UserDAO {
 		namedParameters.addValue("rue", user.getStreet());
 		namedParameters.addValue("code_postal", user.getZipCode());
 		namedParameters.addValue("ville", user.getCity());
-		namedParameters.addValue("mot_de_passe", user.getPassword());
+		//namedParameters.addValue("mot_de_passe", user.getPassword()); // En commentaire pour le moment le temps de régler cette histoire de bcrypt
 		namedParameters.addValue("credit", user.getCredit());
 		namedParameters.addValue("administrateur", user.isAdmin());
 		
-		jdbcTemplate.update(UPDATE, namedParameters);
+		jdbcTemplate.update(UPDATE_BY_ID, namedParameters);
 		
 	}
 
@@ -187,7 +196,34 @@ public class UserDAOImpl implements UserDAO {
 	public List<User> findAll() {
 		return jdbcTemplate.query(FIND_ALL,  new UserRowMapper());
 	}
+	
+	/**
+	 * Count the users in DB by pseudo in order to check if the pseudo is available
+	 *
+	 * @return an int with the number of users with that pseudo
+	 */
+	@Override
+	public int countPseudo(String pseudoUser) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		
+		namedParameters.addValue("pseudo", pseudoUser);
+		return jdbcTemplate.queryForObject(COUNT_BY_PSEUDO, namedParameters, Integer.class);
+		
+	}
 
+	/**
+	 * Count the users in DB by email in order to check if the email is available
+	 *
+	 * @return an int with the number of users with that pseudo
+	 */
+	@Override
+	public int countEmail(String emailUser) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		
+		namedParameters.addValue("email", emailUser);
+		return jdbcTemplate.queryForObject(COUNT_BY_EMAIL, namedParameters, Integer.class);
+		
+	}
 
 	private static class UserRowMapper implements RowMapper<User> {
 		

@@ -67,4 +67,18 @@ public interface UserDAO {
 	 */
 	List<User> findAll();
 
+	/**
+	 * Count the users in DB by pseudo in order to check if the pseudo is available
+	 *
+	 * @return an int with the number of users with that pseudo
+	 */
+	int countPseudo(String pseudoUser);
+
+	/**
+	 * Count the users in DB by email in order to check if the email is available
+	 *
+	 * @return an int with the number of users with that pseudo
+	 */
+	int countEmail(String emailUser);
+
 }

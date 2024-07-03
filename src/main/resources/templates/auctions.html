@@ -25,17 +25,13 @@
 						<select th:field="*{category}" id="inputCategory">
 							<option value="0">Toutes</option>
 							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}" th:text="${cat.label}"></option>
-<!--							<option value="0">Informatique</option>-->
-<!--							<option value="1">Ameublement</option>-->
-<!--							<option value="2">Vêtement</option>-->
-<!--							<option value="3">Sport&Loisirs</option>-->
 						</select>	
 					</div>
 					
 					<div class="achat-vente-container" sec:authorize="isAuthenticated()">
 						<div class="achats-container">
 							<div class="achat-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes">
+								<input type="radio" id="achats-ventes" name="achats-ventes" value="purchases">
 								<label for="achats-ventes">Achats</label>
 							</div>
 							<div class="sub-container">
@@ -55,7 +51,7 @@
 						</div>
 						<div class="ventes-container">
 							<div class="ventes-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes">
+								<input type="radio" id="achats-ventes" name="achats-ventes" value="sales">
 								<label for="achats-ventes">Ventes</label>
 							</div>
 							<div class="sub-container">
@@ -83,10 +79,11 @@
 		</section>
 		<section class="articles-cards-container">
 			<div th:each="art:${articles}">
-				<h3 th:text="${art.articleName}"></h3>
-				<p th:text="'Prix : '+${art.finalPrice}+' points'"></p>
+				<h3><a th:href="@{/articles/detail(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
+				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
 				<p th:text="'Fin de l\'enchère : '+${art.auctionEndDate}"></p>
-				<p th:text="'Vendeur : '+${art.seller.name}"></p>
+				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
+				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}" th:text="${art.seller.pseudo}"></a></p>
 			</div>
 		</section>
 	</main>

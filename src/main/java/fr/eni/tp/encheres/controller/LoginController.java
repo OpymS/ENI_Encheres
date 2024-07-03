@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.User;
 
-
 @Controller
 @SessionAttributes({"userSession"})
 public class LoginController {
@@ -27,14 +26,13 @@ public class LoginController {
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
-    }
-    
+    }    
 
 	@GetMapping("/")
 	public String redirectToAuctions() {
 		return "redirect:/auctions";
 	}
-	
+  
 	@GetMapping("/signup")
 	public String showSignupPage(Model model) {
 		User user = new User();
@@ -42,7 +40,8 @@ public class LoginController {
 		
 		return "signup";
 	}
-	  @PostMapping("/signup")
+
+	  @PostMapping("/signup")
 	    public String processSignup(@ModelAttribute("user") User user, Model model) {
 	        userService.createAccount(
 	        		user.getPseudo(), 
@@ -58,39 +57,24 @@ public class LoginController {
 	        return "redirect:/login";
 	    }
 
-
-	@GetMapping("/session")
+  	@GetMapping("/session")
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
 		String email = principal.getName();
 		User userRecup = userService.getUserByEmail(email);
 		
 		if(userRecup != null) {
-			userSession.setUserId(userRecup.getUserId());
-			userSession.setPseudo(userRecup.getPseudo());
-			userSession.setName(userRecup.getName());
-			userSession.setFirstName(userRecup.getFirstName());
-			userSession.setEmail(userRecup.getEmail());
-			userSession.setPhoneNumber(userRecup.getPhoneNumber());
-			userSession.setStreet(userRecup.getStreet());
-			userSession.setZipCode(userRecup.getZipCode());
-			userSession.setCity(userRecup.getCity());
-			//password ?
-			userSession.setAdmin(userRecup.isAdmin());
+			userService.fillUserAttributes(userSession, userRecup);
+		
 			System.out.println(userSession);
 		}else{
 			userSession.setUserId(0);
-			userSession.setPseudo(null);
-			userSession.setName(null);
-			userSession.setFirstName(null);
 			userSession.setEmail(email);
-			userSession.setPhoneNumber(null);
-			userSession.setStreet(null);
-			userSession.setZipCode(null);
-			userSession.setCity(null);
-			//password ?
-			userSession.setAdmin(false);
 		}
 		
+		return "redirect:/auctions";
+	}
+	
+			
 		return "redirect:/auctions";
 	}
 	
