@@ -75,6 +75,7 @@ public class AuctionController {
 				articlesList = auctionService.findArticlesByCategoryAndName(article.getCategory(),
 						article.getArticleName());
 			}
+			System.out.println("la liste avant de prendre en compte les cases : "+articlesList);
 			if (buySale != null && buySale.equals("sales")) {
 				List<Article> tmpArticlesList = articlesList.stream()
 						.filter(art -> art.getSeller().getUserId() == userSession.getUserId())
@@ -97,31 +98,37 @@ public class AuctionController {
 			} else if (buySale != null && buySale.equals("purchases")) {
 				List<Auction> auctionsList = auctionService.findAuctionsByUser(userSession.getUserId());
 				List<Article> tmpArticlesList = new ArrayList<Article>();
-				for (Article art : articlesList) {
-					for (Auction auct : auctionsList) {
-						if (art.getArticleId() == auct.getArticle().getArticleId()) {
+				LocalDateTime now = LocalDateTime.now();
+				if (open) {
+					for (Article art : articlesList) {
+						if (art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
 							tmpArticlesList.add(art);
 						}
 					}
 				}
-				LocalDateTime now = LocalDateTime.now();
-				articlesList.clear();
-				for (Article art : tmpArticlesList) {
-					if (current && art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
-						articlesList.add(art);
-					}
-					if (won && art.getAuctionEndDate().isBefore(now)) {
-						articlesList.add(art);
+				for (Article art : articlesList) {
+					for (Auction auct : auctionsList) {
+						if (art.getArticleId() == auct.getArticle().getArticleId()) {
+							if (current && !open &&  art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
+								tmpArticlesList.add(art);
+							}
+							if (won && art.getAuctionEndDate().isBefore(now)) {
+								tmpArticlesList.add(art);
+							}
+						}
+						
 					}
 				}
+				articlesList.clear();
+				articlesList = tmpArticlesList;
+				System.out.println(articlesList);
 			}
 		}
 
 		/*
-		 * Sur cette partie, il reste à : sélectionner les ventes en cours ne
-		 * sélectionner que les enchères gagnées (pour l'instant on sélectionne toutes
-		 * les enchères finies auxquelles l'utilisateur a participé. il y a un risque de
-		 * doublon si l'utilisateur a posé plusieurs enchères sur 1 article.
+		 * Sur cette partie, il reste à : 
+		 * ne sélectionner que les enchères gagnées (pour l'instant on sélectionne toutes les enchères finies auxquelles l'utilisateur a participé. 
+		 * il y a un risque de doublon si l'utilisateur a posé plusieurs enchères sur 1 article.
 		 */
 		model.addAttribute("articles", articlesList);
 		return "auctions";
