@@ -15,19 +15,20 @@
 		<h1 class="title">LISTE DES ENCHERES</h1>
 		<h2 class="subtitle">Filtres :</h2>
 		<section class="filter-container">
-			<form action="POST">
+			<form th:action="@{/auctions}" method="post" th:object="${article}">
 				<div class="inputs-container">
 					
-					<input id="inputSearch" type="text" placeholder="Le nom de l'article contient ...">
+					<input id="inputSearch" type="text" th:field="*{articleName}" placeholder="Le nom de l'article contient ...">
 					
 					<div class="category">
 						<label for="inputCategory">Catégorie :</label>
-						<select name="inputCategory" id="inputCategory">
-							<option value="">Toutes</option>
-							<option value="0">Informatique</option>
-							<option value="1">Ameublement</option>
-							<option value="2">Vêtement</option>
-							<option value="3">Sport&Loisirs</option>
+						<select th:field="*{category}" id="inputCategory">
+							<option value="0">Toutes</option>
+							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}" th:text="${cat.label}"></option>
+<!--							<option value="0">Informatique</option>-->
+<!--							<option value="1">Ameublement</option>-->
+<!--							<option value="2">Vêtement</option>-->
+<!--							<option value="3">Sport&Loisirs</option>-->
 						</select>	
 					</div>
 					
@@ -81,7 +82,7 @@
 			</form>
 		</section>
 		<section class="articles-cards-container">
-			
+			<div th:each="art:${articles}" th:text="${art.articleName}"></div>
 		</section>
 	</main>
 	
