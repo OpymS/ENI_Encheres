@@ -41,34 +41,50 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber,
-			String street, String zipCode, String city, String password, String passwordConfirm) {
-		
-		if (!password.equals(passwordConfirm)) {
-			throw new IllegalArgumentException("Les mots de passe ne sont pas identiques.");
-		}	
-		
+	                          String street, String zipCode, String city, String password, String passwordConfirm) {
+	    if (pseudo == null || pseudo.trim().isEmpty() ||
+	        name == null || name.trim().isEmpty() ||
+	        firstName == null || firstName.trim().isEmpty() ||
+	        email == null || email.trim().isEmpty() ||
+	        phoneNumber == null || phoneNumber.trim().isEmpty() ||
+	        street == null || street.trim().isEmpty() ||
+	        zipCode == null || zipCode.trim().isEmpty() ||
+	        city == null || city.trim().isEmpty() ||
+	        password == null || password.trim().isEmpty() ||
+	        passwordConfirm == null || passwordConfirm.trim().isEmpty()) {
+	        throw new IllegalArgumentException("Tous les champs doivent être remplis.");
+	    }
+
+	    if (!password.equals(passwordConfirm)) {
+	        throw new IllegalArgumentException("Les mots de passe ne sont pas identiques.");
+	    }
+
+	    if (!pseudo.matches("^[a-zA-Z0-9]+$")) {
+	        throw new IllegalArgumentException("Le pseudo ne doit contenir que des caractères alphanumériques.");
+	    }
+
 	    if (!checkPseudoAvailable(pseudo)) {
 	        throw new IllegalArgumentException("Le pseudo existe déjà.");
 	    }
-	    
+
 	    if (!checkEmailAvailable(email)) {
 	        throw new IllegalArgumentException("L'email existe déjà.");
 	    }
-		
-		User user = new User();
-		user.setPseudo(pseudo);
-		user.setName(name);
-		user.setFirstName(firstName);
-		user.setEmail(email);
-		user.setPhoneNumber(phoneNumber);
-		user.setStreet(street);
-		user.setZipCode(zipCode);
-		user.setCity(city);
-		user.setPassword(passwordEncoder.encode(password));
-		user.setCredit(0);
-		user.setAdmin(false);
-		
-		userDAO.create(user);
+
+	    User user = new User();
+	    user.setPseudo(pseudo);
+	    user.setName(name);
+	    user.setFirstName(firstName);
+	    user.setEmail(email);
+	    user.setPhoneNumber(phoneNumber);
+	    user.setStreet(street);
+	    user.setZipCode(zipCode);
+	    user.setCity(city);
+	    user.setPassword(passwordEncoder.encode(password));
+	    user.setCredit(0);
+	    user.setAdmin(false);
+
+	    userDAO.create(user);
 	}
 
 	/**
