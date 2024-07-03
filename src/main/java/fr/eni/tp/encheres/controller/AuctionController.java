@@ -48,13 +48,6 @@ public class AuctionController {
 			@RequestParam(name = "finished", required = false) boolean finished,
 			@RequestParam(name = "achats-ventes", required = false) String buySale) {
 		List<Article> articlesList;
-		System.out.println("bouton radio : " + buySale);
-		System.out.println("case open : " + open);
-		System.out.println("case current : " + current);
-		System.out.println("case won : " + won);
-		System.out.println("case curtentVente : " + currentVente);
-		System.out.println("case notstarted : " + notstarted);
-		System.out.println("case finished : " + finished);
 		if (userSession == null || userSession.getUserId() == 0) {
 			if (article == null || (article.getArticleName().isEmpty()
 					&& (article.getCategory() == null || article.getCategory().getCategoryId() == 0))) {
@@ -100,8 +93,33 @@ public class AuctionController {
 				}
 			} else if (buySale != null && buySale.equals("purchases")) {
 				List<Auction> auctionsList = auctionService.findAuctionsByUser(userSession.getUserId());
+				List<Article> tmpArticlesList = new ArrayList<Article>();
+				for (Article art : articlesList) {
+					for (Auction auct : auctionsList) {
+						if (art.getArticleId() == auct.getArticle().getArticleId()) {
+							tmpArticlesList.add(art);
+						}
+					}
+				}
+				LocalDateTime now = LocalDateTime.now();
+				articlesList.clear();
+				for (Article art : tmpArticlesList) {
+					if (current && art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
+						articlesList.add(art);
+					}
+					if (won && art.getAuctionEndDate().isBefore(now)) {
+						articlesList.add(art);
+					}
+				}
 			}
 		}
+
+		/*
+		 * Sur cette partie, il reste à : sélectionner les ventes en cours ne
+		 * sélectionner que les enchères gagnées (pour l'instant on sélectionne toutes
+		 * les enchères finies auxquelles l'utilisateur a participé. il y a un risque de
+		 * doublon si l'utilisateur a posé plusieurs enchères sur 1 article.
+		 */
 		model.addAttribute("articles", articlesList);
 		return "auctions";
 	}
