@@ -62,20 +62,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * Login.
-	 *
-	 * @param email the email
-	 * @param password the password
-	 * @param rememberMe the remember me
-	 * @return true, if successful
-	 */
-	@Override
-	public boolean login(String email, String password, boolean rememberMe) {
-		User user = userDAO.readByEmail(email);
-		return user != null && passwordEncoder.matches(password, user.getPassword());
-	}
-
-	/**
 	 * Forgot password.
 	 *
 	 * @param email the email
@@ -84,14 +70,6 @@ public class UserServiceImpl implements UserService {
 	public void forgotPassword(String email) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	/**
-	 * Logout.
-	 */
-	@Override
-	public void logout() {
-		// TODO Auto-generated method stub
 		
 	}
 
