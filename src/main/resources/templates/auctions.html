@@ -22,9 +22,9 @@
 					
 					<div class="category">
 						<label for="inputCategory">Catégorie :</label>
-						<select id="inputCategory" >
-							<option value="">Toutes</option>
-							<option th:each="category:${categoriesSession}" th:value="${category.categoryId}" th:text="${category.label}"></option>
+						<select th:field="*{category}" id="inputCategory">
+							<option value="0">Toutes</option>
+							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}" th:text="${cat.label}"></option>
 <!--							<option value="0">Informatique</option>-->
 <!--							<option value="1">Ameublement</option>-->
 <!--							<option value="2">Vêtement</option>-->
@@ -82,7 +82,7 @@
 			</form>
 		</section>
 		<section class="articles-cards-container">
-			
+			<div th:each="art:${articles}" th:text="${art.articleName}"></div>
 		</section>
 	</main>
 	

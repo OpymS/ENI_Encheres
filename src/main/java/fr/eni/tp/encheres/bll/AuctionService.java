@@ -10,6 +10,7 @@ public interface AuctionService {
 	Article findArticleById(int articleId);
 	List<Article> findArticlesByName(String name);
 	List<Article> findArticlesByCategory(Category category);
+	List<Article> findArticlesByCategoryAndName(Category category, String name);
 	List<Article> findArticles();
 	void sell(Article article);
 	void deleteArticle(int articleId);

@@ -68,6 +68,20 @@ public class AuctionServiceImpl implements AuctionService {
 		return articlesList;
 	}
 	
+
+	@Override
+	public List<Article> findArticlesByCategoryAndName(Category category, String name) {
+		List<Article> articlesList = articleDAO.findByCategoryAndName(category.getCategoryId(), name);
+		articlesList.forEach(article -> {
+			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
+			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
+			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
+			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
+		});
+		return articlesList;
+	}
+
+	
 	@Override
 	public List<Article> findArticles() {
 		List<Article> articlesList = articleDAO.findAll();

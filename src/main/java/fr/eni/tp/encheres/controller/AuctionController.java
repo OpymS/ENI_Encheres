@@ -17,40 +17,45 @@ import fr.eni.tp.encheres.bo.Category;
 
 @Controller
 @RequestMapping("/auctions")
-@SessionAttributes({"userSession", "categoriesSession"})
+@SessionAttributes({ "userSession", "categoriesSession" })
 public class AuctionController {
 	private AuctionService auctionService;
-	
+
 	public AuctionController(AuctionService auctionService) {
 		this.auctionService = auctionService;
 	}
 
+	@GetMapping
 	public String showAuctionsPage(Model model) {
 		Article article = new Article();
 		model.addAttribute("article", article);
 		return "auctions";
 	}
-	
+
 	@PostMapping
 	public String showAuctions(@ModelAttribute("article") Article article, Model model) {
-		System.out.println(article);
-		String wordToFind = article.getArticleName();
-		List<Article> articlesList = auctionService.findArticlesByName(wordToFind);
-		if (article.getCategory().getCategoryId() != 0) {
-			List<Article> articlesList2 = auctionService.findArticlesByCategory(article.getCategory());
-			articlesList=articlesList.stream().filter(art->articlesList2.contains(art)).collect(Collectors.toList());
+		List<Article> articlesList;
+		if (article == null || (article.getArticleName().isEmpty() && (article.getCategory() == null || article.getCategory().getCategoryId() == 0))) {
+			articlesList = auctionService.findArticles();
+		} else if(article.getArticleName().isEmpty()) {
+			articlesList = auctionService.findArticlesByCategory(article.getCategory());
+		} else if(article.getCategory() == null || article.getCategory().getCategoryId() == 0) {
+			articlesList = auctionService.findArticlesByName(article.getArticleName());
+		} else {
+			articlesList = auctionService.findArticlesByCategoryAndName(article.getCategory(), article.getArticleName());
 		}
-		model.addAttribute("articles",articlesList);
-		return "redirect:/auctions";
+		articlesList.forEach(a -> System.out.println(a));
+		model.addAttribute("articles", articlesList);
+		return "auctions";
 	}
-	
+
 	@GetMapping("/newArticle")
 	public String showArticleCreation() {
 		return "article-create";
 	}
-	
+
 	@ModelAttribute("categoriesSession")
-	public List<Category> loadCategories(){
+	public List<Category> loadCategories() {
 		List<Category> categories = auctionService.findCategories();
 		return categories;
 	}
