@@ -19,7 +19,7 @@ import fr.eni.tp.encheres.bo.User;
 
 @Controller
 @RequestMapping("/auctions")
-@SessionAttributes({ "userSession", "categorySession" })
+@SessionAttributes({ "userSession", "categoriesSession" })
 public class AuctionController {
 	private AuctionService auctionService;
 
@@ -73,7 +73,7 @@ public class AuctionController {
 		return "redirect:/auctions";
 	}
 
-	@ModelAttribute("categorySession")
+	@ModelAttribute("categoriesSession")
 	public List<Category> loadCategories() {
 		List<Category> categories = auctionService.findCategories();
 		return categories;

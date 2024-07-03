@@ -29,7 +29,7 @@
 				<div class="category-input">
 					<label for="inputCategory">Catégorie :</label>
 					<select name="inputCategory" id="inputCategory" th:field="*{category}">
-						<option th:each="item : ${categorySession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
+						<option th:each="item : ${categoriesSession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
 					</select>	
 					
 				</div>
