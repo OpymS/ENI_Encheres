@@ -1,13 +1,16 @@
 package fr.eni.tp.encheres.bll;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
+import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.dal.ArticleDAO;
 import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.CategoryDAO;
@@ -91,6 +94,77 @@ public class AuctionServiceImpl implements AuctionService {
 			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
 			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		});
+		return articlesList;
+	}
+
+	@Override
+	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale) {
+		List<Article> articlesList;
+		if (article == null || (article.getArticleName().isEmpty()
+				&& (article.getCategory() == null || article.getCategory().getCategoryId() == 0))) {
+			articlesList = this.findArticles();
+		} else if (article.getArticleName().isEmpty()) {
+			articlesList = this.findArticlesByCategory(article.getCategory());
+		} else if (article.getCategory() == null || article.getCategory().getCategoryId() == 0) {
+			articlesList = this.findArticlesByName(article.getArticleName());
+		} else {
+			articlesList = this.findArticlesByCategoryAndName(article.getCategory(),
+					article.getArticleName());
+		}
+		if (user != null && user.getUserId() != 0) {
+			if (buySale != null && buySale.equals("sales")) {
+				List<Article> tmpArticlesList = articlesList.stream()
+						.filter(art -> art.getSeller().getUserId() == user.getUserId())
+						.collect(Collectors.toList());
+
+				LocalDateTime now = LocalDateTime.now();
+				articlesList.clear();
+				for (Article art : tmpArticlesList) {
+					if (currentVente && art.getAuctionStartDate().isBefore(now)
+							&& art.getAuctionEndDate().isAfter(now)) {
+						articlesList.add(art);
+					}
+					if (notstarted && art.getAuctionStartDate().isAfter(now)) {
+						articlesList.add(art);
+					}
+					if (finished && art.getAuctionEndDate().isBefore(now)) {
+						articlesList.add(art);
+					}
+				}
+			} else if (buySale != null && buySale.equals("purchases")) {
+				List<Auction> auctionsList = this.findAuctionsByUser(user.getUserId());
+				List<Article> tmpArticlesList = new ArrayList<Article>();
+				LocalDateTime now = LocalDateTime.now();
+				if (open) {
+					for (Article art : articlesList) {
+						if (art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
+							tmpArticlesList.add(art);
+						}
+					}
+				}
+				for (Article art : articlesList) {
+					for (Auction auct : auctionsList) {
+						if (art.getArticleId() == auct.getArticle().getArticleId()) {
+							if (current && !open &&  art.getAuctionStartDate().isBefore(now) && art.getAuctionEndDate().isAfter(now)) {
+								tmpArticlesList.add(art);
+							}
+							if (won && art.getAuctionEndDate().isBefore(now)) {
+								tmpArticlesList.add(art);
+							}
+						}
+						
+					}
+				}
+				articlesList.clear();
+				articlesList = tmpArticlesList;
+				System.out.println(articlesList);
+			}
+		}
+		/*
+		 * Sur cette partie, il reste à : 
+		 * ne sélectionner que les enchères gagnées (pour l'instant on sélectionne toutes les enchères finies auxquelles l'utilisateur a participé. 
+		 * il y a un risque de doublon si l'utilisateur a posé plusieurs enchères sur 1 article.
+		 */
 		return articlesList;
 	}
 

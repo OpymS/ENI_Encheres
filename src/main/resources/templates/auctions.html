@@ -79,10 +79,11 @@
 		</section>
 		<section class="articles-cards-container">
 			<div th:each="art:${articles}">
-				<h3 th:text="${art.articleName}"></h3>
+				<h3><a th:href="@{/articles/detail(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
 				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
 				<p th:text="'Fin de l\'enchère : '+${art.auctionEndDate}"></p>
-				<p th:text="'Vendeur : '+${art.seller.name}"></p>
+				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.name}"></p>
+				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}" th:text="${art.seller.name}"></a></p>
 			</div>
 		</section>
 	</main>
