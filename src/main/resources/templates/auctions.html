@@ -82,7 +82,12 @@
 			</form>
 		</section>
 		<section class="articles-cards-container">
-			<div th:each="art:${articles}" th:text="${art.articleName}"></div>
+			<div th:each="art:${articles}">
+				<h3 th:text="${art.articleName}"></h3>
+				<p th:text="'Prix : '+${art.finalPrice}+' points'"></p>
+				<p th:text="'Fin de l\'enchère : '+${art.auctionEndDate}"></p>
+				<p th:text="'Vendeur : '+${art.seller.name}"></p>
+			</div>
 		</section>
 	</main>
 	
