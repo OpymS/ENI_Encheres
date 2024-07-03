@@ -42,9 +42,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber,
 			String street, String zipCode, String city, String password, String passwordConfirm) {
+		
 		if (!password.equals(passwordConfirm)) {
 			throw new IllegalArgumentException("Les mots de passe ne sont pas identiques.");
 		}	
+		
+	    if (!checkPseudoAvailable(pseudo)) {
+	        throw new IllegalArgumentException("Le pseudo existe déjà.");
+	    }
+	    
+	    if (!checkEmailAvailable(email)) {
+	        throw new IllegalArgumentException("L'email existe déjà.");
+	    }
+		
 		User user = new User();
 		user.setPseudo(pseudo);
 		user.setName(name);
