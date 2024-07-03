@@ -1,10 +1,9 @@
 package fr.eni.tp.encheres.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bo.Article;
-import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
