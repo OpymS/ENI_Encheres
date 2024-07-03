@@ -2,9 +2,12 @@ package fr.eni.tp.encheres.bll;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
+import fr.eni.tp.encheres.bo.User;
 
 public interface AuctionService {
 	Article findArticleById(int articleId);
@@ -12,6 +15,7 @@ public interface AuctionService {
 	List<Article> findArticlesByCategory(Category category);
 	List<Article> findArticlesByCategoryAndName(Category category, String name);
 	List<Article> findArticles();
+	List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale);
 	void sell(Article article);
 	void deleteArticle(int articleId);
 	void updateArticle(Article article);
