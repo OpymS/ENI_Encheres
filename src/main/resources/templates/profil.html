@@ -8,47 +8,47 @@
 </head>
 <body>
 
-<div th:replace="fragments/fragment-header :: header"></div>
+<div th:replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
     <h1 class="title">PROFIL</h1>
     <div class="profil-info">
-        <h2 class="profil-username">Pseudo</h2>
+        <h2 class="profil-username" th:text="${userSession.pseudo}"></h2>
         <div class="profil-field">
             <label for="nom">Nom :</label>
-            <span>Nom</span>
+            <span th:text="${userSession.name}"></span>
         </div>
         <div class="profil-field">
             <label for="prenom">Prénom :</label>
-            <span>Prénom</span>
+            <span th:text="${userSession.firstName}">Prénom</span>
         </div>
         <div class="profil-field">
             <label for="email">Email :</label>
-            <span>Email</span>
+            <span th:text="${userSession.email}">Email</span>
         </div>
         <div class="profil-field">
             <label for="telephone">Téléphone :</label>
-            <span>Téléphone</span>
+            <span th:text="${userSession.phoneNumber}">Téléphone</span>
         </div>
         <div class="profil-field">
             <label for="rue">Rue :</label>
-            <span>Rue</span>
+            <span th:text="${userSession.street}">Rue</span>
         </div>
         <div class="profil-field">
             <label for="codePostal">Code Postal :</label>
-            <span>Code Postal</span>
+            <span th:text="${userSession.zipCode}">Code Postal</span>
         </div>
         <div class="profil-field">
             <label for="ville">Ville :</label>
-            <span>Ville</span>
+            <span th:text="${userSession.city}">Ville</span>
         </div>
         <div class="modify-profile-container">
-  			<a href="/profil">Modifier mon profil</a>
+  			<a th:href="@{/profil/modify}">Modifier mon profil</a>
 		</div>    
     </div>
 </main>
 
-<div th:replace="fragments/fragment-footer :: footer"></div>
+<div th:replace="~{fragments/fragment-footer :: footer}"></div>
 
 </body>
 </html>

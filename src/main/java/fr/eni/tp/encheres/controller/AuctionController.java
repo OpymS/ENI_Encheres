@@ -1,6 +1,7 @@
 package fr.eni.tp.encheres.controller;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,9 +19,7 @@ import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
-
 import fr.eni.tp.encheres.bo.PickupLocation;
-
 import fr.eni.tp.encheres.bo.User;
 
 @Controller
@@ -66,10 +65,15 @@ public class AuctionController {
 	}
 	
 	@PostMapping("/newArticle")
-	public String showArticleCreation(@ModelAttribute("article") Article article, @ModelAttribute("userSession") User userSession) {
+	public String showArticleCreation(@ModelAttribute("article") Article article, @ModelAttribute("userSession") User userSession,
+			@RequestParam(name="startDateTemp", required=true) LocalDate startDate,
+			@RequestParam(name="endDateTemp", required=true) LocalDate endDate,
+			@RequestParam(name="startTimeTemp", required=true) LocalTime startTime,
+			@RequestParam(name="endTimeTemp", required=true) LocalTime endTime
+			) {
 		
-		article.setAuctionStartDate(LocalDateTime.of(article.getStartDateTemp(), article.getStartTimeTemp()));
-		article.setAuctionEndDate(LocalDateTime.of(article.getEndDateTemp(), article.getEndTimeTemp()));
+		article.setAuctionStartDate(LocalDateTime.of(startDate, startTime));
+		article.setAuctionEndDate(LocalDateTime.of(endDate, endTime));
 		article.setSeller(userSession);
 		article.setCurrentPrice(article.getBeginningPrice());
 		

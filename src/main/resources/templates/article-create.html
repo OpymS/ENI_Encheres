@@ -35,15 +35,15 @@
             <div class="input-container">
                 <label for="inputStartDate">Début de l'enchère :</label>
                 <div class="input-dateTime-container">
-                    <input id="inputStartDate" th:field="*{startDateTemp}" type="date">
-                    <input id="inputStartTime" th:field="*{startTimeTemp}" type="time">
+                    <input id="inputStartDate" name="*{startDateTemp}" type="date">
+                    <input id="inputStartTime" name="*{startTimeTemp}" type="time">
                 </div>
             </div>
             <div class="input-container">
                 <label for="inputEndDate">Fin de l'enchère :</label>
                 <div class="input-dateTime-container">
-                    <input id="inputEndDate" th:field="*{endDateTemp}" type="date">
-                    <input id="inputEndTime" th:field="*{endTimeTemp}" type="time">
+                    <input id="inputEndDate" name="*{endDateTemp}" type="date">
+                    <input id="inputEndTime" name="*{endTimeTemp}" type="time">
                 </div>
             </div>
             <fieldset class="retrait-input">
@@ -64,6 +64,7 @@
             <div class="buttons-container">
                 <button type="submit" class="button-submit">Enregistrer</button>
                 <button type="button" class="button-cancel">Annuler</button>
+                <button style="visibility:hidden;">Annuler la vente</button>
             </div>
         </div>
     </form>

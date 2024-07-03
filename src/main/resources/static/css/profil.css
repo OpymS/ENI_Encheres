@@ -34,7 +34,7 @@ main {
 
 .profil-field {
   display: flex;
-  flex-direction: column;
+  justify-content:space-between;
   margin-bottom: 10px;
   width: 100%;
 }
