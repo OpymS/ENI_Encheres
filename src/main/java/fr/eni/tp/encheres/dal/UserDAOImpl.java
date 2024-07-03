@@ -34,7 +34,7 @@ public class UserDAOImpl implements UserDAO {
 	private static final String FIND_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	/** The Constant UPDATE. */ //Attention mot_de_passe enlever pour le moment
-	private static final String UPDATE_BY_ID = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, credit = :credit, administrateur = :administrateur WHERE no_utilisateur = :id";
+	private static final String UPDATE_BY_ID = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur WHERE no_utilisateur = :id";
 	
 	/** The Constant DELETE_BY_EMAIL. */
 	private static final String DELETE_BY_EMAIL = "DELETE FROM UTILISATEURS WHERE email = :email";
@@ -45,6 +45,7 @@ public class UserDAOImpl implements UserDAO {
 	/** The Constant FIND_ALL. */
 	private static final String FIND_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS";
 	
+	private static final String GET_PASSWORD_HASH_BY_ID = "SELECT mot_de_passe FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	
 	/** REQUETE POUR VALIDER LE PSEUDO */
@@ -148,7 +149,7 @@ public class UserDAOImpl implements UserDAO {
 		namedParameters.addValue("rue", user.getStreet());
 		namedParameters.addValue("code_postal", user.getZipCode());
 		namedParameters.addValue("ville", user.getCity());
-		//namedParameters.addValue("mot_de_passe", user.getPassword()); // En commentaire pour le moment le temps de régler cette histoire de bcrypt
+		namedParameters.addValue("mot_de_passe", user.getPassword());
 		namedParameters.addValue("credit", user.getCredit());
 		namedParameters.addValue("administrateur", user.isAdmin());
 		
@@ -196,6 +197,22 @@ public class UserDAOImpl implements UserDAO {
 	public List<User> findAll() {
 		return jdbcTemplate.query(FIND_ALL,  new UserRowMapper());
 	}
+	
+	
+	/**
+	 * Read the password hash by id.
+	 *
+	 * @param id the id
+	 * @return the password hash
+	 */
+	@Override
+	public String readPasswordById(int idUser) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("id", idUser);
+		
+		return jdbcTemplate.queryForObject(GET_PASSWORD_HASH_BY_ID, namedParameters,  String.class);
+	}
+	
 	
 	/**
 	 * Count the users in DB by pseudo in order to check if the pseudo is available
