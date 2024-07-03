@@ -22,17 +22,7 @@ public interface UserService {
 	 * @param passwordConfirm the password confirm
 	 */
 	void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber, String street, String zipCode, String city, String password, String passwordConfirm);
-	
-	/**
-	 * Login.
-	 *
-	 * @param email the email
-	 * @param password the password
-	 * @param rememberMe the remember me
-	 * @return true, if successful
-	 */
-	boolean login(String email, String password, boolean rememberMe);
-	
+		
 	/**
 	 * Forgot password.
 	 *
@@ -40,11 +30,7 @@ public interface UserService {
 	 */
 	void forgotPassword(String email);
 	
-	/**
-	 * Logout.
-	 */
-	void logout();
-	
+
 	/**
 	 * Delete account.
 	 *
