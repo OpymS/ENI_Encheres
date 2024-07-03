@@ -19,6 +19,10 @@ main{
 	align-items:center;
 	padding-bottom:100px;
 	border-bottom:1px solid #888;
+	background-color: #ffffff;  
+  	border-radius: 5px;
+  	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 .inputs-container{
 	width:60%;
@@ -72,16 +76,19 @@ main{
 	min-height:80px;
 	min-width:150px;
 	padding:20px 50px;
-	background: #333;
+	background-color: #2196F3;
 	color:#f1f1f1;
 	font-size:18px;
 	font-weight:500;
 	border-radius:5px;
 	border:none;
-	cursor:pointer;
+	
 }
 
-
+.button-container button:hover{
+	background-color: #1976D2;
+	cursor:pointer;
+}
 
 .articles-cards-container{
 	display:grid;
