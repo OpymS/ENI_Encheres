@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.User;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService {
 	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 
 	/**
@@ -39,9 +43,8 @@ public class UserServiceImpl implements UserService {
 	public void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber,
 			String street, String zipCode, String city, String password, String passwordConfirm) {
 		if (!password.equals(passwordConfirm)) {
-			throw new IllegalArgumentException("Les mots de passe ne sont pas identiques");
-		}
-		
+			throw new IllegalArgumentException("Les mots de passe ne sont pas identiques.");
+		}	
 		User user = new User();
 		user.setPseudo(pseudo);
 		user.setName(name);
@@ -51,8 +54,7 @@ public class UserServiceImpl implements UserService {
 		user.setStreet(street);
 		user.setZipCode(zipCode);
 		user.setCity(city);
-		user.setPassword(password);
-		user.setPasswordConfirm(passwordConfirm);
+		user.setPassword(passwordEncoder.encode(password));
 		user.setCredit(0);
 		user.setAdmin(false);
 		
@@ -70,7 +72,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean login(String email, String password, boolean rememberMe) {
 		User user = userDAO.readByEmail(email);
-		return user != null && user.getPassword().equals(password);
+		return user != null && passwordEncoder.matches(password, user.getPassword());
 	}
 
 	/**

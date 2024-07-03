@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import fr.eni.tp.encheres.bo.User;
@@ -49,6 +50,9 @@ public class UserDAOImpl implements UserDAO {
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 
 	/**
 	 * Create a User.
@@ -68,7 +72,7 @@ public class UserDAOImpl implements UserDAO {
 		namedParameters.addValue("rue", user.getStreet());
 		namedParameters.addValue("code_postal", user.getZipCode());
 		namedParameters.addValue("ville", user.getCity());
-		namedParameters.addValue("mot_de_passe", user.getPassword());
+		namedParameters.addValue("mot_de_passe", passwordEncoder.encode(user.getPassword()));
 		namedParameters.addValue("credit", user.getCredit());
 		namedParameters.addValue("administrateur", user.isAdmin());
 		
