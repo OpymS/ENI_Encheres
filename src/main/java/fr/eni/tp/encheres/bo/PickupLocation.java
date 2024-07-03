@@ -7,6 +7,12 @@ public class PickupLocation {
 	
 	public PickupLocation() {
 	}
+	
+	public PickupLocation(String street, String zipCode,  String city) {
+		this.street = street;
+		this.zipCode = zipCode;
+		this.city = city;
+	}
 
 	public String getStreet() {
 		return street;

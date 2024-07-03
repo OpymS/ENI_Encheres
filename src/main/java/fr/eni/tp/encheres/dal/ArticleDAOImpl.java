@@ -79,7 +79,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 		mapSqlParameterSource.addValue("startDate", article.getAuctionStartDate());
 		mapSqlParameterSource.addValue("endDate", article.getAuctionEndDate());
 		mapSqlParameterSource.addValue("startPrice", article.getBeginningPrice());
-		mapSqlParameterSource.addValue("endPrice", article.getFinalPrice());
+		mapSqlParameterSource.addValue("endPrice", article.getCurrentPrice());
 		mapSqlParameterSource.addValue("userId", article.getSeller().getUserId());
 		mapSqlParameterSource.addValue("categoryId", article.getCategory().getCategoryId());
 		
@@ -110,9 +110,18 @@ class ArticleRowMapper implements RowMapper<Article> {
 		article.setArticleName(rs.getString("nom_article"));
 		article.setDescription(rs.getString("description"));
 		article.setAuctionStartDate(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+		
+		article.setStartDateTemp(article.getAuctionStartDate().toLocalDate());
+		article.setStartTimeTemp(article.getAuctionStartDate().toLocalTime());
+		
 		article.setAuctionEndDate(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+		
+		article.setEndDateTemp(article.getAuctionEndDate().toLocalDate());
+		article.setEndTimeTemp(article.getAuctionEndDate().toLocalTime());
+		
+		
 		article.setBeginningPrice(rs.getInt("prix_initial"));
-		article.setFinalPrice(rs.getInt("prix_vente"));
+		article.setCurrentPrice(rs.getInt("prix_vente"));
 		
 		User seller = new User();
 		seller.setUserId(rs.getInt("no_utilisateur"));

@@ -1,9 +1,10 @@
 package fr.eni.tp.encheres.controller;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,9 @@ import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
+
+import fr.eni.tp.encheres.bo.PickupLocation;
+
 import fr.eni.tp.encheres.bo.User;
 
 @Controller
@@ -107,8 +111,26 @@ public class AuctionController {
 	}
 
 	@GetMapping("/newArticle")
-	public String showArticleCreation() {
+	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
+		Article article = new Article();
+		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(), userSession.getCity());
+		article.setPickupLocation(defaultPickupLocation);
+		model.addAttribute("article", article);
 		return "article-create";
+	}
+	
+	@PostMapping("/newArticle")
+	public String showArticleCreation(@ModelAttribute("article") Article article, @ModelAttribute("userSession") User userSession) {
+		
+		article.setAuctionStartDate(LocalDateTime.of(article.getStartDateTemp(), article.getStartTimeTemp()));
+		article.setAuctionEndDate(LocalDateTime.of(article.getEndDateTemp(), article.getEndTimeTemp()));
+		article.setSeller(userSession);
+		article.setCurrentPrice(article.getBeginningPrice());
+		
+		System.out.println(article);
+		
+		auctionService.sell(article);
+		return "redirect:/auctions";
 	}
 
 	@ModelAttribute("categoriesSession")

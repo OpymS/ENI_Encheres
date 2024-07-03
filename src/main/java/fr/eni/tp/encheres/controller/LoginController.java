@@ -60,7 +60,6 @@ public class LoginController {
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
 		String email = principal.getName();
 		User userRecup = userService.getUserByEmail(email);
-		//OK QUAND ROW MAPPER DANS DAL
 		
 		if(userRecup != null) {
 			userSession.setUserId(userRecup.getUserId());
@@ -74,6 +73,7 @@ public class LoginController {
 			userSession.setCity(userRecup.getCity());
 			//password ?
 			userSession.setAdmin(userRecup.isAdmin());
+			System.out.println(userSession);
 		}else{
 			userSession.setUserId(0);
 			userSession.setPseudo(null);
