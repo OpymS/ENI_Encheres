@@ -70,7 +70,9 @@
 				<a th:href="@{/}" class="button cancel">Annuler</a>
 			</div>
 			
-			
+			<div th:if="${errorMessage}" class="error-message" style="color: red;">
+                <p th:text="${errorMessage}"></p>
+            </div>
 		
 		</form>
 	
