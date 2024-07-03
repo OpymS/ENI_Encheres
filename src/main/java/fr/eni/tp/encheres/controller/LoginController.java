@@ -77,7 +77,8 @@ public class LoginController {
 		}
 		
 		return "redirect:/auctions";
-	}	
+	}
+  
 	
 	@ModelAttribute("userSession")
 	public User addUserSession() {
