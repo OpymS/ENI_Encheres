@@ -18,6 +18,7 @@ import fr.eni.tp.encheres.bo.User;
 public class AuctionDAOImpl implements AuctionDAO {
 
 	private static final String FIND_BY_USER_AND_ARTICLE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = :userId and no_article = :articleId";
+	private static final String FIND_BY_USER = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = :userId";
 	private static final String FIND_BY_ARTICLE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_article = :articleId";
 	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :articleId, :date, :bidAmount)";
 	private static final String UPDATE = "UPDATE ENCHERES SET date_enchere = :date, montant_enchere = :bidAmount WHERE no_utilisateur = :userId AND no_article = :articleId";
@@ -36,6 +37,14 @@ public class AuctionDAOImpl implements AuctionDAO {
 		mapSqlParameterSource.addValue("articleId", articleId);
 
 		return jdbcTemplate.query(FIND_BY_USER_AND_ARTICLE, mapSqlParameterSource, new AuctionRowMapper());
+	}
+
+	@Override
+	public List<Auction> findByUser(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+		
+		return jdbcTemplate.query(FIND_BY_USER, mapSqlParameterSource, new AuctionRowMapper());
 	}
 
 	@Override

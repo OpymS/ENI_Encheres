@@ -23,6 +23,7 @@ public interface AuctionService {
 	void updateCategory(Category category);
 	
 	List<Auction> findAuctions(int userId, int articleId);
+	List<Auction> findAuctionsByUser(int userId);
 	List<Auction> findAllAuctions(int articleId);
 	void newAuction(Auction auction);
 	void deleteAuction(Auction auction);
