@@ -25,17 +25,13 @@
 						<select th:field="*{category}" id="inputCategory">
 							<option value="0">Toutes</option>
 							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}" th:text="${cat.label}"></option>
-<!--							<option value="0">Informatique</option>-->
-<!--							<option value="1">Ameublement</option>-->
-<!--							<option value="2">Vêtement</option>-->
-<!--							<option value="3">Sport&Loisirs</option>-->
 						</select>	
 					</div>
 					
 					<div class="achat-vente-container" sec:authorize="isAuthenticated()">
 						<div class="achats-container">
 							<div class="achat-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes">
+								<input type="radio" id="achats-ventes" name="achats-ventes" value="purchases">
 								<label for="achats-ventes">Achats</label>
 							</div>
 							<div class="sub-container">
@@ -55,7 +51,7 @@
 						</div>
 						<div class="ventes-container">
 							<div class="ventes-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes">
+								<input type="radio" id="achats-ventes" name="achats-ventes" value="sales">
 								<label for="achats-ventes">Ventes</label>
 							</div>
 							<div class="sub-container">

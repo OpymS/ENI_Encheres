@@ -117,12 +117,6 @@ public class AuctionServiceImpl implements AuctionService {
 		return category;
 	}
 
-//	@Override
-//	public Category findCategoryByName(String name) {
-//		Category category = categoryDAO.
-//		return null;
-//	}
-	
 	@Override
 	public List<Category> findCategories() {
 		List<Category> categories = categoryDAO.findAll();
@@ -149,6 +143,16 @@ public class AuctionServiceImpl implements AuctionService {
 		return auctions;
 	}
 
+	@Override
+	public List<Auction> findAuctionsByUser(int userId) {
+		List<Auction> auctions = auctionDAO.findByUser(userId);
+		auctions.forEach(auction->{
+			auction.setArticle(articleDAO.read(auction.getArticle().getArticleId()));
+			auction.setUser(userDAO.readById(userId));
+		});
+		return auctions;
+	}
+	
 	@Override
 	public List<Auction> findAllAuctions(int articleId) {
 		List<Auction> auctions = auctionDAO.findByArticle(articleId);

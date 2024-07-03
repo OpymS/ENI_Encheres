@@ -8,6 +8,8 @@ import fr.eni.tp.encheres.bo.Auction;
 public interface AuctionDAO {
 	List<Auction> read(int userId, int articleId);
 
+	List<Auction> findByUser(int userId);
+	
 	List<Auction> findByArticle(int articleId);
 
 	void create(Auction auction);
