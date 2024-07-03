@@ -2,8 +2,6 @@ package fr.eni.tp.encheres.bll;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
