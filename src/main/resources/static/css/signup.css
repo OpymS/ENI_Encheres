@@ -1,67 +1,91 @@
-
 .title{
-	text-align:center;
-	margin-bottom:40px;
+    text-align:center;
+    margin-bottom:40px;
 }
+
 
 .user-create-form{
-	margin:0 auto;
-	max-width: 1200px;
-	min-width:600px;
-	width:90%;
-	
+    margin:0 auto;
+    max-width: 1200px;
+    min-width:600px;
+    width:90%;
 }
+
 
 .inputs-container{
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap:30px 10%;
-	padding:30px 20px;
-	border:1px solid #ccc;
-	border-radius:10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:30px 10%;
+    padding:30px 20px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
 }
 
+
 .inputs-container > div{
-	font-size:16px;
-	display: flex;
-	justify-content:space-between;
-	align-items:center;
+    font-size:16px;
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
 .inputs-container > div input{
-	outline:none;
-	border-radius:5px;
-	border:1px solid #999;
-	padding:5px 8px;
-	font-size:16px;
-	max-width:60%;
-	flex-grow:1;
+    outline:none;
+    border-radius:5px;
+    border:1px solid #999;
+    padding:5px 8px;
+    font-size:16px;
+    max-width:60%;
+    flex-grow:1;
 }
 
 
 .buttons-container{
-	display:flex;
-	justify-content:space-between;
-	gap:50px;
-	margin:50px auto 100px;
-	min-width:300px;
-	width:40%;
+    display:flex;
+    justify-content:space-between;
+    gap:50px;
+    margin:50px auto 100px;
+    min-width:300px;
+    width:40%;
 }
 
+
 .buttons-container .button{
-	min-height:60px;
-	min-width:100px;
-	width:150px;
-	background: #333;
-	color:#f1f1f1;
-	font-size:18px;
-	font-weight:500;
-	border-radius:5px;
-	border:none;
-	cursor:pointer;
-	text-decoration:none;
-	display: flex;
-	justify-content:center;
-	align-items:center;
-	text-align:center;
+    min-height:60px;
+    min-width:100px;
+    width:150px;
+    background: #333;
+    color:#ffffff;
+    font-size:18px;
+    font-weight:500;
+    border-radius:5px;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    transition: background-color 0.3s ease;
+}
+
+
+.buttons-container .button.create {
+    background-color: #4CAF50;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.buttons-container .button.create:hover {
+    background-color: darkgreen; 
+}
+
+
+.buttons-container .button.cancel {
+    background-color: #f44336;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.buttons-container .button.cancel:hover {
+    background-color: darkred; 
 }
