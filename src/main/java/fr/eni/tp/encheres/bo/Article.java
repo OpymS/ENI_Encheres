@@ -1,6 +1,8 @@
 package fr.eni.tp.encheres.bo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +11,13 @@ public class Article {
 	private String articleName;
 	private String description;
 	private LocalDateTime auctionStartDate;
+	private LocalDate startDateTemp;
+	private LocalTime startTimeTemp;
 	private LocalDateTime auctionEndDate;
+	private LocalDate endDateTemp;
+	private LocalTime endTimeTemp;
 	private int beginningPrice;
-	private int finalPrice;
+	private int currentPrice;
 	private String state;
 	private Category category;
 	private PickupLocation pickupLocation;
@@ -55,12 +61,45 @@ public class Article {
 		this.auctionStartDate = auctionStartDate;
 	}
 
+	public LocalDate getStartDateTemp() {
+		return startDateTemp;
+	}
+
+	public void setStartDateTemp(LocalDate startDateTemp) {
+		this.startDateTemp = startDateTemp;
+	}
+
+	public LocalTime getStartTimeTemp() {
+		return startTimeTemp;
+	}
+	
+	public void setStartTimeTemp(LocalTime startTimeTemp) {
+		this.startTimeTemp = startTimeTemp;
+	}
+
+
 	public LocalDateTime getAuctionEndDate() {
 		return auctionEndDate;
 	}
 
 	public void setAuctionEndDate(LocalDateTime auctionEndDate) {
 		this.auctionEndDate = auctionEndDate;
+	}
+	
+	public LocalTime getEndTimeTemp() {
+		return endTimeTemp;
+	}
+
+	public LocalDate getEndDateTemp() {
+		return endDateTemp;
+	}
+	
+	public void setEndDateTemp(LocalDate endDateTemp) {
+		this.endDateTemp = endDateTemp;
+	}
+	
+	public void setEndTimeTemp(LocalTime endTimeTemp) {
+		this.endTimeTemp = endTimeTemp;
 	}
 
 	public int getBeginningPrice() {
@@ -71,12 +110,12 @@ public class Article {
 		this.beginningPrice = beginningPrice;
 	}
 
-	public int getFinalPrice() {
-		return finalPrice;
+	public int getCurrentPrice() {
+		return currentPrice;
 	}
 
-	public void setFinalPrice(int finalPrice) {
-		this.finalPrice = finalPrice;
+	public void setCurrentPrice(int finalPrice) {
+		this.currentPrice = finalPrice;
 	}
 
 	public String getState() {
@@ -131,7 +170,7 @@ public class Article {
 	public String toString() {
 		return String.format(
 				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, finalPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
-				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, finalPrice,
+				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
 				state, category, pickupLocation, bids, seller, buyer);
 	}
 }
