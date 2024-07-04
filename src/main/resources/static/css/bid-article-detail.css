@@ -1,0 +1,133 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.fields-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px; 
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+/*
+.inputs-container {
+    width: 100%;
+}
+*/
+.field-container {
+    display: flex;
+    justify-content:space-between;
+    gap:10%;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.field-container-title {
+    margin-bottom: 30px;
+}
+
+.field-container span{
+	width:55%;
+}
+
+.field-container .pickupLocation-container{
+	width:55%;
+}
+
+.field-container textarea{
+	min-height:100px;
+	outline:none;
+	resize:none;
+	width:65%;
+	border-radius: 5px;
+	border:1px solid #ddd;
+	padding:5px 10px;
+}
+
+.article-name{
+	font-size:20px;
+	text-align:center;	
+}
+
+label {
+	width:max-content;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+
+
+textarea {
+    height: 80px;
+    resize: none;
+    overflow-y: scroll;
+}
+
+.input-dateTime-container {
+    display: flex;
+    gap: 10px;
+}
+
+.retrait-input {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.retrait-input legend {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 120px; 
+    background-color: #4CAF50;
+}
+
+.bid-offer-container{
+	width:100%;
+	
+}
+
+.bid-offer-container form{
+	width:100%;
+	display: flex;
+	justify-content:space-between;
+	align-items:center;
+	
+}
+
+.bid-offer-container form input{
+	padding:5px 0 5px 10px;
+	font-size:20px;
+	width:30%;
+}
+
+

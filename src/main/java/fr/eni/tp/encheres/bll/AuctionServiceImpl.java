@@ -239,9 +239,20 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public void newAuction(Auction auction) {
-		auction.setAuctionDate(LocalDateTime.now());
-		// TODO à mettre dans le controller plus tard si besoin.
-		auctionDAO.create(auction);
+		boolean isNewBidHigher = auction.getArticle().getCurrentPrice() < auction.getBidAmount();
+		boolean isBidDateBeforeEnd = auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate());
+		
+		if(isNewBidHigher && isBidDateBeforeEnd) { // Si les deux ok, on crée l'enchère
+			auctionDAO.create(auction);
+			articleDAO.updateSellPriceAndBuyer(auction.getArticle().getArticleId(), auction.getBidAmount(), auction.getUser().getUserId());
+			
+		}else { // Sinon un des deux, ou les deux sont false
+			if(!isNewBidHigher) {
+				System.err.println("Votre mise n'est pas supérieure à la précédente !");
+			}else if(!isBidDateBeforeEnd) {
+				System.err.println("La date de fin de l'enchère est passée. Mise impossible...");
+			}
+		}
 	}
 
 	@Override
