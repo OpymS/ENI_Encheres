@@ -41,21 +41,26 @@ public class LoginController {
 		return "signup";
 	}
 
-	  @PostMapping("/signup")
-	    public String processSignup(@ModelAttribute("user") User user, Model model) {
+	@PostMapping("/signup")
+	public String processSignup(@ModelAttribute("user") User user, Model model) {
+	    try {
 	        userService.createAccount(
-	        		user.getPseudo(), 
-	        		user.getName(), 
-	        		user.getFirstName(), 
-	        		user.getEmail(),
-	                user.getPhoneNumber(), 
-	                user.getStreet(), 
-	                user.getZipCode(), 
+	                user.getPseudo(),
+	                user.getName(),
+	                user.getFirstName(),
+	                user.getEmail(),
+	                user.getPhoneNumber(),
+	                user.getStreet(),
+	                user.getZipCode(),
 	                user.getCity(),
-	                user.getPassword(), 
+	                user.getPassword(),
 	                user.getPasswordConfirm());
 	        return "redirect:/login";
+	    } catch (IllegalArgumentException e) {
+	        model.addAttribute("errorMessage", e.getMessage());
+	        return "signup";
 	    }
+	}
 
   	@GetMapping("/session")
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
@@ -73,11 +78,7 @@ public class LoginController {
 		
 		return "redirect:/auctions";
 	}
-	
-			
-		return "redirect:/auctions";
-	}
-	
+  
 	
 	@ModelAttribute("userSession")
 	public User addUserSession() {
