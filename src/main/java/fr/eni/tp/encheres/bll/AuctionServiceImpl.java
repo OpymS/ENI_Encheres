@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
+import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.dal.ArticleDAO;
 import fr.eni.tp.encheres.dal.AuctionDAO;
@@ -180,11 +181,13 @@ public class AuctionServiceImpl implements AuctionService {
 	public void sell(Article article) throws BusinessException {
 		BusinessException be = new BusinessException();
 		boolean isValid = false;		
-		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be);
+		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be) && checkPickUpLocation(article.getPickupLocation(), be);
+		
 		if (isValid) {
 			try {
 				articleDAO.create(article);
 				pickUpLocationDAO.create(article.getPickupLocation(), article.getArticleId());
+				
 			} catch (DataAccessException e) {
 				e.printStackTrace();
 				be.add("Un problème est survenu lors de l'accès à la base de données");
@@ -206,6 +209,16 @@ public class AuctionServiceImpl implements AuctionService {
 			be.add("Vente impossible. Les enchères doivent finir après avoir commencé");
 		} else {
 			isValid = true;
+		}
+		return isValid;
+	}
+	
+	private boolean checkPickUpLocation(PickupLocation pickupLocation, BusinessException be) {
+		boolean isValid = false;
+		if (pickupLocation.getStreet().isEmpty() || pickupLocation.getZipCode().isEmpty() || pickupLocation.getCity().isEmpty()) {
+			be.add("Vente impossible. Remplissez tous les champs du lieu de retrait de l'article");
+		} else {
+			isValid = true; 
 		}
 		return isValid;
 	}
