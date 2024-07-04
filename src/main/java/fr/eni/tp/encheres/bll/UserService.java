@@ -72,4 +72,12 @@ public interface UserService {
 	
 	
 	User fillUserAttributes(User userToFill, User UserThatFills);
+
+	/**
+	 * Gets user's password with his id.
+	 *
+	 * @param idUser the id
+	 * @return the password hash from that user
+	 */
+	String getUserPasswordById(int idUser);
 }

@@ -151,29 +151,55 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void updateProfile(User userWithUpdate, User currentUser) {
-
-		if(userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && userWithUpdate.getEmail().equals(currentUser.getEmail())) {
-			userDAO.update(userWithUpdate);
-		}else if(userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && !userWithUpdate.getEmail().equals(currentUser.getEmail())) {
-			if(checkEmailAvailable(userWithUpdate.getEmail())) {
-				userDAO.update(userWithUpdate);
-			}else {
-				System.err.println("Impossible de modifier l'utilisateur car l'email est déjà pris !");
-			}
-		}else if(!userWithUpdate.getPseudo().equals(currentUser.getPseudo()) && userWithUpdate.getEmail().equals(currentUser.getEmail())){
-			if(checkPseudoAvailable(userWithUpdate.getPseudo())) {
-				userDAO.update(userWithUpdate);
-			}else {
-				System.err.println("Impossible de modifier l'utilisateur car le pseudo est déjà pris !");
-			}
-		}else {
-			if(checkPseudoAvailable(userWithUpdate.getPseudo()) && checkEmailAvailable(userWithUpdate.getEmail())) {
-				userDAO.update(userWithUpdate);
-			}else {
-				System.err.println("Impossible de modifier l'utilisateur car le pseudo ou l'email est déjà pris !");
+		
+		String updatedPseudo = userWithUpdate.getPseudo();
+		String currentPseudo = currentUser.getPseudo();
+		
+		String updatedEmail = userWithUpdate.getEmail();
+		String currentEmail = currentUser.getEmail();
+		
+		String currentPassword = currentUser.getPassword();
+	
+		String updatedPassword = userWithUpdate.getPassword();
+		String updatedPasswordConfirm = userWithUpdate.getPasswordConfirm();
+		
+		boolean passwordMatch = passwordEncoder.matches(currentPassword,
+				 										userDAO.readPasswordById(userWithUpdate.getUserId()));
+		 
+		if(!passwordMatch) { // Check password actuel
+			 System.err.println("Le mot de passe actuel n'est pas le bon ...");
+			 
+		}else if(updatedPassword.isBlank() || !updatedPassword.equals(updatedPasswordConfirm)){ // Check égalité entre nouveau mot de passe et la confirmation OU que vide
+			 System.err.println("Les mots de passe ne sont pas égaux ou vides !");
+			 
+		}else if(passwordMatch && !updatedPassword.isBlank() && updatedPassword.equals(updatedPasswordConfirm)){ // Si toutes les condtions favorables réunies, on vérifie le reste
+			 
+			if(updatedPseudo.equals(currentPseudo) && updatedEmail.equals(currentEmail)) {//Si pseudo et email égaux aux actuels alors pas besoin de vérifié leur dispo
+				 	userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
+					userDAO.update(userWithUpdate);
+			}else if(updatedPseudo.equals(currentPseudo) && !updatedEmail.equals(currentEmail)) {//Si email différent, check email
+				if(checkEmailAvailable(updatedEmail)) { // Si ok alors modif
+					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
+					userDAO.update(userWithUpdate);
+				}else {// Sinon email déja pris
+					System.err.println("Impossible de modifier l'utilisateur car l'email est déjà pris !");
+				}
+			}else if(!updatedPseudo.equals(currentPseudo) && updatedEmail.equals(currentEmail)){// Si pseudo différent, check pseudo
+				if(checkPseudoAvailable(updatedPseudo)) {// Si ok alors modif
+					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
+					userDAO.update(userWithUpdate);
+				}else {// Sinon email déja pris
+					System.err.println("Impossible de modifier l'utilisateur car le pseudo est déjà pris !");
+				}
+			}else {// Si on est là, les conditions précédents ne sont pas remplies, il faut alors check le pseudo et l'email.
+				if(checkPseudoAvailable(updatedPseudo) && checkEmailAvailable(updatedEmail)) {
+					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
+					userDAO.update(userWithUpdate);
+				}else {
+					System.err.println("Impossible de modifier l'utilisateur car le pseudo ou l'email est déjà pris !");
+				}
 			}
 		}
-	
 	}
 
 	/**
@@ -186,6 +212,19 @@ public class UserServiceImpl implements UserService {
 	public User getUserByEmail(String email) {
 		return userDAO.readByEmail(email);
 	}
+	
+
+	/**
+	 * Gets user's password with his id.
+	 *
+	 * @param idUser the id
+	 * @return the password hash from that user
+	 */
+	@Override
+	public String getUserPasswordById(int idUser) {
+		return userDAO.readPasswordById(idUser);
+	}
+	
 	
 	
 	private boolean checkPseudoAvailable(String pseudo) {
@@ -210,7 +249,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	@Override
+	@Override //Fonctionne par référence ou en retournant une instance de l'user hydraté
 	public User fillUserAttributes(User userToFill, User UserThatFills) {
 		userToFill.setUserId(UserThatFills.getUserId());
 		userToFill.setPseudo(UserThatFills.getPseudo());
@@ -222,9 +261,9 @@ public class UserServiceImpl implements UserService {
 		userToFill.setStreet(UserThatFills.getStreet());
 		userToFill.setZipCode(UserThatFills.getZipCode());
 		userToFill.setCity(UserThatFills.getCity());
-		//password ?
+		userToFill.setPassword(null); // On ne stocke jamais le mot de passe d'un utilisateur.
 		userToFill.setAdmin(UserThatFills.isAdmin());
-		return null;
+		return userToFill;
 	}
 
 
