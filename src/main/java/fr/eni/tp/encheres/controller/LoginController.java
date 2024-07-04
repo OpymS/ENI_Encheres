@@ -4,6 +4,7 @@ import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.User;
+import jakarta.validation.Valid;
 
 @Controller
 @SessionAttributes({"userSession"})
@@ -42,7 +44,7 @@ public class LoginController {
 	}
 
 	@PostMapping("/signup")
-	public String processSignup(@ModelAttribute("user") User user, Model model) {
+	public String processSignup(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
 	    try {
 	        userService.createAccount(
 	                user.getPseudo(),

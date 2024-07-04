@@ -81,4 +81,12 @@ public interface UserDAO {
 	 */
 	int countEmail(String emailUser);
 
+	/**
+	 * Read the password hash by id.
+	 *
+	 * @param id the id
+	 * @return the password hash
+	 */
+	String readPasswordById(int idUser);
+
 }

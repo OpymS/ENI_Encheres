@@ -13,36 +13,36 @@
 <main>
     <h1 class="title">PROFIL</h1>
     <div class="profil-info">
-        <h2 class="profil-username" th:text="${userSession.pseudo}"></h2>
+        <h2 class="profil-username" th:text="${userDisplay.pseudo}"></h2>
         <div class="profil-field">
             <label for="nom">Nom :</label>
-            <span th:text="${userSession.name}"></span>
+            <span th:text="${userDisplay.name}"></span>
         </div>
         <div class="profil-field">
             <label for="prenom">Prénom :</label>
-            <span th:text="${userSession.firstName}">Prénom</span>
+            <span th:text="${userDisplay.firstName}">Prénom</span>
         </div>
         <div class="profil-field">
             <label for="email">Email :</label>
-            <span th:text="${userSession.email}">Email</span>
+            <span th:text="${userDisplay.email}">Email</span>
         </div>
         <div class="profil-field">
             <label for="telephone">Téléphone :</label>
-            <span th:text="${userSession.phoneNumber}">Téléphone</span>
+            <span th:text="${userDisplay.phoneNumber}">Téléphone</span>
         </div>
         <div class="profil-field">
             <label for="rue">Rue :</label>
-            <span th:text="${userSession.street}">Rue</span>
+            <span th:text="${userDisplay.street}">Rue</span>
         </div>
         <div class="profil-field">
             <label for="codePostal">Code Postal :</label>
-            <span th:text="${userSession.zipCode}">Code Postal</span>
+            <span th:text="${userDisplay.zipCode}">Code Postal</span>
         </div>
         <div class="profil-field">
             <label for="ville">Ville :</label>
-            <span th:text="${userSession.city}">Ville</span>
+            <span th:text="${userDisplay.city}">Ville</span>
         </div>
-        <div class="modify-profile-container">
+        <div class="modify-profile-container" th:if="${userDisplay.userId == userSession.userId}">
   			<a th:href="@{/profil/modify}">Modifier mon profil</a>
 		</div>    
     </div>

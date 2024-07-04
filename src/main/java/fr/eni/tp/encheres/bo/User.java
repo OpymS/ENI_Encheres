@@ -3,15 +3,32 @@ package fr.eni.tp.encheres.bo;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class User {
 	private int userId;
+	@NotBlank
+	@Pattern(regexp="^\\w+$")
+	@Size(max = 30)
 	private String pseudo;
+	@NotBlank
+	@Size(max = 30)
 	private String name;
+	@Size(max = 30)
 	private String firstName;
+	@NotBlank
+	@Email
 	private String email;
+	@Pattern(regexp="^(0|\\+33|0033)[1-9]\\d{8}$")
 	private String phoneNumber;
+	@Size(max = 30)
 	private String street;
+	@Pattern(regexp="^\\d{5}$")
 	private String zipCode;
+	@Size(max = 30)
 	private String city;
 	private String password;
 	private String passwordConfirm;

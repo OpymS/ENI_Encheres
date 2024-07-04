@@ -1,8 +1,14 @@
 package fr.eni.tp.encheres.bo;
 
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class PickupLocation {
+	@Size(max = 30)
 	private String street;
+	@Pattern(regexp = "^\\d{5}$")
 	private String zipCode;
+	@Size(max = 30)
 	private String city;
 	
 	public PickupLocation() {

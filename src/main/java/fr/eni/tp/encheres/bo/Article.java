@@ -4,23 +4,35 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Article {
 	private int articleId;
+	@NotBlank
+	@Size(max = 30)
 	private String articleName;
+	@Size(max = 300)
 	private String description;
 	private LocalDateTime auctionStartDate;
 	private LocalDateTime auctionEndDate;
+	@Min(0)
 	private int beginningPrice;
+	@Min(0)
 	private int currentPrice;
 	private String state;
 	private Category category;
 	private PickupLocation pickupLocation;
 	private List<Auction> bids;
 	private User seller;
-	private User buyer;
+	private User currentBuyer;
 
 	public Article() {
 		bids = new ArrayList<Auction>();
+		currentBuyer = new User();
 	}
 
 	public int getArticleId() {
@@ -119,19 +131,19 @@ public class Article {
 		this.seller = seller;
 	}
 
-	public User getBuyer() {
-		return buyer;
+	public User getCurrentBuyer() {
+		return currentBuyer;
 	}
 
-	public void setBuyer(User buyer) {
-		this.buyer = buyer;
+	public void setCurrentBuyer(User currentBuyer) {
+		this.currentBuyer = currentBuyer;
 	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
+				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, currentBuyer=%s]",
 				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
-				state, category, pickupLocation, bids, seller, buyer);
+				state, category, pickupLocation, bids, seller, currentBuyer);
 	}
 }

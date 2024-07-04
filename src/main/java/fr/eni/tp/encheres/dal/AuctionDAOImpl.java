@@ -21,7 +21,6 @@ public class AuctionDAOImpl implements AuctionDAO {
 	private static final String FIND_BY_USER = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = :userId";
 	private static final String FIND_BY_ARTICLE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_article = :articleId";
 	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :articleId, :date, :bidAmount)";
-	private static final String UPDATE = "UPDATE ENCHERES SET date_enchere = :date, montant_enchere = :bidAmount WHERE no_utilisateur = :userId AND no_article = :articleId";
 	private static final String DELETE = "DELETE FROM ENCHERES WHERE no_utilisateur = :userId AND no_article = :articleId AND date_enchere = :auctionDate";
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
@@ -67,18 +66,6 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	}
 
-	@Override
-	public void update(Auction auction) {
-		long userId = auction.getUser().getUserId();
-		long articleId = auction.getArticle().getArticleId();
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("userId", userId);
-		mapSqlParameterSource.addValue("articleId", articleId);
-		mapSqlParameterSource.addValue("date", auction.getAuctionDate());
-		mapSqlParameterSource.addValue("bidAmount", auction.getBidAmount());
-
-		jdbcTemplate.update(UPDATE, mapSqlParameterSource);
-	}
 
 	@Override
 	public void delete(int userId, int articleId, LocalDateTime auctionDate) {

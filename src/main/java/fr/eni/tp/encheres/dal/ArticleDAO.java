@@ -12,4 +12,6 @@ public interface ArticleDAO {
 	List<Article> findByName(String name);
 	void create(Article article);
 	void delete(int articleId);
+	void updateArticle(Article article);
+	void updateSellPriceAndBuyer(int articleId, int bidAmount, int userId);
 }
