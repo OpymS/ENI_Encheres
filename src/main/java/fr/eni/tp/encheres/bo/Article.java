@@ -4,13 +4,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Article {
 	private int articleId;
+	@NotBlank
+	@Size(max = 30)
 	private String articleName;
+	@Size(max = 300)
 	private String description;
 	private LocalDateTime auctionStartDate;
 	private LocalDateTime auctionEndDate;
+	@Min(0)
 	private int beginningPrice;
+	@Min(0)
 	private int currentPrice;
 	private String state;
 	private Category category;

@@ -1,6 +1,8 @@
 package fr.eni.tp.encheres.bll;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.CategoryDAO;
 import fr.eni.tp.encheres.dal.PickUpLocationDAO;
 import fr.eni.tp.encheres.dal.UserDAO;
+import fr.eni.tp.encheres.exception.BusinessException;
 
 @Service
 public class AuctionServiceImpl implements AuctionService {
@@ -247,6 +250,19 @@ public class AuctionServiceImpl implements AuctionService {
 	@Override
 	public void deleteAuction(Auction auction) {
 		auctionDAO.delete(auction.getUser().getUserId(), auction.getArticle().getArticleId(), auction.getAuctionDate());
+	}
+
+	@Override
+	public LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException {
+		BusinessException be = new BusinessException();
+		LocalDateTime dateTime;
+		if (date != null) {
+			dateTime = LocalDateTime.of(date, time);
+		} else {
+			be.add("Les dates doivent être renseignées");
+			throw be;
+		}
+		return dateTime;
 	}
 
 }

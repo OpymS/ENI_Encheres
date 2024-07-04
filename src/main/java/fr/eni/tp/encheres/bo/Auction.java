@@ -2,8 +2,11 @@ package fr.eni.tp.encheres.bo;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.Min;
+
 public class Auction {
 	private LocalDateTime auctionDate;
+	@Min(0)
 	private int bidAmount;
 	private User user;
 	private Article article;

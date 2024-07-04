@@ -1,11 +1,15 @@
 package fr.eni.tp.encheres.bll;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface AuctionService {
 	Article findArticleById(int articleId);
@@ -29,5 +33,7 @@ public interface AuctionService {
 	List<Auction> findAllAuctions(int articleId);
 	void newAuction(Auction auction);
 	void deleteAuction(Auction auction);
+	
+	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;
 
 }
