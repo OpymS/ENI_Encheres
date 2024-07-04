@@ -165,7 +165,7 @@ public class AuctionServiceImpl implements AuctionService {
 				}
 				articlesList.clear();
 				articlesList = tmpArticlesList;
-				System.out.println(articlesList);
+				//System.out.println(articlesList);
 			}
 		}
 		/*
@@ -229,8 +229,25 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	@Override
-	public void updateArticle(Article article) {
-		// TODO
+	@Transactional(rollbackFor = BusinessException.class)
+	public void updateArticle(Article article) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean isValid = false;		
+		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be) && checkPickUpLocation(article.getPickupLocation(), be);
+		
+		if (isValid) {
+			try {
+				articleDAO.updateArticle(article);
+				pickUpLocationDAO.updatePickUpLocationByArticleId(article.getArticleId(), article.getPickupLocation());
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
 	}
 
 	@Override

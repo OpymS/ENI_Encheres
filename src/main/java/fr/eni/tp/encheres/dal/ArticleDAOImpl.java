@@ -175,12 +175,9 @@ public class ArticleDAOImpl implements ArticleDAO{
 			article.setPickupLocation(pickupLocation);
 			article.setSeller(seller);
 			
-			//System.err.println(rs.getInt("no_utilisateur"));
-			//System.err.println("sel : "+seller);
 			
-			
-			System.err.println("articleDAO : "+ article);
-			System.out.println("-------------------------");
+			//System.err.println("articleDAO : "+ article);
+			//System.out.println("-------------------------");
 			return article;
 		}
 	}

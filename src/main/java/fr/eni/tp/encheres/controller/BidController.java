@@ -36,7 +36,7 @@ public class BidController {
 									@SessionAttribute("userSession") User userSession,
 									Model model) {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
-		System.out.println(articleToDisplay);
+		//System.out.println(articleToDisplay);
 		
 		
 		

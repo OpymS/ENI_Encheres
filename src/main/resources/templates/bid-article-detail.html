@@ -26,7 +26,8 @@
             </div>
             <div class="field-container">
                 <label for="currentPrice">Meilleure offre :</label>
-                <span th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId != 0}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId == 0}" th:text="'Aucune offre pour le moment'"></span>
             </div>
             <div class="field-container">
                 <label for="beginningPrice">Mise à prix :</label>
@@ -64,8 +65,9 @@
 	            </form>
             </div>
             
-            <div class="modify-auction" th:if="${articleDisplay.seller.userId==userSession.userId}">
-            	<p>bouton modifier l'enchère ... qui ramènera sur la page de création</p>
+            <div class="modify-auction-container" th:if="${articleDisplay.seller.userId==userSession.userId}">
+            	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}">Modifier la vente</a>
+            	<p class="button-styled-link">futur bouton suppression</p>
             </div>
         </div>
 </main>
