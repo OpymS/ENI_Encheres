@@ -18,7 +18,7 @@ public interface AuctionService {
 	List<Article> findArticlesByCategoryAndName(Category category, String name);
 	List<Article> findArticles();
 	List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale);
-	void sell(Article article);
+	void sell(Article article) throws BusinessException;
 	void deleteArticle(int articleId);
 	void updateArticle(Article article);
 	

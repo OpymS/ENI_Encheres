@@ -51,6 +51,7 @@ public class AuctionController {
 			@RequestParam(name = "notstarted", required = false) boolean notstarted,
 			@RequestParam(name = "finished", required = false) boolean finished,
 			@RequestParam(name = "achats-ventes", required = false) String buySale) {
+		System.out.println("showAuctions début");
 		List<Article> articlesList = auctionService.selectArticles(article, userSession, open, current, won, currentVente, notstarted, finished, buySale);
 		
 		model.addAttribute("article", article);
@@ -63,10 +64,10 @@ public class AuctionController {
 		model.addAttribute("finished", finished);
 		boolean sales = false;
 		boolean purchases = false;
-		if (buySale.equals("sales")) {
+		if (buySale != null && buySale.equals("sales")) {
 			sales = true;
 		}
-		if (buySale.equals("purchases")) {
+		if (buySale != null && buySale.equals("purchases")) {
 			purchases = true;
 		}
 		model.addAttribute("sales", sales);
@@ -92,37 +93,30 @@ public class AuctionController {
 			) {
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
-		try {
-			startDateTime = auctionService.convertDate(startDate, startTime);
-		} catch (BusinessException e) {
-			e.getErreurs().forEach(err -> {
-				ObjectError error = new ObjectError("globalError", err);
-				bindingResult.addError(error);
-			});
-			return "article-create";
-		}
-		try {
-			endDateTime = auctionService.convertDate(endDate, endTime);
-		} catch (BusinessException e) {
-			e.getErreurs().forEach(err -> {
-				ObjectError error = new ObjectError("globalError", err);
-				bindingResult.addError(error);
-			});
-			return "article-create";
-		}
 		
 		if (bindingResult.hasErrors()) {
 			return "article-create";
 		} else {
-			article.setAuctionStartDate(startDateTime);
-			article.setAuctionEndDate(endDateTime);
-			article.setSeller(userSession);
-			article.setCurrentPrice(article.getBeginningPrice());
+			try {
+				startDateTime = auctionService.convertDate(startDate, startTime);
+				endDateTime = auctionService.convertDate(endDate, endTime);
+				article.setAuctionStartDate(startDateTime);
+				article.setAuctionEndDate(endDateTime);
+				article.setSeller(userSession);
+				article.setCurrentPrice(article.getBeginningPrice());			
+				System.out.println(article);
 			
-			System.out.println(article);
 			
-			auctionService.sell(article);
-			return "redirect:/auctions";
+				auctionService.sell(article);
+				return "redirect:/auctions";
+			} catch (BusinessException e) {
+				e.getErreurs().forEach(err -> {
+					ObjectError error = new ObjectError("globalError", err);
+					bindingResult.addError(error);
+				});
+				return "article-create";
+			}
+			
 		}
 	}
 

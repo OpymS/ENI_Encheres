@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
@@ -103,12 +105,14 @@ public class AuctionServiceImpl implements AuctionService {
 	@Override
 	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale) {
 		List<Article> articlesList;
+		
+		// si pas de mot dans l'input et pas de catégorie choisie
 		if (article == null || (article.getArticleName().isEmpty()
 				&& (article.getCategory() == null || article.getCategory().getCategoryId() == 0))) {
 			articlesList = this.findArticles();
-		} else if (article.getArticleName().isEmpty()) {
+		} else if (article.getArticleName().isEmpty()) { //si pas de mot dans l'input
 			articlesList = this.findArticlesByCategory(article.getCategory());
-		} else if (article.getCategory() == null || article.getCategory().getCategoryId() == 0) {
+		} else if (article.getCategory() == null || article.getCategory().getCategoryId() == 0) { // si pas de catégorie choisie 
 			articlesList = this.findArticlesByName(article.getArticleName());
 		} else {
 			articlesList = this.findArticlesByCategoryAndName(article.getCategory(),
@@ -172,12 +176,40 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	@Override
-	public void sell(Article article) {
-		articleDAO.create(article);
-		pickUpLocationDAO.create(article.getPickupLocation(), article.getArticleId());
-
+	@Transactional(rollbackFor = BusinessException.class)
+	public void sell(Article article) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean isValid = false;		
+		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be);
+		if (isValid) {
+			try {
+				articleDAO.create(article);
+				pickUpLocationDAO.create(article.getPickupLocation(), article.getArticleId());
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
 	}
 
+	private boolean checkDates(LocalDateTime startDate, LocalDateTime endDate, BusinessException be) {
+		boolean isValid = false;
+		LocalDateTime now = LocalDateTime.now().plusMinutes(1);
+		if (startDate == null || endDate == null) {
+			be.add("Vente impossible. Les dates de début et de fin d'enchères doivent être renseignées");
+		} else if (startDate.isBefore(now)) {
+			be.add("Vente impossible. Les enchères ne peuvent pas commencer avant maintenant");
+		} else if (startDate.isAfter(endDate)) {
+			be.add("Vente impossible. Les enchères doivent finir après avoir commencé");
+		} else {
+			isValid = true;
+		}
+		return isValid;
+	}
+	
 	@Override
 	public void deleteArticle(int articleId) {
 		articleDAO.delete(articleId);
@@ -256,10 +288,10 @@ public class AuctionServiceImpl implements AuctionService {
 	public LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException {
 		BusinessException be = new BusinessException();
 		LocalDateTime dateTime;
-		if (date != null) {
+		if (date != null && time != null) {
 			dateTime = LocalDateTime.of(date, time);
 		} else {
-			be.add("Les dates doivent être renseignées");
+			be.add("Les dates et heures doivent être renseignées");
 			throw be;
 		}
 		return dateTime;
