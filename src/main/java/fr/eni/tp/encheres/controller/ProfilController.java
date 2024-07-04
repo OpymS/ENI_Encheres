@@ -1,6 +1,7 @@
 package fr.eni.tp.encheres.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,16 @@ public class ProfilController {
 		this.userService = userService;
 	}
 
-	@GetMapping
-	public String showProfilPage(@ModelAttribute("userSession") User userSession) {
+	@GetMapping // NOTE : Ajouter vérif sur id valide plus tard
+	public String showProfilPage(@SessionAttribute("userSession") User userSession,
+			@RequestParam(name="userId", required=false) int userId,
+			Model model) {
+		User userToDisplay = new User();
+		userService.fillUserAttributes(userToDisplay, userService.getUserById(userId));
+		userToDisplay.setPassword(null); //Pas de stockage de mot de passe
+		
+		model.addAttribute("userDisplay", userToDisplay);
+		
 		return "profil";
 	}
 	
@@ -51,7 +60,7 @@ public class ProfilController {
 		userService.fillUserAttributes(userSession, userWithUpdates);
 		
 		userSession.setPassword(null); //On ne stocke pas le mot de passe de l'utilisateur en session
-		
-		return "redirect:/profil";
+		String redirectUrl = "redirect:/profil?userId=" + userSession.getUserId();
+		return redirectUrl;
 	}
 }
