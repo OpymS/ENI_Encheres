@@ -16,10 +16,12 @@
         <div class="inputs-container">
             <div class="input-container">
                 <label for="inputName">Article :</label>
+<!--                <input id="inputName" th:field="*{articleName}" type="text" maxlength="30" required>-->
                 <input id="inputName" th:field="*{articleName}" type="text">
             </div>
             <div class="input-container">
                 <label for="inputDesc">Description :</label>
+<!--                <textarea id="inputDesc" th:field="*{description}" maxlength="300"></textarea>-->
                 <textarea id="inputDesc" th:field="*{description}"></textarea>
             </div>
             <div class="input-container">
@@ -30,6 +32,7 @@
             </div>
             <div class="input-container">
                 <label for="inputPrice">Mise à prix :</label>
+<!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
                 <input id="inputPrice" th:field="*{beginningPrice}" type="number">
             </div>
             <div class="input-container">
@@ -50,14 +53,17 @@
                 <legend>Retrait</legend>
                 <div class="input-container">
                     <label for="inputStreet">Rue :</label>
+<!--                    <input id="inputStreet" type="text" th:field="*{pickupLocation.street}" maxlength="30">-->
                     <input id="inputStreet" type="text" th:field="*{pickupLocation.street}">
                 </div>
                 <div class="input-container">
                     <label for="inputCpo">Code Postal :</label>
+<!--                    <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}" pattern="^\d{5}$">-->
                     <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}">
                 </div>
                 <div class="input-container">
                     <label for="inputCity">Ville :</label>
+<!--                    <input id="inputCity" type="text" th:field="*{pickupLocation.city}" maxlength="30">-->
                     <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
                 </div>
             </fieldset>
@@ -67,6 +73,16 @@
                 <button style="visibility:hidden;">Annuler la vente</button>
             </div>
         </div>
+        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionStartDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionEndDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
+		
     </form>
 </main>
 

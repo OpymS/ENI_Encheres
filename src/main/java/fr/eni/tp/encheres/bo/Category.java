@@ -3,8 +3,11 @@ package fr.eni.tp.encheres.bo;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Size;
+
 public class Category {
 	private int categoryId;
+	@Size(max = 30)
 	private String label;
 	private List<Article> articles;
 
