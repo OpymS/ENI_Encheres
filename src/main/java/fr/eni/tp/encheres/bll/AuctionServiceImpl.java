@@ -44,63 +44,31 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public Article findArticleById(int articleId) {
-		Article article = articleDAO.read(articleId);
-		article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-		//article.setBids(auctionDAO.findByArticle(articleId));
-		article.setPickupLocation(pickUpLocationDAO.findByArticleId(articleId));
-		article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		return article;
+		return articleDAO.read(articleId);
 	}
 
 	@Override
 	public List<Article> findArticlesByName(String name) {
-		List<Article> articlesList = articleDAO.findByName(name);
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByName(name);
 	}
 
 
 	@Override
 	public List<Article> findArticlesByCategory(Category category) {
-		List<Article> articlesList = articleDAO.findByCategory(category.getCategoryId());
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByCategory(category.getCategoryId());
 	}
 	
 
 	@Override
 	public List<Article> findArticlesByCategoryAndName(Category category, String name) {
-		List<Article> articlesList = articleDAO.findByCategoryAndName(category.getCategoryId(), name);
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByCategoryAndName(category.getCategoryId(), name);
+		
 	}
 
 	
 	@Override
 	public List<Article> findArticles() {
-		List<Article> articlesList = articleDAO.findAll();
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findAll();
 	}
 
 	@Override
