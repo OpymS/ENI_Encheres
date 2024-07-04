@@ -46,7 +46,7 @@ public class AuctionServiceImpl implements AuctionService {
 	public Article findArticleById(int articleId) {
 		Article article = articleDAO.read(articleId);
 		article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-		article.setBids(auctionDAO.findByArticle(articleId));
+		//article.setBids(auctionDAO.findByArticle(articleId));
 		article.setPickupLocation(pickUpLocationDAO.findByArticleId(articleId));
 		article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		return article;
@@ -57,7 +57,7 @@ public class AuctionServiceImpl implements AuctionService {
 		List<Article> articlesList = articleDAO.findByName(name);
 		articlesList.forEach(article -> {
 			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
+			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
 			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
 			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		});
@@ -70,7 +70,7 @@ public class AuctionServiceImpl implements AuctionService {
 		List<Article> articlesList = articleDAO.findByCategory(category.getCategoryId());
 		articlesList.forEach(article -> {
 			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
+			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
 			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
 			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		});
@@ -83,7 +83,7 @@ public class AuctionServiceImpl implements AuctionService {
 		List<Article> articlesList = articleDAO.findByCategoryAndName(category.getCategoryId(), name);
 		articlesList.forEach(article -> {
 			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
+			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
 			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
 			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		});
@@ -96,7 +96,7 @@ public class AuctionServiceImpl implements AuctionService {
 		List<Article> articlesList = articleDAO.findAll();
 		articlesList.forEach(article -> {
 			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
+			//article.setBids(auctionDAO.findByArticle(article.getArticleId()));
 			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
 			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
 		});
@@ -286,20 +286,21 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	@Override
-	public void newAuction(Auction auction) {
+	public boolean newAuction(Auction auction) {
 		boolean isNewBidHigher = auction.getArticle().getCurrentPrice() < auction.getBidAmount();
 		boolean isBidDateBeforeEnd = auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate());
 		
 		if(isNewBidHigher && isBidDateBeforeEnd) { // Si les deux ok, on crée l'enchère
 			auctionDAO.create(auction);
 			articleDAO.updateSellPriceAndBuyer(auction.getArticle().getArticleId(), auction.getBidAmount(), auction.getUser().getUserId());
-			
+			return true;
 		}else { // Sinon un des deux, ou les deux sont false
 			if(!isNewBidHigher) {
 				System.err.println("Votre mise n'est pas supérieure à la précédente !");
 			}else if(!isBidDateBeforeEnd) {
 				System.err.println("La date de fin de l'enchère est passée. Mise impossible...");
 			}
+			return false;
 		}
 	}
 

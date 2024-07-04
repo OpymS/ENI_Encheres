@@ -88,4 +88,12 @@ public interface UserService {
 	 * @return the user by id
 	 */
 	User getUserById(int userId);
+
+	/**
+	 * Updates the user credit balance.
+	 *
+	 * @param User the user
+	 * @return the user with the credit changed
+	 */
+	void updateUserCredit(User user);
 }

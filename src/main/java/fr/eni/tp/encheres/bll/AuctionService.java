@@ -31,7 +31,7 @@ public interface AuctionService {
 	List<Auction> findAuctions(int userId, int articleId);
 	List<Auction> findAuctionsByUser(int userId);
 	List<Auction> findAllAuctions(int articleId);
-	void newAuction(Auction auction);
+	boolean newAuction(Auction auction);
 	void deleteAuction(Auction auction);
 	
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;

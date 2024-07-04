@@ -201,6 +201,20 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 	}
+	
+	/**
+	 * Updates the user credit balance.
+	 *
+	 * @param User the user
+	 * @return nothing
+	 */
+	@Override
+	public void updateUserCredit(User user) {
+		userDAO.updateCredit(user);
+	}
+	
+	
+	
 
 	/**
 	 * Gets the user by email.
