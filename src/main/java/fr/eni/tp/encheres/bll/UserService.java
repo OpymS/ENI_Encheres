@@ -80,4 +80,12 @@ public interface UserService {
 	 * @return the password hash from that user
 	 */
 	String getUserPasswordById(int idUser);
+
+	/**
+	 * Gets the user by id.
+	 *
+	 * @param userId the id
+	 * @return the user by id
+	 */
+	User getUserById(int userId);
 }

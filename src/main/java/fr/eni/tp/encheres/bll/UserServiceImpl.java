@@ -213,6 +213,17 @@ public class UserServiceImpl implements UserService {
 		return userDAO.readByEmail(email);
 	}
 	
+	/**
+	 * Gets the user by id.
+	 *
+	 * @param userId the id
+	 * @return the user by id
+	 */
+	@Override
+	public User getUserById(int userId) {
+		return userDAO.readById(userId);
+	}
+	
 
 	/**
 	 * Gets user's password with his id.
