@@ -16,20 +16,23 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
+	private final DataSource dataSource;
+	
+	public SecurityConfig(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
-    @Bean
+	@Bean
     PasswordEncoder passwordEncoder() {
     	return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 	
 	@Bean
-	UserDetailsManager users(DataSource dataSource) {
-		
+	UserDetailsManager users() {
 		JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-		
 		users.setUsersByUsernameQuery("SELECT email, mot_de_passe password, 'true' as enabled FROM UTILISATEURS WHERE email = ?");
 		users.setAuthoritiesByUsernameQuery("SELECT email, role FROM UTILISATEURS ut INNER JOIN ROLES ro ON ut.administrateur = ro.is_admin WHERE email = ?");
-		
 		return users;
 	}
 	
@@ -47,20 +50,25 @@ public class SecurityConfig {
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
 				.anyRequest().authenticated()
-			).formLogin(form -> form
+			)
+			.formLogin(form -> form
 					.loginPage("/login")
 					.permitAll()
 					.defaultSuccessUrl("/session")
-					.failureUrl("/login?error=true"));
-		
-		
-		http.logout(form ->{
-			form.permitAll();
-			form.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
-			form.invalidateHttpSession(true);
-			form.clearAuthentication(true);
-			form.deleteCookies("JSESSIONID");
-			form.logoutSuccessUrl("/auctions");
+					.failureUrl("/login?error=true")
+			)
+			.rememberMe(rememberMe -> rememberMe
+					.userDetailsService(users())
+					.tokenValiditySeconds(86400)
+					.key("uniqueAndSecret")
+			)
+			.logout(form -> {
+				form.permitAll();
+				form.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+				form.invalidateHttpSession(true);
+				form.clearAuthentication(true);
+				form.deleteCookies("JSESSIONID");
+				form.logoutSuccessUrl("/auctions");
 		});
 			
 		return http.build();
