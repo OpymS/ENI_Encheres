@@ -14,7 +14,6 @@ public interface AuctionDAO {
 
 	void create(Auction auction);
 
-	void update(Auction auction);
 
 	void delete(int userId, int articleId, LocalDateTime date);
 }

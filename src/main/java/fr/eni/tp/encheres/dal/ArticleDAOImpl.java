@@ -26,6 +26,10 @@ public class ArticleDAOImpl implements ArticleDAO{
 	private static final String INSERT = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur,no_categorie) VALUES (:name, :description, :startDate, :endDate, :startPrice, :endPrice, :userId, :categoryId)";
 	private static final String DELETE = "DELETE FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
+	private static final String UPDATE_SELL_PRICE_AND_BUYER = "UPDATE ARTICLES_VENDUS SET prix_vente = :newBid, no_acheteur = :userId WHERE no_article = :articleId";
+	private static final String UPDATE = "UPDATE ARTICLES_VENDUS SET nom_article = :name, description =:description, date_debut_encheres =:startDate, date_fin_encheres=:endDate, prix_initial=:startPrice, prix_vente=:endPrice, no_categorie=:categoryId WHERE no_article = :articleId";
+	
+	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	public ArticleDAOImpl(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -89,6 +93,32 @@ public class ArticleDAOImpl implements ArticleDAO{
 			article.setArticleId(keyHolder.getKey().intValue());
 		}
 		
+	}
+	
+	@Override
+	public void updateSellPriceAndBuyer(int articleId, int newPrice, int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("articleId", articleId);
+		mapSqlParameterSource.addValue("userId", userId);
+		mapSqlParameterSource.addValue("newBid", newPrice);
+		
+		jdbcTemplate.update(UPDATE_SELL_PRICE_AND_BUYER, mapSqlParameterSource);
+	}
+	
+	@Override
+	public void updateArticle(Article article) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("articleId", article.getArticleId());
+		mapSqlParameterSource.addValue("name", article.getArticleName());
+		mapSqlParameterSource.addValue("description", article.getDescription());
+		mapSqlParameterSource.addValue("startDate", article.getAuctionStartDate());
+		mapSqlParameterSource.addValue("endDate", article.getAuctionEndDate());
+		mapSqlParameterSource.addValue("startPrice", article.getBeginningPrice());
+		mapSqlParameterSource.addValue("endPrice", article.getCurrentPrice());
+		mapSqlParameterSource.addValue("userId", article.getSeller().getUserId());
+		mapSqlParameterSource.addValue("categoryId", article.getCategory().getCategoryId());
+		
+		jdbcTemplate.update(UPDATE, mapSqlParameterSource);
 	}
 
 	@Override

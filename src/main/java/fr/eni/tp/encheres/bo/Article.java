@@ -17,10 +17,11 @@ public class Article {
 	private PickupLocation pickupLocation;
 	private List<Auction> bids;
 	private User seller;
-	private User buyer;
+	private User currentBuyer;
 
 	public Article() {
 		bids = new ArrayList<Auction>();
+		currentBuyer = new User();
 	}
 
 	public int getArticleId() {
@@ -119,19 +120,19 @@ public class Article {
 		this.seller = seller;
 	}
 
-	public User getBuyer() {
-		return buyer;
+	public User getCurrentBuyer() {
+		return currentBuyer;
 	}
 
-	public void setBuyer(User buyer) {
-		this.buyer = buyer;
+	public void setCurrentBuyer(User currentBuyer) {
+		this.currentBuyer = currentBuyer;
 	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, buyer=%s]",
+				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, currentBuyer=%s]",
 				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
-				state, category, pickupLocation, bids, seller, buyer);
+				state, category, pickupLocation, bids, seller, currentBuyer);
 	}
 }
