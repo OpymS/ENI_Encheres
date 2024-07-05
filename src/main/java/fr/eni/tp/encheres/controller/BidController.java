@@ -1,6 +1,8 @@
 package fr.eni.tp.encheres.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,25 +38,33 @@ public class BidController {
 									@SessionAttribute("userSession") User userSession,
 									Model model) {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
-		//System.out.println(articleToDisplay);
-		
-		
-		
+	
 		// Check si on peut enchérir
 		// càd la date actuelle est entre la date de début et la date de fin de l'enchère.
 		boolean isBidPossible = (LocalDateTime.now().isAfter(articleToDisplay.getAuctionStartDate()) 
 								&& LocalDateTime.now().isBefore(articleToDisplay.getAuctionEndDate()));
 		
-		// Changement de l'enchère/article possible (annulation)
+		// Changement de l'enchère/article possible (modification/annulation)
 		// si la date actuelle est avant le début ou pendant l'enchère
-		//boolean isBeforeStart = LocalDateTime.now().isBefore(articleToDisplay.getAuctionStartDate());
-		//boolean isChangePossible = isBeforeStart || isBidPossible;
-		//model.addAttribute("isChangePossible", isChangePossible);
+		boolean isBeforeStart = LocalDateTime.now().isBefore(articleToDisplay.getAuctionStartDate());
+		boolean isChangePossible = isBeforeStart || isBidPossible;
+		
 		
 		model.addAttribute("articleDisplay", articleToDisplay);
 		model.addAttribute("userSession", userSession);
 		model.addAttribute("isBidPossible", isBidPossible);
+		model.addAttribute("isChangePossible", isChangePossible);
 		
+		
+		// Ajout de la date au bon format !
+		String dateDisplayFormat = "dd/MM/yyyy - HH:mm";
+		DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern(dateDisplayFormat);
+		
+		String startDateDisplay = dtFormater.format(articleToDisplay.getAuctionStartDate());
+		String endDateDisplay = dtFormater.format(articleToDisplay.getAuctionEndDate());
+		
+		model.addAttribute("startDateDisplay", startDateDisplay);
+		model.addAttribute("endDateDisplay", endDateDisplay);
 		
 		return "bid-article-detail";
 	}

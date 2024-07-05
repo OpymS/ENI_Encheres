@@ -35,11 +35,11 @@
             </div>
             <div class="field-container">
                 <label for="startDate">Début de l'enchère :</label>
-                <span th:text="${articleDisplay.auctionStartDate}"></span>
+                <span th:text="${startDateDisplay}"></span>
             </div>
             <div class="field-container">
                 <label for="endDate">Fin de l'enchère :</label>
-                <span th:text="${articleDisplay.auctionEndDate}"></span>
+                <span th:text="${endDateDisplay}"></span>
             </div>
   
             <div class="field-container">
@@ -65,11 +65,18 @@
 	            </form>
             </div>
             
-            <div class="modify-auction-container" th:if="${articleDisplay.seller.userId==userSession.userId}">
+            <div class="modify-auction-container" th:if="${isChangePossible && articleDisplay.seller.userId==userSession.userId}">
             	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}">Modifier la vente</a>
             	<p class="button-styled-link">futur bouton suppression</p>
             </div>
         </div>
+        <!-- 
+        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+        <div th:replace="~{/fragments/errors/fragment-error::frag-error(notEnoughCredit)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(offerToLow)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionClosed)}"></div>
+         -->
+		
 </main>
 
 <div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>

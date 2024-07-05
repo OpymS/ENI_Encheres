@@ -172,9 +172,6 @@ public class AuctionController {
 				article.setCurrentPrice(article.getBeginningPrice());			
 				//System.out.println(article);
 				
-				
-			
-			
 				auctionService.updateArticle(article);
 				return "redirect:/auctions";
 				
