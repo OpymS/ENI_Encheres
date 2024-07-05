@@ -26,7 +26,9 @@
             </div>
             <div class="field-container">
                 <label for="currentPrice">Meilleure offre :</label>
-                <span th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId != 0}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId == 0 && isBidPossible}" th:text="'Aucune offre pour le moment'"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId == 0 && !isBidPossible}" th:text="|L'enchère n'a pas encore commencée|"></span>
             </div>
             <div class="field-container">
                 <label for="beginningPrice">Mise à prix :</label>
@@ -34,11 +36,11 @@
             </div>
             <div class="field-container">
                 <label for="startDate">Début de l'enchère :</label>
-                <span th:text="${articleDisplay.auctionStartDate}"></span>
+                <span th:text="${startDateDisplay}"></span>
             </div>
             <div class="field-container">
                 <label for="endDate">Fin de l'enchère :</label>
-                <span th:text="${articleDisplay.auctionEndDate}"></span>
+                <span th:text="${endDateDisplay}"></span>
             </div>
   
             <div class="field-container">
@@ -64,10 +66,18 @@
 	            </form>
             </div>
             
-            <div class="modify-auction" th:if="${articleDisplay.seller.userId==userSession.userId}">
-            	<p>bouton modifier l'enchère ... qui ramènera sur la page de création</p>
+            <div class="modify-auction-container" th:if="${isChangePossible && articleDisplay.seller.userId==userSession.userId}">
+            	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}">Modifier la vente</a>
+            	<p class="button-styled-link">futur bouton suppression</p>
             </div>
         </div>
+        <!-- 
+        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+        <div th:replace="~{/fragments/errors/fragment-error::frag-error(notEnoughCredit)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(offerToLow)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionClosed)}"></div>
+         -->
+		
 </main>
 
 <div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>

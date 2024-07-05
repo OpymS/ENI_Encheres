@@ -20,7 +20,7 @@ public interface AuctionService {
 	List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale);
 	void sell(Article article) throws BusinessException;
 	void deleteArticle(int articleId);
-	void updateArticle(Article article);
+	void updateArticle(Article article) throws BusinessException;
 	
 	Category findCategoryById(int categoryId);
 //	Category findCategoryByName(String name);
@@ -31,7 +31,7 @@ public interface AuctionService {
 	List<Auction> findAuctions(int userId, int articleId);
 	List<Auction> findAuctionsByUser(int userId);
 	List<Auction> findAllAuctions(int articleId);
-	void newAuction(Auction auction);
+	boolean newAuction(Auction auction);
 	void deleteAuction(Auction auction);
 	
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;

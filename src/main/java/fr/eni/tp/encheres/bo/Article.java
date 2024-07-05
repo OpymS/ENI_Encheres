@@ -26,12 +26,12 @@ public class Article {
 	private String state;
 	private Category category;
 	private PickupLocation pickupLocation;
-	private List<Auction> bids;
+	//private List<Auction> bids;
 	private User seller;
 	private User currentBuyer;
 
 	public Article() {
-		bids = new ArrayList<Auction>();
+		//bids = new ArrayList<Auction>();
 		currentBuyer = new User();
 	}
 
@@ -99,13 +99,15 @@ public class Article {
 		this.state = state;
 	}
 
-	public List<Auction> getBids() {
+	
+	/*public List<Auction> getBids() {
 		return bids;
 	}
 
 	public void setBids(List<Auction> auctions) {
 		this.bids = auctions;
 	}
+	*/
 
 	public Category getCategory() {
 		return category;
@@ -142,8 +144,9 @@ public class Article {
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s, articleName=%s, description=%s, auctionStartDate=%s, auctionEndDate=%s, beginningPrice=%s, currentPrice=%s, state=%s, category=%s, pickupLocation=%s, bids=%s, seller=%s, currentBuyer=%s]",
+				"Article [articleId=%s%n, articleName=%s%n, description=%s%n, auctionStartDate=%s%n, auctionEndDate=%s%n, beginningPrice=%s%n, currentPrice=%s%n, state=%s%n, category=%s%n, pickupLocation=%s%n, bids=...%n, seller=%s%n, currentBuyer=%s%n]",
 				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
-				state, category, pickupLocation, bids, seller, currentBuyer);
+				state, category, pickupLocation, //bids,
+				seller, currentBuyer);
 	}
 }

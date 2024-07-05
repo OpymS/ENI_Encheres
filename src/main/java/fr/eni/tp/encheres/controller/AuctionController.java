@@ -119,6 +119,72 @@ public class AuctionController {
 			
 		}
 	}
+	
+	@GetMapping("/modifyArticle")
+	public String showArticleModifyPage(@RequestParam(name="articleId", required=true) int articleId, Model model, @ModelAttribute("userSession") User userSession) {
+		Article article = auctionService.findArticleById(articleId);
+		
+		if(article.getAuctionStartDate().isBefore(LocalDateTime.now())) { // Si on est après la date de départ on ne montre pas la page !
+			return "redirect:/auctions";
+		};
+		
+		//PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(), userSession.getCity());
+		//article.setPickupLocation(defaultPickupLocation);
+		
+		model.addAttribute("article", article);
+		model.addAttribute("startDate",article.getAuctionStartDate().toLocalDate());
+		model.addAttribute("startTime",article.getAuctionStartDate().toLocalTime());
+		model.addAttribute("endDate",article.getAuctionEndDate().toLocalDate());
+		model.addAttribute("endTime",article.getAuctionEndDate().toLocalTime());
+		return "article-modify";
+	}
+	
+	@PostMapping("/modifyArticle")
+	public String showArticleModifyPage(@Valid @ModelAttribute("article") Article article, 
+			BindingResult bindingResult,
+			@ModelAttribute("userSession") User userSession,
+			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
+			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
+			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
+			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
+			Model model
+			) {
+		LocalDateTime startDateTime;
+		LocalDateTime endDateTime;
+		
+		//On les repasse dans le modèle pour réafficher les valeurs par défaut en cas d'erreurs
+		model.addAttribute("startDate",startDate);
+		model.addAttribute("startTime",startTime);
+		model.addAttribute("endDate",endDate);
+		model.addAttribute("endTime",endTime);
+		
+		if (bindingResult.hasErrors()) {
+			
+			
+			return "article-modify";
+		} else {
+			try {
+				startDateTime = auctionService.convertDate(startDate, startTime);
+				endDateTime = auctionService.convertDate(endDate, endTime);
+				article.setAuctionStartDate(startDateTime);
+				article.setAuctionEndDate(endDateTime);
+				article.setSeller(userSession);
+				article.setCurrentPrice(article.getBeginningPrice());			
+				//System.out.println(article);
+				
+				auctionService.updateArticle(article);
+				return "redirect:/auctions";
+				
+			} catch (BusinessException e) {
+				e.getErreurs().forEach(err -> {
+					ObjectError error = new ObjectError("globalError", err);
+					bindingResult.addError(error);
+				});
+				return "article-modify";
+			}
+			
+		}
+	}
 
 	@ModelAttribute("categoriesSession")
 	public List<Category> loadCategories() {

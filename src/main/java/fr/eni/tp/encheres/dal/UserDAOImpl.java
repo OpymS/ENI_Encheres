@@ -48,6 +48,8 @@ public class UserDAOImpl implements UserDAO {
 	private static final String GET_PASSWORD_HASH_BY_ID = "SELECT mot_de_passe FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	
+	private static final String UPDATE_CREDIT_BY_ID ="UPDATE UTILISATEURS SET credit = :newCredit WHERE no_utilisateur = :id";
+	
 	/** REQUETE POUR VALIDER LE PSEUDO */
 	private static final String COUNT_BY_PSEUDO = "SELECT count(*) FROM UTILISATEURS WHERE pseudo = :pseudo";
 	
@@ -214,6 +216,16 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	
+	@Override
+	public void updateCredit(User user) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("id", user.getUserId());
+		namedParameters.addValue("newCredit", user.getCredit());
+		
+		jdbcTemplate.update(UPDATE_CREDIT_BY_ID, namedParameters);
+	}
+	
+	
 	/**
 	 * Count the users in DB by pseudo in order to check if the pseudo is available
 	 *
@@ -266,5 +278,7 @@ public class UserDAOImpl implements UserDAO {
 		}
 
 	}
+
+	
 
 }

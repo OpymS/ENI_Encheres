@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head>
+    <meta charset="UTF-8">
+    <title>ENI Enchères - Nouvelle Vente</title>
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/article-create.css">
+</head>
+<body>
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+	
+<main>
+    <h1 class="title">NOUVELLE VENTE</h1>
+    <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}">
+        <div class="inputs-container">
+            <div class="input-container">
+                <label for="inputName">Article :</label>
+<!--                <input id="inputName" th:field="*{articleName}" type="text" maxlength="30" required>-->
+                <input id="inputName" th:field="*{articleName}" type="text">
+            </div>
+            <div class="input-container">
+                <label for="inputDesc">Description :</label>
+<!--                <textarea id="inputDesc" th:field="*{description}" maxlength="300"></textarea>-->
+                <textarea id="inputDesc" th:field="*{description}"></textarea>
+            </div>
+            <div class="input-container">
+                <label for="inputCategory">Catégorie :</label>
+                <select name="inputCategory" id="inputCategory" th:field="*{category}">
+                    <option th:each="item : ${categoriesSession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
+                </select>	
+            </div>
+            <div class="input-container">
+                <label for="inputPrice">Mise à prix :</label>
+<!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
+                <input id="inputPrice" th:field="*{beginningPrice}" type="number">
+            </div>
+            <div class="input-container">
+                <label for="inputStartDate">Début de l'enchère :</label>
+                <div class="input-dateTime-container">
+                    <input id="inputStartDate" name="startDateTemp" type="date" th:value="${startDate}">
+                    <input id="inputStartTime" name="startTimeTemp" type="time" th:value="${startTime}">
+                </div>
+            </div>
+            <div class="input-container">
+                <label for="inputEndDate">Fin de l'enchère :</label>
+                <div class="input-dateTime-container">
+                    <input id="inputEndDate" name="endDateTemp" type="date" th:value="${endDate}">
+                    <input id="inputEndTime" name="endTimeTemp" type="time" th:value="${endTime}">
+                </div>
+            </div>
+            <fieldset class="retrait-input">
+                <legend>Retrait</legend>
+                <div class="input-container">
+                    <label for="inputStreet">Rue :</label>
+<!--                    <input id="inputStreet" type="text" th:field="*{pickupLocation.street}" maxlength="30">-->
+                    <input id="inputStreet" type="text" th:field="*{pickupLocation.street}">
+                </div>
+                <div class="input-container">
+                    <label for="inputCpo">Code Postal :</label>
+<!--                    <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}" pattern="^\d{5}$">-->
+                    <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}">
+                </div>
+                <div class="input-container">
+                    <label for="inputCity">Ville :</label>
+<!--                    <input id="inputCity" type="text" th:field="*{pickupLocation.city}" maxlength="30">-->
+                    <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
+                </div>
+            </fieldset>
+            <div class="buttons-container">
+                <button type="submit" class="button-submit">Enregistrer</button>
+                <button type="button" class="button-cancel">Annuler</button>
+                <button style="visibility:hidden;">Annuler la vente</button>
+            </div>
+        </div>
+        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionStartDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionEndDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
+		
+    </form>
+</main>
+
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+<script src="/js/navbar.js"></script>
+</body>
+</html>
