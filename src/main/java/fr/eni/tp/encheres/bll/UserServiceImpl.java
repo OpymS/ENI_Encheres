@@ -4,11 +4,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.dal.UserDAO;
+import fr.eni.tp.encheres.exception.BusinessException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -16,75 +19,74 @@ import fr.eni.tp.encheres.dal.UserDAO;
  */
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
 
 	/**
 	 * Creates the account.
 	 *
-	 * @param pseudo the pseudo
-	 * @param name the name
-	 * @param firstName the first name
-	 * @param email the email
-	 * @param phoneNumber the phone number
-	 * @param street the street
-	 * @param zipCode the zip code
-	 * @param city the city
-	 * @param password the password
+	 * @param pseudo          the pseudo
+	 * @param name            the name
+	 * @param firstName       the first name
+	 * @param email           the email
+	 * @param phoneNumber     the phone number
+	 * @param street          the street
+	 * @param zipCode         the zip code
+	 * @param city            the city
+	 * @param password        the password
 	 * @param passwordConfirm the password confirm
+	 * @throws BusinessException
 	 */
 	@Override
+	@Transactional(rollbackFor = BusinessException.class)
 	public void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber,
-	                          String street, String zipCode, String city, String password, String passwordConfirm) {
-	    if (pseudo == null || pseudo.trim().isEmpty() ||
-	        name == null || name.trim().isEmpty() ||
-	        firstName == null || firstName.trim().isEmpty() ||
-	        email == null || email.trim().isEmpty() ||
-	        phoneNumber == null || phoneNumber.trim().isEmpty() ||
-	        street == null || street.trim().isEmpty() ||
-	        zipCode == null || zipCode.trim().isEmpty() ||
-	        city == null || city.trim().isEmpty() ||
-	        password == null || password.trim().isEmpty() ||
-	        passwordConfirm == null || passwordConfirm.trim().isEmpty()) {
-	        throw new IllegalArgumentException("Tous les champs doivent être remplis.");
-	    }
+			String street, String zipCode, String city, String password, String passwordConfirm)
+			throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean isValid = checkPassword(password, passwordConfirm, be) && checkPseudoAvailable(pseudo, be)
+				&& checkEmailAvailable(email, be);
 
-	    if (!password.equals(passwordConfirm)) {
-	        throw new IllegalArgumentException("Les mots de passe ne sont pas identiques.");
-	    }
+		if (isValid) {
+			try {
+				User user = new User();
+				user.setPseudo(pseudo);
+				user.setName(name);
+				user.setFirstName(firstName);
+				user.setEmail(email);
+				user.setPhoneNumber(phoneNumber);
+				user.setStreet(street);
+				user.setZipCode(zipCode);
+				user.setCity(city);
+				user.setPassword(passwordEncoder.encode(password));
+				user.setCredit(0);
+				user.setAdmin(false);
 
-	    if (!pseudo.matches("^[a-zA-Z0-9]+$")) {
-	        throw new IllegalArgumentException("Le pseudo ne doit contenir que des caractères alphanumériques.");
-	    }
+				userDAO.create(user);
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
+	}
 
-	    if (!checkPseudoAvailable(pseudo)) {
-	        throw new IllegalArgumentException("Le pseudo existe déjà.");
-	    }
-
-	    if (!checkEmailAvailable(email)) {
-	        throw new IllegalArgumentException("L'email existe déjà.");
-	    }
-
-	    User user = new User();
-	    user.setPseudo(pseudo);
-	    user.setName(name);
-	    user.setFirstName(firstName);
-	    user.setEmail(email);
-	    user.setPhoneNumber(phoneNumber);
-	    user.setStreet(street);
-	    user.setZipCode(zipCode);
-	    user.setCity(city);
-	    user.setPassword(passwordEncoder.encode(password));
-	    user.setCredit(0);
-	    user.setAdmin(false);
-
-	    userDAO.create(user);
+	private boolean checkPassword(String password, String passwordConfirm, BusinessException be) {
+		boolean isValid = false;
+		if (!password.isBlank() && password.equals(passwordConfirm)) {
+			isValid = true;
+		} else if (password.isBlank()) {
+			be.add("Le mot de passe ne peut pas être vide");
+		} else {
+			be.add("Les mots de passe ne sont pas identiques");
+		}
+		return isValid;
 	}
 
 	/**
@@ -95,8 +97,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void forgotPassword(String email) {
 		// TODO Auto-generated method stub
-		
-		
+
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteAccount(int userId) {
 		userDAO.deleteById(userId);
-		
+
 	}
 
 	/**
@@ -137,69 +138,77 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Update profile if the pseudo and email are available in DB
 	 *
-	 * @param userId the user id
-	 * @param pseudo the pseudo
-	 * @param name the name
-	 * @param firstName the first name
-	 * @param email the email
-	 * @param phoneNumber the phone number
-	 * @param street the street
-	 * @param zipCode the zip code
-	 * @param city the city
-	 * @param password the password
+	 * @param userId          the user id
+	 * @param pseudo          the pseudo
+	 * @param name            the name
+	 * @param firstName       the first name
+	 * @param email           the email
+	 * @param phoneNumber     the phone number
+	 * @param street          the street
+	 * @param zipCode         the zip code
+	 * @param city            the city
+	 * @param password        the password
 	 * @param passwordConfirm the password confirm
+	 * @throws BusinessException
 	 */
 	@Override
-	public void updateProfile(User userWithUpdate, User currentUser) {
-		
+	public void updateProfile(User userWithUpdate, User currentUser) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean isValid = false;
+
 		String updatedPseudo = userWithUpdate.getPseudo();
 		String currentPseudo = currentUser.getPseudo();
-		
+
 		String updatedEmail = userWithUpdate.getEmail();
 		String currentEmail = currentUser.getEmail();
-		
+
 		String currentPassword = currentUser.getPassword();
-	
+
 		String updatedPassword = userWithUpdate.getPassword();
 		String updatedPasswordConfirm = userWithUpdate.getPasswordConfirm();
-		
-		boolean passwordMatch = passwordEncoder.matches(currentPassword,
-				 										userDAO.readPasswordById(userWithUpdate.getUserId()));
-		 
-		if(!passwordMatch) { // Check password actuel
-			 System.err.println("Le mot de passe actuel n'est pas le bon ...");
-			 
-		}else if(updatedPassword.isBlank() || !updatedPassword.equals(updatedPasswordConfirm)){ // Check égalité entre nouveau mot de passe et la confirmation OU que vide
-			 System.err.println("Les mots de passe ne sont pas égaux ou vides !");
-			 
-		}else if(passwordMatch && !updatedPassword.isBlank() && updatedPassword.equals(updatedPasswordConfirm)){ // Si toutes les condtions favorables réunies, on vérifie le reste
-			 
-			if(updatedPseudo.equals(currentPseudo) && updatedEmail.equals(currentEmail)) {//Si pseudo et email égaux aux actuels alors pas besoin de vérifié leur dispo
-				 	userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
-					userDAO.update(userWithUpdate);
-			}else if(updatedPseudo.equals(currentPseudo) && !updatedEmail.equals(currentEmail)) {//Si email différent, check email
-				if(checkEmailAvailable(updatedEmail)) { // Si ok alors modif
-					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
-					userDAO.update(userWithUpdate);
-				}else {// Sinon email déja pris
-					System.err.println("Impossible de modifier l'utilisateur car l'email est déjà pris !");
-				}
-			}else if(!updatedPseudo.equals(currentPseudo) && updatedEmail.equals(currentEmail)){// Si pseudo différent, check pseudo
-				if(checkPseudoAvailable(updatedPseudo)) {// Si ok alors modif
-					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
-					userDAO.update(userWithUpdate);
-				}else {// Sinon email déja pris
-					System.err.println("Impossible de modifier l'utilisateur car le pseudo est déjà pris !");
-				}
-			}else {// Si on est là, les conditions précédents ne sont pas remplies, il faut alors check le pseudo et l'email.
-				if(checkPseudoAvailable(updatedPseudo) && checkEmailAvailable(updatedEmail)) {
-					userWithUpdate.setPassword(passwordEncoder.encode(updatedPassword));
-					userDAO.update(userWithUpdate);
-				}else {
-					System.err.println("Impossible de modifier l'utilisateur car le pseudo ou l'email est déjà pris !");
-				}
+
+		isValid = verifyPasswordMatch(currentPassword, userDAO.readPasswordById(userWithUpdate.getUserId()), be)
+				&& checkPassword(updatedPassword, updatedPasswordConfirm, be);
+
+		isValid &= (updatedPseudo.equals(currentPseudo) || checkPseudoAvailable(updatedPseudo, be));
+		isValid &= (updatedEmail.equals(currentEmail) || checkEmailAvailable(updatedEmail, be));
+
+		if (isValid) {
+			try {
+				userWithUpdate.setPassword(passwordEncoder.encode(userWithUpdate.getPassword()));
+				userDAO.update(userWithUpdate);
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
 			}
+		} else {
+			throw be;
 		}
+	}
+	
+	/**
+	 * Updates the user credit balance.
+	 *
+	 * @param User the user
+	 * @return nothing
+	 */
+	@Override
+	public void updateUserCredit(User user) {
+		userDAO.updateCredit(user);
+	}
+	
+	
+	
+
+	private boolean verifyPasswordMatch(String password1, String password2, BusinessException be) {
+		boolean isValid = false;
+		if (passwordEncoder.matches(password1, password2)) {
+			isValid = true;
+		} else {
+			be.add("Vous n'avez pas saisi le bon mot de passe dans mot de passe actuel");
+		}
+		return isValid;
 	}
 
 	/**
@@ -212,7 +221,7 @@ public class UserServiceImpl implements UserService {
 	public User getUserByEmail(String email) {
 		return userDAO.readByEmail(email);
 	}
-	
+
 	/**
 	 * Gets the user by id.
 	 *
@@ -223,7 +232,6 @@ public class UserServiceImpl implements UserService {
 	public User getUserById(int userId) {
 		return userDAO.readById(userId);
 	}
-	
 
 	/**
 	 * Gets user's password with his id.
@@ -235,50 +243,44 @@ public class UserServiceImpl implements UserService {
 	public String getUserPasswordById(int idUser) {
 		return userDAO.readPasswordById(idUser);
 	}
-	
-	
-	
-	private boolean checkPseudoAvailable(String pseudo) {
+
+	private boolean checkPseudoAvailable(String pseudo, BusinessException be) {
+		boolean isValid = false;
 		int nbPseudo = userDAO.countPseudo(pseudo);
-		System.err.println("nbPseudo : "+nbPseudo);
-		
-		if(nbPseudo>=1) {
-			return false;
-		}else {
-			return true;
+		if (nbPseudo == 0) {
+			isValid = true;
+		} else {
+			be.add("Ce pseudo n'est pas disponible");
 		}
-	}
-	
-	private boolean checkEmailAvailable(String email) {
-		int nbEmail = userDAO.countEmail(email);
-		System.err.println("nbEmail : "+nbEmail);
-		
-		if(nbEmail>=1) {
-			return false;
-		}else {
-			return true;
-		}
+		return isValid;
 	}
 
-	@Override //Fonctionne par référence ou en retournant une instance de l'user hydraté
-	public User fillUserAttributes(User userToFill, User UserThatFills) {
-		userToFill.setUserId(UserThatFills.getUserId());
-		userToFill.setPseudo(UserThatFills.getPseudo());
-		userToFill.setName(UserThatFills.getName());
-		userToFill.setFirstName(UserThatFills.getFirstName());
-		userToFill.setEmail(UserThatFills.getEmail());
-		userToFill.setPhoneNumber(UserThatFills.getPhoneNumber());
-		userToFill.setCredit(UserThatFills.getCredit());
-		userToFill.setStreet(UserThatFills.getStreet());
-		userToFill.setZipCode(UserThatFills.getZipCode());
-		userToFill.setCity(UserThatFills.getCity());
+	private boolean checkEmailAvailable(String email, BusinessException be) {
+		boolean isValid = false;
+		int nbEmail = userDAO.countEmail(email);
+		if (nbEmail == 0) {
+			isValid = true;
+		} else {
+			be.add("Cet email n'est pas disponible");
+		}
+		return isValid;
+	}
+
+	@Override // Fonctionne par référence ou en retournant une instance de l'user hydraté
+	public User fillUserAttributes(User userToFill, User userThatFills) {
+		userToFill.setUserId(userThatFills.getUserId());
+		userToFill.setPseudo(userThatFills.getPseudo());
+		userToFill.setName(userThatFills.getName());
+		userToFill.setFirstName(userThatFills.getFirstName());
+		userToFill.setEmail(userThatFills.getEmail());
+		userToFill.setPhoneNumber(userThatFills.getPhoneNumber());
+		userToFill.setCredit(userThatFills.getCredit());
+		userToFill.setStreet(userThatFills.getStreet());
+		userToFill.setZipCode(userThatFills.getZipCode());
+		userToFill.setCity(userThatFills.getCity());
 		userToFill.setPassword(null); // On ne stocke jamais le mot de passe d'un utilisateur.
-		userToFill.setAdmin(UserThatFills.isAdmin());
+		userToFill.setAdmin(userThatFills.isAdmin());
 		return userToFill;
 	}
-
-
-
-
 
 }

@@ -16,6 +16,7 @@ public class PickUpLocationDAOImpl implements PickUpLocationDAO{
 	
 	private static final String FIND_BY_ARTICLE = "SELECT no_article, rue, code_postal, ville FROM RETRAITS WHERE no_article = :articleId";
 	private static final String INSERT = "INSERT INTO RETRAITS (no_article, rue, code_postal, ville) VALUES (:articleId, :street,:zipCode,:city)";
+	private static final String UPDATE_BY_ARTICLE_ID = "UPDATE RETRAITS SET rue = :street, code_postal= :zipCode, ville= :city WHERE no_article = :articleId";
 	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -40,6 +41,17 @@ public class PickUpLocationDAOImpl implements PickUpLocationDAO{
 		mapSqlParameterSource.addValue("city", pickupLocation.getCity());
 		
 		jdbcTemplate.update(INSERT, mapSqlParameterSource);
+	}
+	
+	@Override
+	public void updatePickUpLocationByArticleId(int articleId, PickupLocation pickupLocation) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("street", pickupLocation.getStreet());
+		mapSqlParameterSource.addValue("zipCode", pickupLocation.getZipCode());
+		mapSqlParameterSource.addValue("city", pickupLocation.getCity());
+		mapSqlParameterSource.addValue("articleId", articleId);
+		
+		jdbcTemplate.update(UPDATE_BY_ARTICLE_ID, mapSqlParameterSource);
 	}
 
 }

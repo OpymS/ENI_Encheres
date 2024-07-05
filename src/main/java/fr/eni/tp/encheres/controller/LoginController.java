@@ -5,6 +5,7 @@ import java.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @Controller
@@ -59,8 +61,11 @@ public class LoginController {
 	                user.getPassword(),
 	                user.getPasswordConfirm());
 	        return "redirect:/login";
-	    } catch (IllegalArgumentException e) {
-	        model.addAttribute("errorMessage", e.getMessage());
+	    } catch (BusinessException e) {
+	    	e.getErreurs().forEach(err -> {
+				ObjectError error = new ObjectError("globalError", err);
+				bindingResult.addError(error);
+			});
 	        return "signup";
 	    }
 	}

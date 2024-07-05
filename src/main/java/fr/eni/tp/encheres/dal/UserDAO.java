@@ -89,4 +89,6 @@ public interface UserDAO {
 	 */
 	String readPasswordById(int idUser);
 
+	void updateCredit(User user);
+
 }
