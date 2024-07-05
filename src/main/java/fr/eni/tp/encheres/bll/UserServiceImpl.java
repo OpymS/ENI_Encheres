@@ -175,6 +175,7 @@ public class UserServiceImpl implements UserService {
 
 		if (isValid) {
 			try {
+				userWithUpdate.setPassword(passwordEncoder.encode(userWithUpdate.getPassword()));
 				userDAO.update(userWithUpdate);
 			} catch (DataAccessException e) {
 				e.printStackTrace();
