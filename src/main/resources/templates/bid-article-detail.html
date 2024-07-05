@@ -70,13 +70,15 @@
             	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}">Modifier la vente</a>
             	<p class="button-styled-link">futur bouton suppression</p>
             </div>
+            <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
         </div>
-        <!-- 
-        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
-        <div th:replace="~{/fragments/errors/fragment-error::frag-error(notEnoughCredit)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(offerToLow)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionClosed)}"></div>
-         -->
+         
+         	
+<!--        	<div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>-->
+<!--        <div th:replace="~{/fragments/errors/fragment-error::frag-error(notEnoughCredit)}"></div>-->
+<!--		<div th:replace="~{/fragments/errors/fragment-error::frag-error(offerToLow)}"></div>-->
+<!--		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionClosed)}"></div>-->
+        
 		
 </main>
 
