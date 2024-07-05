@@ -25,7 +25,8 @@ public class LoginController {
 		this.userService = userService;
 	}
 
-    @GetMapping("/login")
+//    @GetMapping(@ModelAttribute("error", required = false) , "/login")
+	@GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }    
