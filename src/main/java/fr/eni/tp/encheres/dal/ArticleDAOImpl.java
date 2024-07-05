@@ -34,6 +34,12 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	private static final String SCHEDULED_COUNT = "SELECT count(*) FROM ARTICLES_VENDUS WHERE no_article > :idMin";
 	
+	
+	private static final String FIND_TO_UPDATE_TO_FINISHED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_fin_encheres < GETDATE() AND etat_vente = 2";
+	private static final String FIND_TO_UPDATE_TO_STARTED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_debut_encheres > GETDATE() AND etat_vente = 1";
+	
+	
+	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	private UserDAO userDAO;
@@ -152,6 +158,18 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 		return jdbcTemplate.queryForObject(SCHEDULED_COUNT,mapSqlParameterSource, Integer.class);
 	}
+	
+	@Override
+	public List<Article> findArticleToUpdateToFinished() {
+		return jdbcTemplate.query(FIND_TO_UPDATE_TO_FINISHED, new ArticleRowMapper());
+	}
+	
+	@Override
+	public List<Article> findArticleToUpdateToStarted() {
+		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
+	}
+	
+	
 
 	class ArticleRowMapper implements RowMapper<Article> {
 		

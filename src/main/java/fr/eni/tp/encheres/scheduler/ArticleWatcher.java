@@ -1,8 +1,12 @@
 package fr.eni.tp.encheres.scheduler;
 
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.dal.ArticleDAO;
 
 @Component
@@ -20,15 +24,27 @@ public class ArticleWatcher {
 		System.err.println("Il y a actuellement "+articleCount+" articles en base de donnée");
 	}
 	
-	//Toute les minutes de la journée (avec cron() !)
+	
+	@Scheduled(cron = "0 * * * * *") //à 0 seconde de chaque minute
 	public void updateArticleState() {
-		// Récupérer tous les articles dont la date de fin est dépassée;
+		//Récupérer tous les articles dont la date de fin est dépassée
+		List<Article> articlesToUpdateToFinished = articleDAO.findArticleToUpdateToFinished();	
+		if (articlesToUpdateToFinished.size() != 0) {
+			articlesToUpdateToFinished.forEach(article -> {
+				article.setState(ArticleState.FINISHED);
+				articleDAO.updateArticle(article);
+			});
+		}
 		
-		//Modifier leur état entre les 5 valeurs possibles de ArticleState
 		
-		
-		//Récupérer aussi tous les articles dont la date d'enchère n'a pas débutée pour update si jamais
-		
+		//Récupérer aussi tous les articles dont la date d'enchère n'a pas débutée pour update l'état
+		List<Article> articlesToUpdateToStarted = articleDAO.findArticleToUpdateToStarted();		
+		if (articlesToUpdateToStarted.size() != 0) {
+			articlesToUpdateToStarted.forEach(article -> {
+				article.setState(ArticleState.STARTED);
+				articleDAO.updateArticle(article);
+			});
+		}
 	}
 
 }

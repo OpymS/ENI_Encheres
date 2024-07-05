@@ -15,4 +15,6 @@ public interface ArticleDAO {
 	void updateArticle(Article article);
 	void updateSellPriceAndBuyer(int articleId, int bidAmount, int userId);
 	int countArticles();
+	List<Article> findArticleToUpdateToFinished();
+	List<Article> findArticleToUpdateToStarted();
 }
