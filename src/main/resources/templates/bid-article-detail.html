@@ -27,7 +27,8 @@
             <div class="field-container">
                 <label for="currentPrice">Meilleure offre :</label>
                 <span th:if="${articleDisplay.currentBuyer.userId != 0}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
-                <span th:if="${articleDisplay.currentBuyer.userId == 0}" th:text="'Aucune offre pour le moment'"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId == 0 && isBidPossible}" th:text="'Aucune offre pour le moment'"></span>
+                <span th:if="${articleDisplay.currentBuyer.userId == 0 && !isBidPossible}" th:text="|L'enchère n'a pas encore commencée|"></span>
             </div>
             <div class="field-container">
                 <label for="beginningPrice">Mise à prix :</label>
