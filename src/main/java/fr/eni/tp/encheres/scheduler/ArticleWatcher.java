@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.dal.ArticleDAO;
+import fr.eni.tp.encheres.dal.UserDAO;
 
 @Component
 public class ArticleWatcher {
 
 	private ArticleDAO articleDAO;
+	private UserDAO userDAO;
 
-	public ArticleWatcher(ArticleDAO articleDAO) {
+	public ArticleWatcher(ArticleDAO articleDAO, UserDAO userDAO) {
 		this.articleDAO = articleDAO;
+		this.userDAO = userDAO;
 	}
 
 	//@Scheduled(fixedDelay = 3000)
@@ -31,8 +34,20 @@ public class ArticleWatcher {
 		List<Article> articlesToUpdateToFinished = articleDAO.findArticleToUpdateToFinished();	
 		if (articlesToUpdateToFinished.size() != 0) {
 			articlesToUpdateToFinished.forEach(article -> {
+				// On ajoute aux crédits du vendeur le montant d'achat de l'article avant de la passé en FINISHED
+				// Et on modifie en BDD.
+				
+				System.out.println("prix article : "+ article.getCurrentPrice() + " vendeur/credit : "+article.getSeller().getPseudo()+"/"+article.getSeller().getCredit());
+				article.getSeller().setCredit(article.getSeller().getCredit() + article.getCurrentPrice());
+				userDAO.updateCredit(article.getSeller());
+				
+				
+				// On modifie l'état
 				article.setState(ArticleState.FINISHED);
 				articleDAO.updateArticle(article);
+				
+				
+				
 			});
 		}
 		

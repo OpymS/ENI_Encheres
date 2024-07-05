@@ -33,7 +33,7 @@
                 <span th:if="${articleDisplay.currentBuyer.userId != 0 && isBidPossible}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
        
            		<span th:if="${articleDisplay.currentBuyer.userId == 0 && isAuctionFinished}" th:text="|L'enchère est terminée !|"></span>
-           		<span th:if="${articleDisplay.currentBuyer.userId != 0 && isAuctionFinished}" th:text="Enchère remportée par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+           		<span th:if="${articleDisplay.currentBuyer.userId != 0 && isAuctionFinished}" th:text="'Enchère remportée par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
            		
               
             </div>
