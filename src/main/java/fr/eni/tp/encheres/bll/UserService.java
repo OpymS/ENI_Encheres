@@ -1,6 +1,7 @@
 package fr.eni.tp.encheres.bll;
 
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.exception.BusinessException;
 
 /**
  * The Interface UserService.
@@ -20,8 +21,9 @@ public interface UserService {
 	 * @param city the city
 	 * @param password the password
 	 * @param passwordConfirm the password confirm
+	 * @throws BusinessException 
 	 */
-	void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber, String street, String zipCode, String city, String password, String passwordConfirm);
+	void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber, String street, String zipCode, String city, String password, String passwordConfirm) throws BusinessException;
 		
 	/**
 	 * Forgot password.
@@ -67,8 +69,9 @@ public interface UserService {
 	 * Update profile with userWithUpdate and checks with currentUser
 	 *
 	 * @param user
+	 * @throws BusinessException 
 	 */
-	void updateProfile(User userWithUpdate, User currentUser);
+	void updateProfile(User userWithUpdate, User currentUser) throws BusinessException;
 	
 	
 	User fillUserAttributes(User userToFill, User UserThatFills);

@@ -200,7 +200,8 @@ public class AuctionServiceImpl implements AuctionService {
 
 	private boolean checkDates(LocalDateTime startDate, LocalDateTime endDate, BusinessException be) {
 		boolean isValid = false;
-		LocalDateTime now = LocalDateTime.now().plusMinutes(1);
+		// On enlève 2 minutes pour se laisser le temps du traitement.
+		LocalDateTime now = LocalDateTime.now().minusMinutes(2);
 		if (startDate == null || endDate == null) {
 			be.add("Vente impossible. Les dates de début et de fin d'enchères doivent être renseignées");
 		} else if (startDate.isBefore(now)) {
