@@ -44,63 +44,31 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public Article findArticleById(int articleId) {
-		Article article = articleDAO.read(articleId);
-		article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-		article.setBids(auctionDAO.findByArticle(articleId));
-		article.setPickupLocation(pickUpLocationDAO.findByArticleId(articleId));
-		article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		return article;
+		return articleDAO.read(articleId);
 	}
 
 	@Override
 	public List<Article> findArticlesByName(String name) {
-		List<Article> articlesList = articleDAO.findByName(name);
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByName(name);
 	}
 
 
 	@Override
 	public List<Article> findArticlesByCategory(Category category) {
-		List<Article> articlesList = articleDAO.findByCategory(category.getCategoryId());
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByCategory(category.getCategoryId());
 	}
 	
 
 	@Override
 	public List<Article> findArticlesByCategoryAndName(Category category, String name) {
-		List<Article> articlesList = articleDAO.findByCategoryAndName(category.getCategoryId(), name);
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findByCategoryAndName(category.getCategoryId(), name);
+		
 	}
 
 	
 	@Override
 	public List<Article> findArticles() {
-		List<Article> articlesList = articleDAO.findAll();
-		articlesList.forEach(article -> {
-			article.setCategory(categoryDAO.readById(article.getCategory().getCategoryId()));
-			article.setBids(auctionDAO.findByArticle(article.getArticleId()));
-			article.setPickupLocation(pickUpLocationDAO.findByArticleId(article.getArticleId()));
-			article.setSeller(userDAO.readById(article.getSeller().getUserId()));
-		});
-		return articlesList;
+		return articleDAO.findAll();
 	}
 
 	@Override
@@ -165,7 +133,7 @@ public class AuctionServiceImpl implements AuctionService {
 				}
 				articlesList.clear();
 				articlesList = tmpArticlesList;
-				System.out.println(articlesList);
+				//System.out.println(articlesList);
 			}
 		}
 		/*
@@ -230,8 +198,25 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	@Override
-	public void updateArticle(Article article) {
-		// TODO
+	@Transactional(rollbackFor = BusinessException.class)
+	public void updateArticle(Article article) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean isValid = false;		
+		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be) && checkPickUpLocation(article.getPickupLocation(), be);
+		
+		if (isValid) {
+			try {
+				articleDAO.updateArticle(article);
+				pickUpLocationDAO.updatePickUpLocationByArticleId(article.getArticleId(), article.getPickupLocation());
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
 	}
 
 	@Override
@@ -287,20 +272,21 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	@Override
-	public void newAuction(Auction auction) {
+	public boolean newAuction(Auction auction) {
 		boolean isNewBidHigher = auction.getArticle().getCurrentPrice() < auction.getBidAmount();
 		boolean isBidDateBeforeEnd = auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate());
 		
 		if(isNewBidHigher && isBidDateBeforeEnd) { // Si les deux ok, on crée l'enchère
 			auctionDAO.create(auction);
 			articleDAO.updateSellPriceAndBuyer(auction.getArticle().getArticleId(), auction.getBidAmount(), auction.getUser().getUserId());
-			
+			return true;
 		}else { // Sinon un des deux, ou les deux sont false
 			if(!isNewBidHigher) {
 				System.err.println("Votre mise n'est pas supérieure à la précédente !");
 			}else if(!isBidDateBeforeEnd) {
 				System.err.println("La date de fin de l'enchère est passée. Mise impossible...");
 			}
+			return false;
 		}
 	}
 

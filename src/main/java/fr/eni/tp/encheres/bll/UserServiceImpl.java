@@ -186,6 +186,20 @@ public class UserServiceImpl implements UserService {
 			throw be;
 		}
 	}
+	
+	/**
+	 * Updates the user credit balance.
+	 *
+	 * @param User the user
+	 * @return nothing
+	 */
+	@Override
+	public void updateUserCredit(User user) {
+		userDAO.updateCredit(user);
+	}
+	
+	
+	
 
 	private boolean verifyPasswordMatch(String password1, String password2, BusinessException be) {
 		boolean isValid = false;
