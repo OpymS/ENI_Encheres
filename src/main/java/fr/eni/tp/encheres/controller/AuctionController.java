@@ -104,9 +104,7 @@ public class AuctionController {
 				article.setAuctionEndDate(endDateTime);
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());			
-				System.out.println(article);
-			
-			
+				System.out.println(article);			
 				auctionService.sell(article);
 				return "redirect:/auctions";
 			} catch (BusinessException e) {

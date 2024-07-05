@@ -1,7 +1,6 @@
 package fr.eni.tp.encheres.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -42,26 +41,25 @@ public class ProfilController {
 	}
 
 	@GetMapping("/modify")
-	public String showModifyProfilPage() {
+	public String showModifyProfilPage(Model model, @SessionAttribute("userSession") User userSession) {
+		model.addAttribute("user", userSession);
 		return "profil-modify";
 	}
 
 	@PostMapping("/modify")
-	public String modifyUserInfos(@Valid @ModelAttribute("userForm") User userForm, BindingResult bindingResult,
+	public String modifyUserInfos(@Valid @ModelAttribute("user") User userForm, BindingResult bindingResult,
 			@SessionAttribute("userSession") User userSession,
 			@RequestParam(name = "updatedPassword", required = false) String updatedPassword,
 			@RequestParam(name = "currentPassword", required = false) String currentPassword) {
 
+		userForm.setUserId(userSession.getUserId());
+		userForm.setCredit(userSession.getCredit());
+		userForm.setPassword(updatedPassword);
+		userSession.setPassword(currentPassword); // On met le mot de passe actuel renseigné dans le formulaire dans
+													// l'utilsateur en session pour le récupérer dans le service.
 		if (bindingResult.hasErrors()) {
-			System.out.println("blabla");
 			return "profil-modify";
 		} else {
-			userForm.setUserId(userSession.getUserId());
-			userForm.setCredit(userSession.getCredit());
-			userForm.setPassword(updatedPassword);
-			userSession.setPassword(currentPassword); // On met le mot de passe actuel renseigné dans le formulaire dans
-														// l'utilsateur en session pour le récupérer dans le service.
-
 			try {
 				userService.updateProfile(userForm, userSession);
 				User userWithUpdates = userService.viewUserProfile(userForm.getUserId());
