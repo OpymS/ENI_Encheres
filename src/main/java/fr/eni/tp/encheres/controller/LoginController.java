@@ -76,9 +76,15 @@ public class LoginController {
 
 	@GetMapping("/session")
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
-		String email = principal.getName();
-		User userRecup = userService.getUserByEmail(email);
-
+		String email;
+		User userRecup;
+		if(principal != null) {
+			email = principal.getName();
+			userRecup = userService.getUserByEmail(email);
+		} else {
+			userRecup = null;
+			email = "";
+		}
 		if (userRecup != null) {
 			userService.fillUserAttributes(userSession, userRecup);
 
