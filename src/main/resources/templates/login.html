@@ -5,6 +5,7 @@
     <title>ENI Enchères - Connexion</title>
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/login.css">
+	<link rel="icon" href="images/favicon.png"/>
 </head>
 <body>
 
@@ -35,6 +36,7 @@
                 </div>
             </div>
         </div>
+        <div th:if="${param.error}" class="error-message">Erreur : login ou mot de passe incorrect</div>
     </form>
     <div class="create-account-container">
         <a th:href="@{/signup}">Créer un compte</a>
