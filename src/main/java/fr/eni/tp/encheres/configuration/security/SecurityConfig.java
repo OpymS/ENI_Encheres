@@ -50,6 +50,7 @@ public class SecurityConfig {
 		    .requestMatchers("/profil").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
+		    .requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
 			.formLogin(form -> form

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head>
+<meta charset="utf-8">
+<title>Erreur</title>
+<link rel="stylesheet" th:href="@{/css/general.css}" />
+
+</head>
+<body>
+
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+
+<main>
+	<h1 class="error-message title" data-th-text="Erreur + ${status}"></h1>
+		<form>
+			<ul class="flex-outer cards">
+				<li data-th-switch="${status}">
+					<label data-th-case="403" >Vous n'êtes pas autorisé</label>
+					<label data-th-case="404" >Cette ressource n'existe pas</label>
+					<label data-th-case="500" >Impossible d'interagir avec le serveur</label>
+					<label data-th-case="*" >Veuillez nous excuser pour ce problème</label>
+				</li>
+				<li><a data-th-href="@{/auctions}" >Retour à l'accueil</a></li>
+			</ul>
+		</form>
+</main>
+
+
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+
+</body>
+</html>
