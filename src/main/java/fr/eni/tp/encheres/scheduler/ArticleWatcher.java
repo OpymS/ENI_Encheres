@@ -45,9 +45,6 @@ public class ArticleWatcher {
 				// On modifie l'état
 				article.setState(ArticleState.FINISHED);
 				articleDAO.updateArticle(article);
-				
-				
-				
 			});
 		}
 		

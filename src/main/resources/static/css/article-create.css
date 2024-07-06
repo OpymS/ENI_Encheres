@@ -110,3 +110,23 @@ button {
 .button-cancel:hover {
     background-color: #d32f2f;
 }
+
+.button-styled-link{
+	display:block;
+	text-align:center;
+	text-decoration:none;
+	width:fit-content;
+	padding: 20px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 120px; 
+    background-color: #555;
+    color:#f1f1f1;
+}
+
+
+.button-styled-link:hover{
+	opacity:0.8;
+}

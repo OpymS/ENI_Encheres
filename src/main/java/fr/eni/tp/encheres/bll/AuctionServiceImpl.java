@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
@@ -306,6 +307,33 @@ public class AuctionServiceImpl implements AuctionService {
 			throw be;
 		}
 		return dateTime;
+	}
+	
+	
+	@Override
+	public void cancelArticle(Article article) {
+		if(article.getState().equals(ArticleState.NOT_STARTED)) {
+			
+			//personne à rembourser si pas commencée
+			article.setState(ArticleState.CANCELED);
+			articleDAO.updateArticle(article);
+			
+		}else if(article.getState().equals(ArticleState.STARTED)){
+			
+			// modifié article ET remboursé l'acheteur courant
+			User currentBuyer = article.getCurrentBuyer();
+			currentBuyer.setCredit(currentBuyer.getCredit() + article.getCurrentPrice());
+			userDAO.updateCredit(currentBuyer);
+			
+			article.setState(ArticleState.CANCELED);
+			articleDAO.updateArticle(article);
+			
+			
+		}else {
+			//Trouver un moyen de notifié l'utilisateur que ce n'est pas possible
+			//Après l'utilisateur ne devrai pas avoir accès au bouton d'annulation d'une vente donc ....
+			System.err.println("Impossible d'annuler la vente ! Déjà annulée ou terminée !");
+		}
 	}
 
 }

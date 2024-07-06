@@ -35,5 +35,6 @@ public interface AuctionService {
 	void deleteAuction(Auction auction);
 	
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;
+	void cancelArticle(Article article);
 
 }
