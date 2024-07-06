@@ -103,10 +103,7 @@ public class AuctionController {
 				article.setAuctionStartDate(startDateTime);
 				article.setAuctionEndDate(endDateTime);
 				article.setSeller(userSession);
-				article.setCurrentPrice(article.getBeginningPrice());			
-				System.out.println(article);
-			
-			
+				article.setCurrentPrice(article.getBeginningPrice());
 				auctionService.sell(article);
 				return "redirect:/auctions";
 			} catch (BusinessException e) {

@@ -15,7 +15,7 @@
 	<main>
 		<h1 class="title">Mon Profil</h1>
 		
-		<form th:action="@{/profil/modify}" method="POST" th:object="${userSession}" class="user-create-form">
+		<form th:action="@{/profil/modify}" method="POST" th:object="${user}" class="user-create-form">
 			<div class="inputs-container">
 				<div class="pseudo-input">
 					<label for="inputPseudo">Pseudo :</label>
