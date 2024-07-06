@@ -71,7 +71,8 @@
             <div class="buttons-container">
                 <button type="submit" class="button-submit">Enregistrer</button>
                 <button type="button" class="button-cancel">Annuler</button>
-                <button style="visibility:hidden;">Annuler la vente</button>
+                <a class="button-styled-link" th:href="@{/auctions/cancelArticle(articleId=${article.articleId})}" th:if="${isCancelPossible}">Annuler la vente</a>
+                <button th:if="${!isCancelPossible}" style="visibility:hidden;">Annuler la vente</button>
             </div>
         </div>
         <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>

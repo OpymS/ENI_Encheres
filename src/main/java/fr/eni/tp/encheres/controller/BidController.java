@@ -37,7 +37,7 @@ public class BidController {
 									@SessionAttribute("userSession") User userSession,
 									Model model) {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
-	
+		System.out.println(articleToDisplay);
 		// Check si on peut enchérir
 		// càd la date actuelle est entre la date de début et la date de fin de l'enchère.
 		boolean isBidPossible = (LocalDateTime.now().isAfter(articleToDisplay.getAuctionStartDate()) 
@@ -49,10 +49,16 @@ public class BidController {
 		boolean isChangePossible = isBeforeStart || isBidPossible;
 		
 		
+		boolean isAuctionFinished = LocalDateTime.now().isAfter(articleToDisplay.getAuctionEndDate());
+		
 		model.addAttribute("articleDisplay", articleToDisplay);
 		model.addAttribute("userSession", userSession);
-		model.addAttribute("isBidPossible", isBidPossible);
 		model.addAttribute("isChangePossible", isChangePossible);
+		
+		
+		model.addAttribute("isBidPossible", isBidPossible);
+		model.addAttribute("isBeforeStart", isBeforeStart);
+		model.addAttribute("isAuctionFinished", isAuctionFinished);
 		
 		
 		// Ajout de la date au bon format !

@@ -18,7 +18,7 @@ public class Article {
 	private int beginningPrice;
 	@Min(0)
 	private int currentPrice;
-	private String state;
+	private ArticleState state;
 	private Category category;
 	private PickupLocation pickupLocation;
 	//private List<Auction> bids;
@@ -28,6 +28,7 @@ public class Article {
 	public Article() {
 		//bids = new ArrayList<Auction>();
 		currentBuyer = new User();
+		state = ArticleState.NOT_STARTED;
 	}
 
 	public int getArticleId() {
@@ -86,11 +87,11 @@ public class Article {
 		this.currentPrice = finalPrice;
 	}
 
-	public String getState() {
+	public ArticleState getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(ArticleState state) {
 		this.state = state;
 	}
 

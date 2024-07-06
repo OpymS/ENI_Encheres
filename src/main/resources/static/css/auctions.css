@@ -17,12 +17,12 @@ main{
 	display:flex;
 	gap:10%;
 	align-items:center;
-	padding-bottom:100px;
 	border-bottom:1px solid #888;
 	background-color: #ffffff;  
   	border-radius: 5px;
   	padding: 20px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom:50px;
 }
 .inputs-container{
 	width:60%;
@@ -93,4 +93,16 @@ main{
 .articles-cards-container{
 	display:grid;
 	grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+	gap:30px;
+	margin-bottom:100px;
+}
+
+.article-card{
+	padding:10px 20px 30px;
+	border: 1px solid #999;
+	border-radius:10px;
+}
+
+.article-card p{
+	margin-top:5px;
 }
