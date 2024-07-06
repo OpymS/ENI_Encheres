@@ -12,16 +12,21 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
-    <h1 class="title">SE CONNECTER</h1>
+		<div>
+			<a th:href="@{|login?language=en|}" data-th-text="#{label.lang.en}"></a>
+			<a th:href="@{|login?language=fr|}" data-th-text="#{label.lang.fr}"></a>
+		</div>
+           	
+    <h1 class="title" th:text="#{connect}"></h1>
     <form th:action="@{/login}" method="post">
-		<div th:if="${param.error}" class="error-message">Erreur : login ou mot de passe incorrect</div>
+		<div th:if="${param.error}" class="error-message" th:text="#{error}"></div>
         <div class="input-container">
-            <label for="username">Identifiant :</label>
+            <label for="username" th:text="#{identifier}"></label>
 <!--            <input type="text" id="username" name="username" maxlength="30"  required>-->
             <input type="text" id="username" name="username">
         </div>
         <div class="input-container">
-            <label for="password">Mot de passe :</label>
+            <label for="password" th:text="#{password}">Mot de passe :</label>
             <input type="password" id="password" name="password" required>
         </div>
         <div class="button-container">

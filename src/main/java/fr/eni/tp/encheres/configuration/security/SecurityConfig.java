@@ -47,6 +47,7 @@ public class SecurityConfig {
 		    .requestMatchers("/auctions").permitAll()
 		    .requestMatchers("/forgot-password").permitAll()
 		    .requestMatchers("/signup").anonymous()
+		    .requestMatchers("/login").anonymous()
 		    .requestMatchers("/profil").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
