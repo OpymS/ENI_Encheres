@@ -70,7 +70,7 @@ public class SecurityConfig {
 				form.invalidateHttpSession(true);
 				form.clearAuthentication(true);
 				form.deleteCookies("JSESSIONID");
-				form.logoutSuccessUrl("/auctions");
+				form.logoutSuccessUrl("/session");
 		});
 			
 		return http.build();
