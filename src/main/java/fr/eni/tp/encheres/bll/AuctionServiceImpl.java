@@ -31,7 +31,6 @@ public class AuctionServiceImpl implements AuctionService {
 	private ArticleDAO articleDAO;
 	private PickUpLocationDAO pickUpLocationDAO;
 	private UserDAO userDAO;
-	private UserService userService;
 
 	public AuctionServiceImpl(AuctionDAO auctionDAO, CategoryDAO categoryDAO, ArticleDAO articleDAO,
 			PickUpLocationDAO pickUpLocationDAO, UserDAO userDAO) {
@@ -80,7 +79,7 @@ public class AuctionServiceImpl implements AuctionService {
 			articlesList = this.findArticles();
 		} else if (article.getArticleName().isEmpty()) { // si pas de mot dans l'input
 			articlesList = this.findArticlesByCategory(article.getCategory());
-		} else if (article.getCategory() == null || article.getCategory().getCategoryId() == 0) { // si pas de catégorie
+		} else if (article.getCategory() == null || article.getCategory().getCategoryId() == 0) { 	// si pas de catégorie
 																									// choisie
 			articlesList = this.findArticlesByName(article.getArticleName());
 		} else {
@@ -136,10 +135,9 @@ public class AuctionServiceImpl implements AuctionService {
 			}
 		}
 		/*
-		 * Sur cette partie, il reste à : ne sélectionner que les enchères gagnées (pour
-		 * l'instant on sélectionne toutes les enchères finies auxquelles l'utilisateur
-		 * a participé. il y a un risque de doublon si l'utilisateur a posé plusieurs
-		 * enchères sur 1 article.
+		 * Sur cette partie, il reste à :
+		 * ne sélectionner que les enchères gagnées (pour l'instant on sélectionne toutes les enchères finies auxquelles l'utilisateur a participé. 
+		 * il y a un risque de doublon si l'utilisateur a posé plusieurs enchères sur 1 article.
 		 */
 		return articlesList;
 	}

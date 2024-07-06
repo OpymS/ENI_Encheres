@@ -2,13 +2,8 @@ package fr.eni.tp.encheres.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.Article;
-import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.exception.BusinessException;
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/bid")
@@ -79,7 +72,7 @@ public class BidController {
 	@PostMapping
 	public String createBidOnArticle(@RequestParam(name="articleId", required=true) int articleId,
 									@RequestParam(name="bidOffer", required=true) int bidOffer,
-									@Valid @SessionAttribute("userSession") User userSession, RedirectAttributes redirectAttributes) {
+									@SessionAttribute("userSession") User userSession, RedirectAttributes redirectAttributes) {
 		
 		String redirectUrl = "redirect:/bid?articleId=" + articleId;
 		

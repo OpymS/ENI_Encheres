@@ -51,8 +51,16 @@ public class LoginController {
 			return "signup";
 		} else {
 			try {
-				userService.createAccount(user.getPseudo(), user.getName(), user.getFirstName(), user.getEmail(),
-						user.getPhoneNumber(), user.getStreet(), user.getZipCode(), user.getCity(), user.getPassword(),
+				userService.createAccount(
+						user.getPseudo(),
+						user.getName(),
+						user.getFirstName(),
+						user.getEmail(),
+						user.getPhoneNumber(),
+						user.getStreet(),
+						user.getZipCode(),
+						user.getCity(),
+						user.getPassword(),
 						user.getPasswordConfirm());
 				return "redirect:/login";
 
