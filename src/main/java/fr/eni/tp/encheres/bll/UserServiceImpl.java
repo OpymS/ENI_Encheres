@@ -1,8 +1,5 @@
 package fr.eni.tp.encheres.bll;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.dal.ArticleDAO;
 import fr.eni.tp.encheres.dal.UserDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -20,9 +18,14 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @Service
 public class UserServiceImpl implements UserService {
 
-	/** The user DAO. */
-	@Autowired
+	
 	private UserDAO userDAO;
+	private ArticleDAO articleDAO;
+	
+	public UserServiceImpl(UserDAO userDAO,ArticleDAO articleDAO) {
+		this.userDAO= userDAO;
+		this.articleDAO = articleDAO;
+	}
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -107,9 +110,74 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void deleteAccount(int userId) {
-		userDAO.deleteById(userId);
-
+		
+		//Check des conditions: 
+		// 1 - Pas d'article dont la vente est terminée mais non récupérée
+		// 2 - Pas acheteur courant d'un article en vente
+		boolean isDeleteAccepted = checkArticlesState(userId);
+		isDeleteAccepted &= checkUserBids(userId);
+		
+		if(isDeleteAccepted) {
+			// On a en BDD un utilisateur "vide" qui va servir pour éviter les effets de bords.
+			// Les articles vendus et retirés par l'user vont être modifiés (no_utilisateur = 0)
+			// Les articles en cours ou pas encore en enchère vont être annulés.
+			
+			//Modifier les articles en cours / avant vente
+			
+			
+			//Modifier les articles déjà vendus ET retirés
+			
+			
+			
+			//Modifier également les "enchères" ou mises de l'utilisateur
+			
+			//Supprimer l'utilisateur.
+			
+			userDAO.deleteById(userId);
+			
+			//Il faut corriger/modifier les articles vendus par cette utilisateurs et mettre à 0 l'id du vendeur.
+			
+		}else {
+			//throw erreur ....
+			System.err.println("Impossible de supprimer le compte pour l'instant !");
+		}
 	}
+	
+	
+	
+	private boolean checkArticlesState(int userId) {
+		boolean isDeleteOk = false;
+		
+		int nbArticlesFinished = articleDAO.countArticlesFinishedBySellerId(userId);
+		
+		if(nbArticlesFinished==0) {
+			isDeleteOk = true;
+		}else {
+			System.err.println("Pas possible, vous avez des articles vendus non récupérés !");
+		}
+		
+		return isDeleteOk;
+		
+	}
+	
+	private boolean checkUserBids(int userId) {
+		boolean isDeleteOk = false;
+		
+		int nbPossibleBuy = articleDAO.countArticlesByBuyerId(userId);
+		
+		if(nbPossibleBuy==0) {
+			isDeleteOk = true;
+		}else {
+			System.err.println("Pas possible, vous êtes le plus gros enchérisseur sur une vente !");
+		}
+		
+		return isDeleteOk;
+		
+	}
+	
+	
+	
+	
 
 	/**
 	 * View own points.

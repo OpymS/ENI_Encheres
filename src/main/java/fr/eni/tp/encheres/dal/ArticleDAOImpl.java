@@ -35,6 +35,9 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	private static final String SCHEDULED_COUNT = "SELECT count(*) FROM ARTICLES_VENDUS WHERE no_article > :idMin";
 	
+	private static final String COUNT_FINISHED_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 3 AND no_utilisateur = :userId";
+	private static final String COUNT_BUYERS_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 2 AND no_acheteur = :userId";
+	
 	
 	private static final String FIND_TO_UPDATE_TO_FINISHED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_fin_encheres < GETDATE() AND etat_vente = 2";
 	private static final String FIND_TO_UPDATE_TO_STARTED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_debut_encheres < GETDATE() AND etat_vente = 1";
@@ -162,6 +165,26 @@ public class ArticleDAOImpl implements ArticleDAO{
 		return jdbcTemplate.queryForObject(SCHEDULED_COUNT,mapSqlParameterSource, Integer.class);
 	}
 	
+	
+	@Override
+	public int countArticlesFinishedBySellerId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+
+		return jdbcTemplate.queryForObject(COUNT_FINISHED_BY_USER_ID,mapSqlParameterSource, Integer.class);
+	}
+	
+
+	@Override
+	public int countArticlesByBuyerId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+
+		return jdbcTemplate.queryForObject(COUNT_BUYERS_BY_USER_ID,mapSqlParameterSource, Integer.class);
+	}
+	
+	
+	
 	@Override
 	public List<Article> findArticleToUpdateToFinished() {
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_FINISHED, new ArticleRowMapper());
@@ -171,6 +194,8 @@ public class ArticleDAOImpl implements ArticleDAO{
 	public List<Article> findArticleToUpdateToStarted() {
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
 	}
+	
+	
 	
 	@Override
 	public List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){

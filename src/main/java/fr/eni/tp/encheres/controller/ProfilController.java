@@ -76,4 +76,24 @@ public class ProfilController {
 			}
 		}
 	}
+	
+	
+	@GetMapping("/deleteAccount")
+	public String deleteUserAccount(@SessionAttribute("userSession") User userSession, @RequestParam(name="userId") int userId) {
+		
+		//check si c'est bien l'utilisateur connecté qui veut supprimer
+		if(userSession.getUserId()!=userId) {
+			System.err.println("Pas le bon utilisateur !");
+			return "redirect:/auctions";
+		}
+		
+		
+		userService.deleteAccount(userId);
+		
+	
+		
+		return "redirect:/auctions";
+	}
+	
+	
 }
