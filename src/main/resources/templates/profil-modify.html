@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="/css/general.css">
 <link rel="stylesheet" href="/css/signup.css">
 	<link rel="icon" href="images/favicon.png"/>
+
+
 </head>
 
 <body>
@@ -83,7 +85,7 @@
 			
 			<div class="buttons-container">
 				<button type="submit" class="button">Enregistrer</button>
-				<a th:href="@{/profil/deleteAccount(userId=${userSession.userId})}" class="button">Supprimer mon compte</a>
+				<a href="#modal1" class="js-modal button">Supprimer mon compte</a>
 			</div>
 			
 			<div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
@@ -98,14 +100,36 @@
 		
 			<div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
 		</form>
+
+		<aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
+			<div class="modal-wrapper js-modal-stop">
+				<div class="modal-content">
+					<h2 id="modaltitle">Êtes vous sûr ?</h2>
+
+					<p class="modal-description">La suppression  de votre compte entrainera :</p>
+					<ul>
+						<li>- L'annulation des ventes/enchères concernant vos articles en cours de vente.</li>
+						<li>- L'annulation des ventes de vos articles qui n'ont pas encore commencées.</li>
+						<li>- La perte de tous vos crédits</li>
+					</ul>
+				</div>
+				<div class="confirm-container">	
+					<a th:href="@{/profil/deleteAccount(userId=${userSession.userId})}" class="confirm-delete">Je confirme la suppression</a>
+				</div>
+				<button class="close-button js-close-modal">
+					<img src="/images/closing-cross.svg" alt="">
+				</button>
+			</div>
+
+		</aside>
 	
 	</main>
 	
 	
 <div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
 
-
+<script src="/js/modal.js"></script>
 </body>
 
-
+</html>
 
