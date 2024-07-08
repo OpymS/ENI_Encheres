@@ -37,8 +37,9 @@ public interface UserService {
 	 * Delete account.
 	 *
 	 * @param userId the user id
+	 * @throws BusinessException 
 	 */
-	void deleteAccount(int userId);
+	void deleteAccount(int userId) throws BusinessException;
 	
 	/**
 	 * View own points.

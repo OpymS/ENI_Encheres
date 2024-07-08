@@ -117,50 +117,52 @@ public class UserServiceImpl implements UserService {
 	 * @param userId the user id
 	 */
 	@Override
-	public void deleteAccount(int userId) {
+	@Transactional(rollbackFor = BusinessException.class)
+	public void deleteAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
 		
 		//Check des conditions: 
 		// 1 - Pas d'article dont la vente est terminée mais non récupérée
 		// 2 - Pas acheteur courant d'un article en vente
-		boolean isDeleteAccepted = checkArticlesState(userId);
-		isDeleteAccepted &= checkUserBids(userId);
+		boolean isDeleteAccepted = checkArticlesState(userId, be);
+		isDeleteAccepted &= checkUserBids(userId, be);
+				
 		
-		if(isDeleteAccepted) {
-			// On a en BDD un utilisateur "vide" qui va servir pour éviter les effets de bords.
-			// Les articles vendus et retirés par l'user vont être modifiés (no_utilisateur = 0)
-			// Les articles en cours ou pas encore en enchère vont être annulés.
-		
-			//Modifier les "enchères" ou mises de l'utilisateur
-			auctionDAO.eraseUserBidsByUserId(userId);
-			
-			//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
-			// 1 - Récup les ventes de cet user, en état 2 et 3
-			// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
-			// 3 - Modifier les articles avec no_utilisateur à 0
-			List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
-			
-			if(userArticlesToCancel.size()!=0) {
-				userArticlesToCancel.forEach(article -> {
-					auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
-				});
+		if (isDeleteAccepted) {
+			try {
+				//Modifier les "enchères" ou mises de l'utilisateur
+				auctionDAO.eraseUserBidsByUserId(userId);
+				//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
+				// 1 - Récup les ventes de cet user, en état 2 et 3
+				// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
+				// 3 - Modifier les articles avec no_utilisateur à 0
+				List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
+				
+				if(userArticlesToCancel.size()!=0) {
+					userArticlesToCancel.forEach(article -> {
+						auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
+					});
+				}
+				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
+				articleDAO.eraserSellerByUserId(userId);
+				//Supprimer l'utilisateur (car plus aucune foreign key)
+				userDAO.deleteById(userId);
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
 			}
-			
-			//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
-			articleDAO.eraserSellerByUserId(userId);
-			
-			//Supprimer l'utilisateur (car plus aucune foreign key)
-			userDAO.deleteById(userId);
-			
-			
-		}else {
-			//throw erreur ....
-			System.err.println("Impossible de supprimer le compte pour l'instant !");
+		} else {
+			throw be;
 		}
+		
 	}
 	
 	
 	
-	private boolean checkArticlesState(int userId) {
+	private boolean checkArticlesState(int userId,  BusinessException be) {
 		boolean isDeleteOk = false;
 		
 		int nbArticlesFinished = articleDAO.countArticlesFinishedBySellerId(userId);
@@ -168,14 +170,14 @@ public class UserServiceImpl implements UserService {
 		if(nbArticlesFinished==0) {
 			isDeleteOk = true;
 		}else {
-			System.err.println("Pas possible, vous avez des articles vendus non récupérés !");
+			be.add("Pas possible, vous avez des articles vendus non récupérés !");
 		}
 		
 		return isDeleteOk;
 		
 	}
 	
-	private boolean checkUserBids(int userId) {
+	private boolean checkUserBids(int userId,  BusinessException be) {
 		boolean isDeleteOk = false;
 		
 		int nbPossibleBuy = articleDAO.countArticlesByBuyerId(userId);
@@ -183,7 +185,7 @@ public class UserServiceImpl implements UserService {
 		if(nbPossibleBuy==0) {
 			isDeleteOk = true;
 		}else {
-			System.err.println("Pas possible, vous êtes le plus gros enchérisseur sur une vente !");
+			be.add("Pas possible, vous êtes le plus gros enchérisseur sur une vente !");
 		}
 		
 		return isDeleteOk;

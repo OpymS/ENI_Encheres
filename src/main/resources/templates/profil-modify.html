@@ -96,6 +96,7 @@
 			<div th:replace="~{/fragments/errors/fragment-error::frag-error(zipCode)}"></div>
 			<div th:replace="~{/fragments/errors/fragment-error::frag-error(city)}"></div>
 		
+			<div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
 		</form>
 	
 	</main>
