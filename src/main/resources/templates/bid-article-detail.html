@@ -12,6 +12,10 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
+    <div>
+        <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='en')}" th:text="#{label.lang.en}">English</a>
+        <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='fr')}" th:text="#{label.lang.fr}">Français</a>
+    </div>
 
     <h1 class="title" th:text="#{title.saleDetail2}"></h1>
         <div class="fields-container">
