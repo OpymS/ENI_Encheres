@@ -1,5 +1,6 @@
 package fr.eni.tp.encheres.dal;
 
+import java.util.HashMap;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
@@ -17,4 +18,5 @@ public interface ArticleDAO {
 	int countArticles();
 	List<Article> findArticleToUpdateToFinished();
 	List<Article> findArticleToUpdateToStarted();
+	List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId);
 }
