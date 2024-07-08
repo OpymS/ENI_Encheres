@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.com">
+
 <head>
-<meta charset="UTF-8">
-<title>ENI Enchères</title>
-<link rel="stylesheet" href="/css/general.css">
-<link rel="stylesheet" href="/css/auctions.css">
-<link rel="icon" href="images/favicon.png"/>
+	<meta charset="UTF-8">
+	<title>ENI Enchères</title>
+	<link rel="stylesheet" href="/css/general.css">
+	<link rel="stylesheet" href="/css/auctions.css">
+	<link rel="icon" href="images/favicon.png" />
 </head>
 
 <body>
 
-<div data-th-replace="~{fragments/fragment-header :: header}"></div>
-	
+	<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+
 	<main>
 		<h1 class="title">LISTE DES ENCHERES</h1>
 		<h2 class="subtitle">Filtres :</h2>
 		<section class="filter-container">
-			<form th:action="@{/auctions}" method="post" th:object="${article}">
+			<form th:action="@{/auctions}" method="post" th:object="${criteria}">
 				<div class="inputs-container">
-					
-					<input id="inputSearch" type="text" th:field="*{articleName}" placeholder="Le nom de l'article contient ...">
-					
+
+					<input id="inputSearch" type="text" th:field="*{wordToFind}"
+						placeholder="Le nom de l'article contient ...">
+
 					<div class="category">
 						<label for="inputCategory">Catégorie :</label>
 						<select th:field="*{category}" id="inputCategory">
 							<option value="0">Toutes</option>
-							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}" th:text="${cat.label}"></option>
-						</select>	
+							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}"
+								th:text="${cat.label}" th:selected="${cat.categoryId} == *{category.categoryId}">[[${cat.categoryId}]] == [[*{category.categoryId}]]</option>
+						</select>
 					</div>
-					
+
 					<div class="achat-vente-container" sec:authorize="isAuthenticated()">
 						<div class="achats-container">
 							<div class="achat-main-check">
-								<input type="radio" id="purchases" name="achats-ventes" value="purchases" th:checked="${purchases}">
+								<input type="radio" th:field="*{radioButton}" id="purchases" value="purchases" th:checked="*{radioButton}=='purchases'">
 								<label for="achats-ventes">Achats</label>
 							</div>
 							<div class="sub-container">
 								<div class="subachat-1">
-									<input type="checkbox" id="open" name="open" th:checked="${open}" disabled="true">
-	    							<label for="open">enchères ouvertes</label>
+									<input type="checkbox" id="open" th:field="*{filters['open']}" value="true" th:checked="*{filters.get('open')}" disabled="true">
+									<label for="open">enchères ouvertes</label>
 								</div>
 								<div class="subachat-2">
-									<input type="checkbox" id="current" name="current" th:checked="${current}" disabled="true">
-	    							<label for="current">mes enchères en cours</label>
+									<input type="checkbox" id="current" th:field="*{filters['current']}" value="true" th:checked="*{filters.get('current')}" disabled="true">
+									<label for="current">mes enchères en cours</label>
 								</div>
 								<div class="subachat-3">
-									<input type="checkbox" id="won" name="won" th:checked="${won}" disabled="true">
-	    							<label for="won">mes enchères remportées</label>
+									<input type="checkbox" id="won" th:field="*{filters['won']}" value="true" th:checked="*{filters.get('won')}" disabled="true">
+									<label for="won">mes enchères remportées</label>
 								</div>
 							</div>
 						</div>
 						<div class="ventes-container">
 							<div class="ventes-main-check">
-								<input type="radio" id="sales" name="achats-ventes" value="sales"  th:checked="${sales}">
+								<input type="radio" th:field="*{radioButton}" id="sales" value="sales" th:checked="*{radioButton}=='sales'">
 								<label for="achats-ventes">Ventes</label>
 							</div>
 							<div class="sub-container">
 								<div class="subvente-1">
-									<input type="checkbox" id="currentVente" name="currentVente" th:checked="${currentVente}" disabled="true">
-	    							<label for="currentVente">mes enchères en cours</label>
+									<input type="checkbox" id="currentVente" th:field="*{filters['currentVente']}" value="true" th:checked="*{filters.get('currentVente')}" disabled="true">
+									<label for="currentVente">mes enchères en cours</label>
 								</div>
 								<div class="subvente-2">
-									<input type="checkbox" id="notstarted" name="notstarted" th:checked="${notstarted}" disabled="true">
-	    							<label for="notstarted">ventes non débutées</label>
+									<input type="checkbox" id="notstarted" th:field="*{filters['notstarted']}" value="true" th:checked="*{filters.get('notstarted')}" disabled="true">
+									<label for="notstarted">ventes non débutées</label>
 								</div>
 								<div class="subvente-3">
-									<input type="checkbox" id="finished" name="finished" th:checked="${finished}" disabled="true">
-	    							<label for="finished">ventes terminées</label>
+									<input type="checkbox" id="finished" th:field="*{filters['finished']}" value="true" th:checked="*{filters.get('finished')}" disabled="true">
+									<label for="finished">ventes terminées</label>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			
+
 				<div class="button-container">
 					<button type="submit">Rechercher</button>
 				</div>
@@ -84,15 +87,16 @@
 				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
 				<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
 				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
-				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}" th:text="${art.seller.pseudo}"></a></p>
+				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}"
+						th:text="${art.seller.pseudo}"></a></p>
 			</div>
 		</section>
 	</main>
-	
-	
-<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
 
-<script src="/js/checkbox.js"></script>
+
+	<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+
+	<script src="/js/checkbox.js"></script>
 </body>
 
-
+</html>

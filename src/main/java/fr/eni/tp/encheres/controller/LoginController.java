@@ -76,8 +76,10 @@ public class LoginController {
 
 	@GetMapping("/session")
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
+		System.out.println("début du getMapping session");
 		String email;
 		User userRecup;
+		System.out.println("ppal "+principal);
 		if(principal != null) {
 			email = principal.getName();
 			userRecup = userService.getUserByEmail(email);

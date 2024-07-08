@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
@@ -18,6 +19,7 @@ import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 import fr.eni.tp.encheres.dal.ArticleDAO;
 import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.CategoryDAO;
@@ -70,11 +72,19 @@ public class AuctionServiceImpl implements AuctionService {
 		return articleDAO.findAll();
 	}
 	
-	
 	@Override
-	public List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){
+	public List<Article> selectArticles(SearchCriteria research, int userId){
+		if (research.getRadioButton()==null) {
+			research.setRadioButton("purchases");
+		}
 		
-		List<Article> articleList = articleDAO.findWithFilters(article,filters,buyOrSale,userId);
+		if (research.getFilters().isEmpty() && research.getRadioButton().equals("purchases")) {
+			Map<String, Boolean> filters = new HashMap<String, Boolean>();
+			filters.put("open", true);
+			research.setFilters(filters);
+		}
+		
+		List<Article> articleList = articleDAO.findWithFilters(research,userId);
 
 		return articleList;
 			
@@ -83,6 +93,7 @@ public class AuctionServiceImpl implements AuctionService {
 	
 
 	@Override
+	@Deprecated
 	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won,
 			boolean currentVente, boolean notstarted, boolean finished, String buySale) {
 		List<Article> articlesList;
@@ -145,7 +156,6 @@ public class AuctionServiceImpl implements AuctionService {
 				}
 				articlesList.clear();
 				articlesList = tmpArticlesList;
-				// System.out.println(articlesList);
 			}
 		}
 		/*
