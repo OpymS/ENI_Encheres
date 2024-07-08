@@ -3,6 +3,7 @@ package fr.eni.tp.encheres.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -53,8 +54,20 @@ public class AuctionController {
 			@RequestParam(name = "notstarted", required = false) boolean notstarted,
 			@RequestParam(name = "finished", required = false) boolean finished,
 			@RequestParam(name = "achats-ventes", required = false) String buySale) {
-		System.out.println("showAuctions début");
-		List<Article> articlesList = auctionService.selectArticles(article, userSession, open, current, won, currentVente, notstarted, finished, buySale);
+		
+		
+		HashMap<String, Boolean> filters = new HashMap<>();
+		filters.put("open", open);
+		filters.put("current", current);
+		filters.put("won", won);
+		filters.put("currentVente", currentVente);
+		filters.put("notstarted", notstarted);
+		filters.put("finished", finished);
+		
+		
+		List<Article> articlesList = auctionService.selectArticlesBis(article, filters, buySale, userSession.getUserId());
+		
+		//List<Article> articlesList = auctionService.selectArticles(article, userSession, open, current, won, currentVente, notstarted, finished, buySale);
 		
 		model.addAttribute("article", article);
 		model.addAttribute("articles", articlesList);
