@@ -32,40 +32,40 @@
 					<div class="achat-vente-container" sec:authorize="isAuthenticated()">
 						<div class="achats-container">
 							<div class="achat-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes" value="purchases" th:checked="${purchases}">
+								<input type="radio" id="purchases" name="achats-ventes" value="purchases" th:checked="${purchases}">
 								<label for="achats-ventes">Achats</label>
 							</div>
 							<div class="sub-container">
 								<div class="subachat-1">
-									<input type="checkbox" id="open" name="open" th:checked="${open}">
+									<input type="checkbox" id="open" name="open" th:checked="${open}" disabled="true">
 	    							<label for="open">enchères ouvertes</label>
 								</div>
 								<div class="subachat-2">
-									<input type="checkbox" id="current" name="current" th:checked="${current}">
+									<input type="checkbox" id="current" name="current" th:checked="${current}" disabled="true">
 	    							<label for="current">mes enchères en cours</label>
 								</div>
 								<div class="subachat-3">
-									<input type="checkbox" id="won" name="won" th:checked="${won}">
+									<input type="checkbox" id="won" name="won" th:checked="${won}" disabled="true">
 	    							<label for="won">mes enchères remportées</label>
 								</div>
 							</div>
 						</div>
 						<div class="ventes-container">
 							<div class="ventes-main-check">
-								<input type="radio" id="achats-ventes" name="achats-ventes" value="sales"  th:checked="${sales}">
+								<input type="radio" id="sales" name="achats-ventes" value="sales"  th:checked="${sales}">
 								<label for="achats-ventes">Ventes</label>
 							</div>
 							<div class="sub-container">
 								<div class="subvente-1">
-									<input type="checkbox" id="currentVente" name="currentVente" th:checked="${currentVente}">
+									<input type="checkbox" id="currentVente" name="currentVente" th:checked="${currentVente}" disabled="true">
 	    							<label for="currentVente">mes enchères en cours</label>
 								</div>
 								<div class="subvente-2">
-									<input type="checkbox" id="notstarted" name="notstarted" th:checked="${notstarted}">
+									<input type="checkbox" id="notstarted" name="notstarted" th:checked="${notstarted}" disabled="true">
 	    							<label for="notstarted">ventes non débutées</label>
 								</div>
 								<div class="subvente-3">
-									<input type="checkbox" id="finished" name="finished" th:checked="${finished}">
+									<input type="checkbox" id="finished" name="finished" th:checked="${finished}" disabled="true">
 	    							<label for="finished">ventes terminées</label>
 								</div>
 							</div>
@@ -79,7 +79,7 @@
 			</form>
 		</section>
 		<section class="articles-cards-container">
-			<div th:each="art:${articles}" class="article-card">
+			<div th:each="art : ${articles}" class="article-card">
 				<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
 				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
 				<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
@@ -92,7 +92,7 @@
 	
 <div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
 
-
+<script src="/js/checkbox.js"></script>
 </body>
 
 

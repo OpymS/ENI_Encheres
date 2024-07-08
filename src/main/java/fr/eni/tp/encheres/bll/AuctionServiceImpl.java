@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,18 @@ public class AuctionServiceImpl implements AuctionService {
 	public List<Article> findArticles() {
 		return articleDAO.findAll();
 	}
+	
+	
+	@Override
+	public List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){
+		
+		List<Article> articleList = articleDAO.findWithFilters(article,filters,buyOrSale,userId);
+
+		return articleList;
+			
+	}
+
+	
 
 	@Override
 	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won,

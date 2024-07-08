@@ -2,6 +2,7 @@ package fr.eni.tp.encheres.dal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -55,6 +56,8 @@ public class ArticleDAOImpl implements ArticleDAO{
 		this.pickupLocationDAO = pickupLocationDAO;
 		//this.auctionDAO = auctionDAO;
 	}
+	
+
 
 	@Override
 	public Article read(int articleId) {
@@ -168,6 +171,101 @@ public class ArticleDAOImpl implements ArticleDAO{
 	public List<Article> findArticleToUpdateToStarted() {
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
 	}
+	
+	@Override
+	public List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){
+		//Récupérer les paramètres de filtre :
+		String textFilter = "%"+article.getArticleName()+"%";
+		int categoryId = article.getCategory().getCategoryId();
+		System.out.println("userIdService : " +userId);
+		// Construire la requête à envoyée en fonction des filtres
+		String SQLQuery = "";
+
+		//Corps commun de requête
+		SQLQuery = SQLQuery.concat("SELECT DISTINCT av.no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, av.no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS av LEFT JOIN ENCHERES en ON av.no_article = en.no_article");
+		
+		//Permettra de savoir si il faudra enlever le OR ou AND à la fin de la requête.
+		boolean containsConditions = false;
+		
+		
+		//Si filters.containsValue(true) OU un categoryId est sélectionné OU le texte a recherché est vide, on ajoute WHERE
+		if(filters.containsValue(true) || categoryId!=0 || !textFilter.isBlank()) {
+			containsConditions = true;
+			
+			SQLQuery = SQLQuery.concat(" WHERE");
+			
+			//Ajout du filtre de catégorie
+			if(categoryId!=0) {
+				SQLQuery = SQLQuery.concat(" (no_categorie = :categoryId) AND");
+			}
+			//Ajout du filtre dans le nom
+			if(!textFilter.isBlank()) {
+				SQLQuery = SQLQuery.concat(" (nom_article LIKE :textFilter OR description LIKE :textFilter) AND");
+			}
+			
+			// On boucle à travers filters
+			String[] filterSQL = {""}; // Astuce pour faire passer une variable dans une forEach ...
+			filters.forEach((key, value)->{
+				// on ajoute la condition de requête si la value est true !
+				String conditionSQL = value ? mapToSQLCondition(key) : "";
+				filterSQL[0] = filterSQL[0].concat(conditionSQL);
+			});
+			SQLQuery = SQLQuery.concat(filterSQL[0]);
+		}
+		
+		//Il y aura un AND ou OR en trop si true
+		if(containsConditions) {
+			
+			//Si le dernier caractère est un R, alors il y a un OR en trop
+			if(SQLQuery.charAt(SQLQuery.length()-1)=='R') {
+				SQLQuery = SQLQuery.substring(0, SQLQuery.length()-2);
+				
+			// Sinon c'est qu'il y a un AND en trop
+			}else if(SQLQuery.charAt(SQLQuery.length()-1)=='D') {
+				SQLQuery = SQLQuery.substring(0, SQLQuery.length()-3);
+			}
+			
+		}
+		
+		
+		//Appel à la base de donnée	
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+		mapSqlParameterSource.addValue("categoryId", categoryId);
+		mapSqlParameterSource.addValue("textFilter", textFilter);
+		
+		
+		System.err.println(SQLQuery);
+		return jdbcTemplate.query(SQLQuery, mapSqlParameterSource, new ArticleRowMapper());
+			
+	}
+	
+
+	private String mapToSQLCondition(String conditionTitle) {
+		String conditionSQL = "";
+		switch(conditionTitle) {
+			case "open":
+				conditionSQL = " (etat_vente = 2) OR";
+				break;
+			case "current":
+				conditionSQL = " (etat_vente = 2 AND av.no_utilisateur = :userId) OR";
+				break;
+			case "won":
+				conditionSQL = " (etat_vente IN (3,4) AND no_acheteur = :userId) OR";
+				break;
+			case "currentVente":
+				conditionSQL = " (etat_vente = 2 AND av.no_utilisateur = :userId) OR";
+				break;
+			case "notstarted":
+				conditionSQL = " (etat_vente = 1 AND av.no_utilisateur = :userId) OR";
+				break;
+			case "finished":
+				conditionSQL = " (etat_vente IN (3,4) AND av.no_utilisateur = :userId) OR";
+				break;
+		}
+		return conditionSQL;
+	}
+	
 	
 	
 
