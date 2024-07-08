@@ -45,6 +45,7 @@ public class SecurityConfig {
 		    .requestMatchers("/css/*").permitAll()
 		    .requestMatchers("/images/**").permitAll()
 		    .requestMatchers("/auctions").permitAll()
+		    .requestMatchers("/auctions/newArticle").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/forgot-password").permitAll()
 		    .requestMatchers("/signup").anonymous()
 		    .requestMatchers("/login").anonymous()
@@ -57,7 +58,7 @@ public class SecurityConfig {
 			.formLogin(form -> form
 					.loginPage("/login")
 					.permitAll()
-					.defaultSuccessUrl("/session")
+					.defaultSuccessUrl("/session", true)
 					.failureUrl("/login?error=true")
 			)
 			.rememberMe(rememberMe -> rememberMe

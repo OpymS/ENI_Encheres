@@ -13,8 +13,8 @@
 
 <main>
 		<div>
-			<a th:href="@{|login?language=en|}" data-th-text="#{label.lang.en}"></a>
-			<a th:href="@{|login?language=fr|}" data-th-text="#{label.lang.fr}"></a>
+			<a th:href="@{/login(language='en')}" data-th-text="#{label.lang.en}"></a>
+			<a th:href="@{/login(language='fr')}" data-th-text="#{label.lang.fr}"></a>
 		</div>
            	
     <h1 class="title" th:text="#{connect}"></h1>
