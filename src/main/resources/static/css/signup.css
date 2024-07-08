@@ -1,91 +1,127 @@
-.title{
-    text-align:center;
-    margin-bottom:40px;
+.title {
+    text-align: center;
+    margin-bottom: 40px;
 }
 
-
-.user-create-form{
-    margin:0 auto;
+.user-create-form {
+    margin: 0 auto;
     max-width: 1200px;
-    min-width:600px;
-    width:90%;
+    min-width: 600px;
+    width: 90%;
 }
 
-
-.inputs-container{
+.inputs-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap:30px 10%;
-    padding:30px 20px;
-    border:1px solid #ccc;
-    border-radius:10px;
+    gap: 30px 10%;
+    padding: 30px 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-.inputs-container > div{
-    font-size:16px;
+.inputs-container > div {
+    font-size: 16px;
     display: flex;
-    justify-content:space-between;
-    align-items:center;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.inputs-container > div input{
-    outline:none;
-    border-radius:5px;
-    border:1px solid #999;
-    padding:5px 8px;
-    font-size:16px;
-    max-width:60%;
-    flex-grow:1;
+.inputs-container > div input {
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #999;
+    padding: 5px 8px;
+    font-size: 16px;
+    max-width: 60%;
+    flex-grow: 1;
 }
 
-
-.buttons-container{
-    display:flex;
-    justify-content:space-between;
-    gap:50px;
-    margin:50px auto 100px;
-    min-width:300px;
-    width:40%;
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    margin: 50px auto 100px;
+    min-width: 300px;
+    width: 40%;
 }
 
-
-.buttons-container .button{
-    min-height:60px;
-    min-width:100px;
-    width:150px;
+.buttons-container .button {
+    min-height: 60px;
+    min-width: 100px;
+    width: 150px;
     background: #333;
-    color:#ffffff;
-    font-size:18px;
-    font-weight:500;
-    border-radius:5px;
-    border:none;
-    cursor:pointer;
-    text-decoration:none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
     display: flex;
-    justify-content:center;
-    align-items:center;
+    justify-content: center;
+    align-items: center;
     transition: background-color 0.3s ease;
 }
 
-
 .buttons-container .button.create {
     background-color: #4CAF50;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons-container .button.create:hover {
-    background-color: darkgreen; 
+    background-color: darkgreen;
 }
-
 
 .buttons-container .button.cancel {
     background-color: #f44336;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons-container .button.cancel:hover {
-    background-color: darkred; 
+    background-color: darkred;
+}
+
+@media only screen and (max-width: 1280px) {
+    .title {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+    }
+
+    .user-create-form {
+        min-width: auto;
+        width: 95%;
+    }
+
+    .inputs-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px 10px;
+    }
+
+    .inputs-container > div {
+        font-size: 2rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .inputs-container > div input {
+        font-size: 2.5rem;
+        padding: 30px;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .buttons-container {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .buttons-container .button {
+        font-size: 2.75rem;
+        padding: 35px 80px;
+        width: 100%;
+    }
 }
