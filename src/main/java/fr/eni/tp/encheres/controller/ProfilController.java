@@ -92,7 +92,7 @@ public class ProfilController {
 		
 	
 		
-		return "redirect:/auctions";
+		return "redirect:/logout";
 	}
 	
 	

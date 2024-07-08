@@ -23,10 +23,12 @@ import fr.eni.tp.encheres.bo.User;
 public class ArticleDAOImpl implements ArticleDAO{
 	
 	private static final String FIND_BY_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_article = :articleId";
+	
 	private static final String FIND_ALL = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS";
 	private static final String FIND_BY_CATEGORY = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId";
 	private static final String FIND_BY_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE nom_article LIKE :name";
 	private static final String FIND_BY_CATEGORY_AND_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId AND nom_article LIKE :name";
+	
 	private static final String INSERT = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur,no_categorie, etat_vente) VALUES (:name, :description, :startDate, :endDate, :startPrice, :endPrice, :userId, :categoryId, :state)";
 	private static final String DELETE = "DELETE FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
@@ -37,11 +39,12 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	private static final String COUNT_FINISHED_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 3 AND no_utilisateur = :userId";
 	private static final String COUNT_BUYERS_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 2 AND no_acheteur = :userId";
-	
-	
+
 	private static final String FIND_TO_UPDATE_TO_FINISHED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_fin_encheres < GETDATE() AND etat_vente = 2";
 	private static final String FIND_TO_UPDATE_TO_STARTED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_debut_encheres < GETDATE() AND etat_vente = 1";
 	
+	private static final String FIND_CANCELLABLE_BY_SELLER_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_utilisateur = :userId AND etat_vente IN (2,3)";
+	private static final String ERASE_BY_USER_ID = "UPDATE ARTICLES_VENDUS SET no_utilisateur = 0 WHERE no_utilisateur = :userId";
 	
 	
 	private NamedParameterJdbcTemplate jdbcTemplate;
@@ -73,6 +76,14 @@ public class ArticleDAOImpl implements ArticleDAO{
 	@Override
 	public List<Article> findAll() {
 		return jdbcTemplate.query(FIND_ALL, new ArticleRowMapper());
+	}
+	
+	@Override
+	public List<Article> findCancellableBySellerId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+		
+		return jdbcTemplate.query(FIND_CANCELLABLE_BY_SELLER_ID, mapSqlParameterSource, new ArticleRowMapper());
 	}
 
 	@Override
@@ -156,6 +167,16 @@ public class ArticleDAOImpl implements ArticleDAO{
 		
 		jdbcTemplate.update(DELETE, mapSqlParameterSource);
 	}
+	
+	@Override
+	public void eraserSellerByUserId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+		
+		jdbcTemplate.update(ERASE_BY_USER_ID, mapSqlParameterSource);
+	}
+	
+	
 	
 	@Override
 	public int countArticles() {

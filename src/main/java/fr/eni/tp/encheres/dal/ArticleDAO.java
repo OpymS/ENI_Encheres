@@ -21,4 +21,6 @@ public interface ArticleDAO {
 	List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId);
 	int countArticlesByBuyerId(int userId);
 	int countArticlesFinishedBySellerId(int userId);
+	void eraserSellerByUserId(int userId);
+	List<Article> findCancellableBySellerId(int userId);
 }

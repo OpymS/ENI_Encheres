@@ -1,13 +1,17 @@
 package fr.eni.tp.encheres.bll;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.dal.ArticleDAO;
+import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.UserDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -18,13 +22,17 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private AuctionService auctionService;
 	
 	private UserDAO userDAO;
 	private ArticleDAO articleDAO;
+	private AuctionDAO auctionDAO;
 	
-	public UserServiceImpl(UserDAO userDAO,ArticleDAO articleDAO) {
+	public UserServiceImpl(UserDAO userDAO,ArticleDAO articleDAO, AuctionDAO auctionDAO, AuctionService auctionService) {
 		this.userDAO= userDAO;
 		this.articleDAO = articleDAO;
+		this.auctionDAO = auctionDAO;
+		this.auctionService = auctionService;
 	}
 
 	@Autowired
@@ -121,21 +129,28 @@ public class UserServiceImpl implements UserService {
 			// On a en BDD un utilisateur "vide" qui va servir pour éviter les effets de bords.
 			// Les articles vendus et retirés par l'user vont être modifiés (no_utilisateur = 0)
 			// Les articles en cours ou pas encore en enchère vont être annulés.
+		
+			//Modifier les "enchères" ou mises de l'utilisateur
+			auctionDAO.eraseUserBidsByUserId(userId);
 			
-			//Modifier les articles en cours / avant vente
+			//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
+			// 1 - Récup les ventes de cet user, en état 2 et 3
+			// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
+			// 3 - Modifier les articles avec no_utilisateur à 0
+			List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
 			
+			if(userArticlesToCancel.size()!=0) {
+				userArticlesToCancel.forEach(article -> {
+					auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
+				});
+			}
 			
-			//Modifier les articles déjà vendus ET retirés
+			//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
+			articleDAO.eraserSellerByUserId(userId);
 			
-			
-			
-			//Modifier également les "enchères" ou mises de l'utilisateur
-			
-			//Supprimer l'utilisateur.
-			
+			//Supprimer l'utilisateur (car plus aucune foreign key)
 			userDAO.deleteById(userId);
 			
-			//Il faut corriger/modifier les articles vendus par cette utilisateurs et mettre à 0 l'id du vendeur.
 			
 		}else {
 			//throw erreur ....
