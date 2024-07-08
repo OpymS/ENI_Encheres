@@ -1,24 +1,31 @@
 package fr.eni.tp.encheres.bll;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.eni.tp.encheres.bo.PasswordResetToken;
+import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.dal.PasswordResetDAO;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {
 
+    @Autowired
+    private PasswordResetDAO passwordResetDAO;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private JavaMailSender mailSender;
-	
-	@Override
-	public void sendEmail(String to, String subject, String text) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(text);
-		mailSender.send(message);
-	}
+    @Override
+    @Transactional
+    public PasswordResetToken createPasswordResetToken(String token, int user_id) {
+        String encryptedToken = passwordEncoder.encode(token);
+        PasswordResetToken myToken = new PasswordResetToken(encryptedToken, user_id);
+        passwordResetDAO.save(myToken);
+        return myToken;
+    }
 
+ 
 }
