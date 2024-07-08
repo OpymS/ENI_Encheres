@@ -3,7 +3,7 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica;
+    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
@@ -102,4 +102,29 @@ footer p {
     padding: 8px 10px;
     background: #555;
     border-radius: 5px;
+}
+
+
+@media only screen and (min-width: 300px) and (max-width: 1280px) {
+    nav {
+        padding: 15px;
+        flex-direction: row;
+    }
+
+    nav a {
+        font-size: 2.5rem;
+    }
+
+    nav div img {
+        width: 120px;
+    }
+
+    nav .home, nav .sessionName {
+        font-size: 3rem;
+    }
+
+    footer p {
+        font-size: 2.5rem;
+        padding: 15px 30px;
+    }
 }
