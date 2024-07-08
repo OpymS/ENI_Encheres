@@ -82,7 +82,7 @@
 			<div th:each="art:${articles}" class="article-card">
 				<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
 				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
-				<p th:text="'Fin de l\'enchère : '+${art.auctionEndDate}"></p>
+				<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
 				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
 				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}" th:text="${art.seller.pseudo}"></a></p>
 			</div>
