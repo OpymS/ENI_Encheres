@@ -81,7 +81,6 @@
             
             <div class="modify-auction-container" th:if="${isChangePossible && articleDisplay.seller.userId==userSession.userId}">
             	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}" th:text="#{button.modifySale}"></a>
-            	<p class="button-styled-link" th:text="#{button.futureDelete}"></p>
             </div>
             <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
         </div>

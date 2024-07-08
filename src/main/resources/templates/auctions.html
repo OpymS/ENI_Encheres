@@ -91,7 +91,7 @@
 				<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
 				<p th:text="#{label.price}+' '+${art.currentPrice}+' points'"></p>
 				<p th:text="#{label.auctionEnd}+' '+${art.auctionEndDate}"></p>
-				<p sec:authorize="!isAuthenticated()" th:text="#{label.seller} '+${art.seller.pseudo}"></p>
+				<p sec:authorize="!isAuthenticated()" th:text="#{label.seller}+' '+${art.seller.pseudo}"></p>
 				<p sec:authorize="isAuthenticated()" th:text="#{label.seller}">
 				<a th:href="@{/profil(userId=${art.seller.userId})}" th:text="${art.seller.pseudo}"></a></p>
 			</div>
@@ -103,6 +103,7 @@
 
 
 <script src="/js/checkbox.js"></script>
+<script src="/js/navbar.js"></script>
 
 </body>
 

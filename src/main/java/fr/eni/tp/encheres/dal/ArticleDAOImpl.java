@@ -223,7 +223,6 @@ public class ArticleDAOImpl implements ArticleDAO{
 		//Récupérer les paramètres de filtre :
 		String textFilter = "%"+article.getArticleName()+"%";
 		int categoryId = article.getCategory().getCategoryId();
-		System.out.println("userIdService : " +userId);
 		// Construire la requête à envoyée en fonction des filtres
 		String SQLQuery = "";
 
@@ -352,8 +351,6 @@ public class ArticleDAOImpl implements ArticleDAO{
 			article.setSeller(seller);
 			
 			
-			//System.err.println("articleDAO : "+ article);
-			//System.out.println("-------------------------");
 			return article;
 		}
 	}
