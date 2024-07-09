@@ -13,7 +13,7 @@
 	
 <main>
     <h1 class="title">NOUVELLE VENTE</h1>
-    <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}">
+    <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
         <div class="inputs-container">
             <div class="input-container">
                 <label for="inputName">Article :</label>
@@ -73,6 +73,11 @@
                     <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
                 </div>
             </fieldset>
+            
+            <div class="image-test">
+            	<p>Image ici</p>
+            	<img th:src="@{${imageSource}}" alt="test-image" />
+            </div>
             <div class="buttons-container">
                 <button type="submit" class="button button-submit">Enregistrer</button>
                 <button type="button" class="button button-cancel">Annuler</button>

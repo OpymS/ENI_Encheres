@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 public interface FileService {
 
 	
-	Resource loadFileAsResource(String filename);
+//	Resource loadFileAsResource(String filename);
 
-	String saveFile(MultipartFile file, Article article) throws IOException;
+	void saveFile(MultipartFile file, Article article) throws IOException;
 }

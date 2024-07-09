@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -113,17 +114,14 @@ public class AuctionController {
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
 			@RequestParam(name="inputImage", required=false) MultipartFile fileImage
 			) {
-		System.out.println("image :"+fileImage);
+		
+		//Sauvegarde de l'image dans le dossier static/uploadedImages
 		try {
 			fileService.saveFile(fileImage, article);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-create";
 		}
-		
-		System.err.println(article);
-		
-		
 		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
@@ -152,13 +150,18 @@ public class AuctionController {
 	}
 	
 	@GetMapping("/modifyArticle")
-	public String showArticleModifyPage(@RequestParam(name="articleId", required=true) int articleId, Model model, @ModelAttribute("userSession") User userSession) {
+	public String showArticleModifyPage(@RequestParam(name="articleId", required=true) int articleId,
+			Model model,
+			@ModelAttribute("userSession") User userSession){
 		Article article = auctionService.findArticleById(articleId);
+		
 		
 		// Si on est après la date de fin on ne montre pas la page (modification/annulation impossible !)
 		if(article.getAuctionEndDate().isBefore(LocalDateTime.now())) { 
 			return "redirect:/auctions";
 		};
+		
+		
 		
 		model.addAttribute("article", article);
 		model.addAttribute("startDate",article.getAuctionStartDate().toLocalDate());
@@ -166,6 +169,9 @@ public class AuctionController {
 		model.addAttribute("endDate",article.getAuctionEndDate().toLocalDate());
 		model.addAttribute("endTime",article.getAuctionEndDate().toLocalTime());
 		model.addAttribute("isCancelPossible", article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("imageSource", "/uploadedImages/"+article.getImageUUID());
+		
+		System.err.println("/uploadedImages/"+article.getImageUUID());
 		
 		return "article-modify";
 	}
@@ -178,10 +184,25 @@ public class AuctionController {
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
+			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
 			Model model
 			) {
+		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
+		
+		
+		//Sauvegarde de l'image dans le dossier static/uploadedImages
+		try {
+			article.setAuctionStartDate(auctionService.convertDate(startDate, startTime));
+			article.setAuctionEndDate(auctionService.convertDate(endDate, endTime));
+			article.setSeller(userSession);
+			article.setCurrentPrice(article.getBeginningPrice());	
+			fileService.saveFile(fileImage, article);
+		} catch (IOException | BusinessException e) {
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-modify";
+		}
 		
 		//On les repasse dans le modèle pour réafficher les valeurs par défaut en cas d'erreurs
 		model.addAttribute("startDate",startDate);
