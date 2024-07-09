@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.User;
@@ -76,4 +77,33 @@ public class ProfilController {
 			}
 		}
 	}
+	
+	
+	@GetMapping("/deleteAccount")
+	public String deleteUserAccount(@SessionAttribute("userSession") User userSession, @RequestParam(name="userId") int userId, RedirectAttributes redirectAttributes) {
+		
+		//check si c'est bien l'utilisateur connecté qui veut supprimer
+		if(userSession.getUserId()!=userId) {
+			System.err.println("Pas le bon utilisateur !");
+			return "redirect:/auctions";
+		}
+		
+		
+		try {
+			userService.deleteAccount(userId);
+			
+			
+			//Si pas d'erreur, on déconnecte
+			return "redirect:/logout";
+			
+		} catch (BusinessException e) {
+			e.getErreurs().forEach(err -> redirectAttributes.addFlashAttribute("globalError", err));
+			return "redirect:/profil/modify";
+		}
+		
+	
+		
+	}
+	
+	
 }

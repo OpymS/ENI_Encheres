@@ -83,7 +83,7 @@
 			
 			<div class="buttons-container">
 				<button type="submit" class="button">Enregistrer</button>
-				<a th:href="@{/}" class="button">Supprimer mon compte</a>
+				<a th:href="@{/profil/deleteAccount(userId=${userSession.userId})}" class="button">Supprimer mon compte</a>
 			</div>
 			
 			<div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
@@ -96,6 +96,7 @@
 			<div th:replace="~{/fragments/errors/fragment-error::frag-error(zipCode)}"></div>
 			<div th:replace="~{/fragments/errors/fragment-error::frag-error(city)}"></div>
 		
+			<div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
 		</form>
 	
 	</main>

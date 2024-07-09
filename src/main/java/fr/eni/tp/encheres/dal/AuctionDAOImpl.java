@@ -23,6 +23,9 @@ public class AuctionDAOImpl implements AuctionDAO {
 	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :articleId, :date, :bidAmount)";
 	private static final String DELETE = "DELETE FROM ENCHERES WHERE no_utilisateur = :userId AND no_article = :articleId AND date_enchere = :auctionDate";
 
+	private static final String ERASE_BY_USER_ID = "UPDATE ENCHERES SET no_utilisateur = 0 WHERE no_utilisateur = :userId";
+	
+	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	public AuctionDAOImpl(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -75,6 +78,15 @@ public class AuctionDAOImpl implements AuctionDAO {
 		mapSqlParameterSource.addValue("auctionDate", auctionDate);
 
 		jdbcTemplate.update(DELETE, mapSqlParameterSource);
+	}
+	
+	
+	@Override
+	public void eraseUserBidsByUserId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+
+		jdbcTemplate.update(ERASE_BY_USER_ID, mapSqlParameterSource);
 	}
 
 }
