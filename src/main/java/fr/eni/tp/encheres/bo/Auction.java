@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 
 public class Auction {
 	private LocalDateTime auctionDate;
+	private String formatedDate;
+	
 	@Min(0)
 	private int bidAmount;
 	private User user;
@@ -29,6 +31,15 @@ public class Auction {
 		this.auctionDate = auctionDate;
 		
 	}
+	
+	public String getFormatedDate() {
+		return formatedDate;
+	}
+
+	public void setFormatedDate(String formatedDate) {
+		this.formatedDate = formatedDate;
+	}
+
 
 	public int getBidAmount() {
 		return bidAmount;

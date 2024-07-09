@@ -16,4 +16,6 @@ public interface AuctionDAO {
 
 
 	void delete(int userId, int articleId, LocalDateTime date);
+
+	void eraseUserBidsByUserId(int userId);
 }
