@@ -6,7 +6,6 @@ let focusables = []
 let previouslyFocusedElement = null
 
 
-
 document.querySelectorAll(".js-modal").forEach(a => {
     a.addEventListener("click", openModal)
     
@@ -29,6 +28,13 @@ function openModal(e){
     modal.querySelector(".js-close-modal").addEventListener("click", closeModal)
     modal.querySelector(".js-modal-stop").addEventListener("click", stopPropagation)
 
+
+    const userId = e.target.getAttribute("data-user-id");
+    console.log('User ID:', userId);
+
+    let deleteHref = `/admin/deleteAccount?userId=${userId}`
+    modal.querySelector(".confirm-delete").setAttribute("href", deleteHref)
+    
 }
 
 function closeModal(e){
@@ -42,8 +48,11 @@ function closeModal(e){
     modal.removeEventListener("click", closeModal)
     modal.querySelector(".js-close-modal").removeEventListener("click", closeModal)
     modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
+    
+    modal.querySelector(".confirm-delete").setAttribute("href", "/")
 
     modal = null
+
 
     stopPropagation(e)
 

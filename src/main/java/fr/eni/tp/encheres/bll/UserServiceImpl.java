@@ -100,6 +100,20 @@ public class UserServiceImpl implements UserService {
 		return isValid;
 	}
 
+	
+	@Override
+	public List<User> getAllUsers(){
+		return userDAO.findAll();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Forgot password.
 	 *

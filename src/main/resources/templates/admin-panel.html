@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{title.saleDetail}"></title>
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/admin-panel.css">
+	<link rel="icon" href="images/favicon.png"/>
+</head>
+<body>
+
+<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+	
+<main>
+<!-- 	<div> -->
+<!--         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='en')}" th:text="#{label.lang.en}">English</a> -->
+<!--         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='fr')}" th:text="#{label.lang.fr}">Français</a> -->
+<!--     </div> -->
+
+    <h1 class="page-title">Gestion des utilisateurs</h1>
+    <div class="user-table-container">
+    	<div class="user-container">
+    	<h2 class="section-title">Liste des utilisateurs</h2>
+    	
+	    	<table>
+				<thead>
+					<tr>
+						<th>Pseudo</th>
+						<th>Mail</th>
+						<th>Crédits</th>
+						<th>Droits</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="user : ${users}"> 
+						<td th:text="${user.pseudo}">...</td>
+						<td th:text="${user.email}">...</td>
+						<td th:text="${user.credit}">...</td>
+						<td th:text="${user.admin ? 'Administrateur' : 'Membre'}">...</td>
+						<td class="buttons-container">
+							<a href="" class="desac-button button">Désactiver</a>
+							<a href="#modal1" class="js-modal button delete-button" th:attr="data-user-id=${user.userId}">Supprimer</a>
+						</td>
+				</tbody>
+			</table>
+    	
+    	</div>
+    	
+    </div>
+    
+    
+    <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
+			<div class="modal-wrapper js-modal-stop">
+				<div class="modal-content">
+					<h2 id="modaltitle">Êtes vous sûr ?</h2>
+
+					<p class="modal-description">La suppression du compte entrainera :</p>
+					<ul>
+						<li>- L'annulation des ventes/enchères concernant les articles en cours de vente.</li>
+						<li>- L'annulation des ventes des articles qui n'ont pas encore commencées.</li>
+						<li>- La perte de tous les crédits</li>
+					</ul>
+				</div>
+				<div class="confirm-container">	
+					<a href="/" class="confirm-delete">Je confirme la suppression</a>
+				</div>
+				<button class="close-button js-close-modal">
+					<img src="/images/closing-cross.svg" alt="">
+				</button>
+			</div>
+
+		</aside>
+
+     
+</main>
+
+<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
+<script src="/js/navbar.js"></script>
+<script src="/js/modal-id.js" defer></script>
+</body>
+</html>
