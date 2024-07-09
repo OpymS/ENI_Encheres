@@ -57,7 +57,7 @@ public class SecurityConfig {
 			.formLogin(form -> form
 					.loginPage("/login")
 					.permitAll()
-					.defaultSuccessUrl("/session")
+					.defaultSuccessUrl("/session", true)
 					.failureUrl("/login?error=true")
 			)
 			.rememberMe(rememberMe -> rememberMe

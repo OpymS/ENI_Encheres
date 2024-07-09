@@ -4,12 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +78,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 	
 	@Override
-	public List<Article> selectArticles(SearchCriteria research, int userId){
+	public Page<Article> selectArticles(SearchCriteria research, int userId, Pageable pageable){
 		if (research.getRadioButton()==null) {
 			research.setRadioButton("purchases");
 		}
@@ -83,10 +88,28 @@ public class AuctionServiceImpl implements AuctionService {
 			filters.put("open", true);
 			research.setFilters(filters);
 		}
-		
+		if (research.getCategory()==null) {
+			Category category = new Category();
+			category.setCategoryId(0);
+			research.setCategory(category);
+		}
 		List<Article> articleList = articleDAO.findWithFilters(research,userId);
-
-		return articleList;
+		
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<Article> shortArticleList;
+		
+		if (articleList.size()< startItem) {
+			shortArticleList = Collections.emptyList();
+		}else {
+			int endIndex = Math.min(startItem+pageSize, articleList.size());
+			shortArticleList = articleList.subList(startItem, endIndex);
+		}
+		
+		Page<Article> articlesPage = new PageImpl<Article>(shortArticleList, PageRequest.of(currentPage, pageSize), articleList.size());
+		
+		return articlesPage;
 			
 	}
 

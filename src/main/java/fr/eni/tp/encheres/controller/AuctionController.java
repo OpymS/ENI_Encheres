@@ -6,7 +6,11 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +37,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/auctions")
 @SessionAttributes({ "userSession", "categoriesSession", "research" })
 public class AuctionController {
+	private static final int PAGE_SIZE = 6;
+	
 	private AuctionService auctionService;
 
 	public AuctionController(AuctionService auctionService) {
@@ -40,23 +46,49 @@ public class AuctionController {
 	}
 
 	@GetMapping
-	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria research,
-			@ModelAttribute("userSession") User userSession, Model model) {
-		System.out.println("get " + research);
-		model.addAttribute("criteria", research);
-		List<Article> articlesList = auctionService.selectArticles(research, userSession.getUserId());
+	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
+			@ModelAttribute("userSession") User userSession, Model model,
+			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
+		System.out.println("get " + sessionResearch);
+		model.addAttribute("criteria", sessionResearch);
+		Page<Article> articlesList = auctionService.selectArticles(sessionResearch, userSession.getUserId(),
+				PageRequest.of(currentPage - 1, PAGE_SIZE));
 		model.addAttribute("articles", articlesList);
+		model.addAttribute("currentPage", currentPage);
+
+		int totalPages = articlesList.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+		}
+
 		return "auctions";
 	}
 
 	@PostMapping
-	public String showAuctions(@ModelAttribute("criteria") SearchCriteria research, Model model,
-			@ModelAttribute("userSession") User userSession) {
+	public String showAuctions(@ModelAttribute("criteria") SearchCriteria research,@ModelAttribute("research") SearchCriteria sessionResearch , Model model,
+			@ModelAttribute("userSession") User userSession,
+			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
 		System.out.println("showAuctions début");
 		System.out.println("post " + research);
+		
+		sessionResearch.setWordToFind(research.getWordToFind());
+		sessionResearch.setCategory(research.getCategory());
+		sessionResearch.setRadioButton(research.getRadioButton());
+		sessionResearch.setFilters(research.getFilters());
+		
 		model.addAttribute("criteria", research);
-		List<Article> articlesList = auctionService.selectArticles(research, userSession.getUserId());
+		Page<Article> articlesList = auctionService.selectArticles(research, userSession.getUserId(),
+				PageRequest.of(currentPage - 1, PAGE_SIZE));
 		model.addAttribute("articles", articlesList);
+		model.addAttribute("currentPage", currentPage);
+
+		int totalPages = articlesList.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+		}
+
 		return "auctions";
 	}
 
