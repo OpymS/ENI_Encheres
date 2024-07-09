@@ -12,14 +12,23 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.dal.ArticleDAO;
+
 @Service
 public class FileServiceImpl implements FileService {
 	
 	@Value("${upload.path}") //Affecte la valeur égale à celle dans app.properties
 	private String uploadPath;
+	
+	private ArticleDAO articleDAO;
+	
+	public FileServiceImpl(ArticleDAO articleDAO) {
+		this.articleDAO = articleDAO;
+	}
 
 	@Override
-	public String saveFile(MultipartFile file) throws IOException {
+	public String saveFile(MultipartFile file, Article article) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalStateException("Cannot upload empty file");
         }
@@ -45,13 +54,25 @@ public class FileServiceImpl implements FileService {
         // Copier le fichier uploadé dans le répertoire de destination
         Files.copy(file.getInputStream(), destinationFile);
 
+        affectAndUpdateArticle(article, uniqueFilename);
+        
         return uniqueFilename;
     }
+	
+	private void affectAndUpdateArticle(Article article, String uniqueFilename) {
+		article.setImageUUID(uniqueFilename);
+		
+		//Il faut modifer UPDATE dans la DAO
+		articleDAO.updateArticle(article);
+	}
+	
 
 	@Override
 	public Resource loadFileAsResource(String filename) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 
 }

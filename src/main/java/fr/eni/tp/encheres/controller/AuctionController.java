@@ -114,14 +114,14 @@ public class AuctionController {
 			@RequestParam(name="inputImage", required=false) MultipartFile fileImage
 			) {
 		System.out.println("image :"+fileImage);
-		
 		try {
-			fileService.saveFile(fileImage);
+			fileService.saveFile(fileImage, article);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		System.err.println(article);
 		
 		
 		
