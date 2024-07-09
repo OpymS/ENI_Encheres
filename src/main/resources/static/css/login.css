@@ -60,6 +60,7 @@ button[type="submit"] {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
@@ -98,6 +99,7 @@ button[type="submit"]:hover {
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
 .create-account-container a:hover {
