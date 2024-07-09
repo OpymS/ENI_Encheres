@@ -1,7 +1,8 @@
 package fr.eni.tp.encheres.controller;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
+import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -40,23 +42,17 @@ public class BidController {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
 		System.out.println(articleToDisplay);
 		
-		
+		//GEstion de l'affichae conditionnel sur la page
 		boolean isBidPossible = articleToDisplay.getState().equals(ArticleState.STARTED);
 		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
-		
 		boolean isChangePossible = isBeforeStart || isBidPossible;
-		
 		boolean isAuctionCanceled = articleToDisplay.getState().equals(ArticleState.CANCELED);
-		
 		boolean isAuctionFinished = articleToDisplay.getState().equals(ArticleState.FINISHED)
 				|| articleToDisplay.getState().equals(ArticleState.RETRIEVED);
-		
 		
 		model.addAttribute("articleDisplay", articleToDisplay);
 		model.addAttribute("userSession", userSession);
 		model.addAttribute("isChangePossible", isChangePossible);
-		
-		
 		model.addAttribute("isBidPossible", isBidPossible);
 		model.addAttribute("isBeforeStart", isBeforeStart);
 		model.addAttribute("isAuctionFinished", isAuctionFinished);
@@ -72,6 +68,13 @@ public class BidController {
 		
 		model.addAttribute("startDateDisplay", startDateDisplay);
 		model.addAttribute("endDateDisplay", endDateDisplay);
+		
+		//Récup des enchères sur cet article et tri
+		List<Auction> bidsList = auctionService.findAllAuctions(articleId);
+		
+		bidsList.sort((a,b)->b.getBidAmount()-a.getBidAmount());
+		
+		model.addAttribute("bids", bidsList);
 		
 		return "bid-article-detail";
 	}

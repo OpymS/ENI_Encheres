@@ -158,3 +158,47 @@ button {
 .modify-auction-container .button-styled-link:hover{
 	opacity:0.8;
 }
+
+.auction-details-container{
+	border-radius:5px;
+	max-width:600px;
+	width:100%;
+	margin:30px auto;
+	background:#ffffff;
+	display: flex;
+	flex-direction:column;
+	justify-content:center;
+	gap:20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding:20px 30px;
+}
+
+.auction-details-container .auction-title{
+	text-align:center;
+}
+
+.auction-details-container table{
+	width:100%;
+}
+
+.auction-details-container table td, table th {
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+.auction-details-container table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+.auction-details-container table th {
+	padding:10px 0;
+	text-align: center;
+	background-color: #333;
+	color: white;
+}
+
+.auction-details-container table tr:hover {
+	background-color: #ddd;
+}
+
+

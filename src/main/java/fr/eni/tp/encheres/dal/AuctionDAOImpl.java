@@ -3,6 +3,7 @@ package fr.eni.tp.encheres.dal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -107,6 +108,11 @@ class AuctionRowMapper implements RowMapper<Auction> {
 
 		auction.setAuctionDate(rs.getTimestamp("date_enchere").toLocalDateTime());
 		auction.setBidAmount(rs.getInt("montant_enchere"));
+		
+		String BidDateDisplayFormat = "dd/MM/yyyy - HH:mm:ss";
+		DateTimeFormatter BidDtFormater = DateTimeFormatter.ofPattern(BidDateDisplayFormat);
+		auction.setFormatedDate(BidDtFormater.format(auction.getAuctionDate()));
+		
 		return auction;
 	}
 

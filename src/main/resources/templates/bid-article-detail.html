@@ -12,79 +12,103 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
-    <div>
+	<div>
         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='en')}" th:text="#{label.lang.en}">English</a>
         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='fr')}" th:text="#{label.lang.fr}">Français</a>
     </div>
 
     <h1 class="title" th:text="#{title.saleDetail2}"></h1>
-        <div class="fields-container">
-            <div class="field-container-title">
-           	 <span class="article-name" th:text="${articleDisplay.articleName}"></span>
-            </div>
-            <div class="field-container">
-                <label for="desc" th:text="#{label.description}"></label>
-                <textarea id="desc" th:text="*{articleDisplay.description}" readonly></textarea>
-            </div>
-            <div class="field-container">
-                <label for="category" th:text="#{label.category}"></label>
-                <span th:text="${articleDisplay.category.label}"></span>
-            </div>
-            <div class="field-container">
-                <label for="currentPrice" th:text="#{label.currentOffer}"></label>
-                
-                <span th:if="${isBeforeStart}" th:text="#{label.auctionNotStarted}"></span>
-                <span th:if="${isAuctionCanceled}" th:text="|L'enchère est annulée|"></span>
-             
-              	<span th:if="${articleDisplay.currentBuyer.userId == 0 && isBidPossible}" th:text="'Aucune offre pour le moment'"></span>
-                <span th:if="${articleDisplay.currentBuyer.userId != 0 && isBidPossible}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
-       
-           		<span th:if="${articleDisplay.currentBuyer.userId == 0 && isAuctionFinished}" th:text="|L'enchère est terminée !|"></span>
-           		<span th:if="${articleDisplay.currentBuyer.userId != 0 && isAuctionFinished}" th:text="'Enchère remportée par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
-           		
-              
-            </div>
-            <div class="field-container">
-                <label for="beginningPrice" th:text="#{label.startingPrice}"></label>
-                <span th:text="${articleDisplay.beginningPrice} +' points'"></span>
-            </div>
-            <div class="field-container">
-                <label for="startDate" th:text="#{label.auctionStart}"></label>
-                <span th:text="${startDateDisplay}"></span>
-            </div>
-            <div class="field-container">
-                <label for="endDate" th:text="#{label.auctionEnd}"></label>
-                <span th:text="${endDateDisplay}"></span>
-            </div>
-  
-            <div class="field-container">
-                <label for="pickupLocation" th:text="#{label.pickup}"></label>
-                <div class="pickupLocation-container">
-	                <span th:text="${articleDisplay.pickupLocation.street}"></span>
-	                <br>
-	                <span th:text="${articleDisplay.pickupLocation.zipCode}"></span>
-	                <span th:text="${articleDisplay.pickupLocation.city}"></span>
-                </div>
-            </div>
-            
-            <div class="field-container">
-                <label for="seller" th:text="#{label.seller}"></label>
-                <span th:text="${articleDisplay.seller.pseudo}"></span>
-            </div>
-           
-            <div class="bid-offer-container" th:if="${isBidPossible}">
-	            <form th:action="@{/bid(articleId=${articleDisplay.articleId})}" method="POST">
-	                <label for="bid-offer" th:text="#{label.myBid}"></label>
-	                <input id="bid-offer" type="number" name="bidOffer" min="0"/>
-	                <button type="submit" class="button-submit" th:text="#{button.bid}"></button>
-	            </form>
-            </div>
-            
-            <div class="modify-auction-container" th:if="${isChangePossible && articleDisplay.seller.userId==userSession.userId}">
-            	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}" th:text="#{button.modifySale}"></a>
-            </div>
-            <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
+    <div class="fields-container">
+        <div class="field-container-title">
+       	 <span class="article-name" th:text="${articleDisplay.articleName}"></span>
         </div>
+        <div class="field-container">
+            <label for="desc" th:text="#{label.description}"></label>
+            <textarea id="desc" th:text="*{articleDisplay.description}" readonly></textarea>
+        </div>
+        <div class="field-container">
+            <label for="category" th:text="#{label.category}"></label>
+            <span th:text="${articleDisplay.category.label}"></span>
+        </div>
+        <div class="field-container">
+            <label for="currentPrice" th:text="#{label.currentOffer}"></label>
+            
+            <span th:if="${isBeforeStart}" th:text="#{label.auctionNotStarted}"></span>
+            <span th:if="${isAuctionCanceled}" th:text="|L'enchère est annulée|"></span>
+         
+          	<span th:if="${articleDisplay.currentBuyer.userId == 0 && isBidPossible}" th:text="'Aucune offre pour le moment'"></span>
+            <span th:if="${articleDisplay.currentBuyer.userId != 0 && isBidPossible}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+   
+       		<span th:if="${articleDisplay.currentBuyer.userId == 0 && isAuctionFinished}" th:text="|L'enchère est terminée !|"></span>
+       		<span th:if="${articleDisplay.currentBuyer.userId != 0 && isAuctionFinished}" th:text="'Enchère remportée par '+ ${articleDisplay.currentBuyer.pseudo}"></span>
+       		
+          
+        </div>
+        <div class="field-container">
+            <label for="beginningPrice" th:text="#{label.startingPrice}"></label>
+            <span th:text="${articleDisplay.beginningPrice} +' points'"></span>
+        </div>
+        <div class="field-container">
+            <label for="startDate" th:text="#{label.auctionStart}"></label>
+            <span th:text="${startDateDisplay}"></span>
+        </div>
+        <div class="field-container">
+            <label for="endDate" th:text="#{label.auctionEnd}"></label>
+            <span th:text="${endDateDisplay}"></span>
+        </div>
+
+        <div class="field-container">
+            <label for="pickupLocation" th:text="#{label.pickup}"></label>
+            <div class="pickupLocation-container">
+             <span th:text="${articleDisplay.pickupLocation.street}"></span>
+             <br>
+             <span th:text="${articleDisplay.pickupLocation.zipCode}"></span>
+             <span th:text="${articleDisplay.pickupLocation.city}"></span>
+            </div>
+        </div>
+        
+        <div class="field-container">
+            <label for="seller" th:text="#{label.seller}"></label>
+            <span th:text="${articleDisplay.seller.pseudo}"></span>
+        </div>
+       
+        <div class="bid-offer-container" th:if="${isBidPossible}">
+         <form th:action="@{/bid(articleId=${articleDisplay.articleId})}" method="POST">
+             <label for="bid-offer" th:text="#{label.myBid}"></label>
+             <input id="bid-offer" type="number" name="bidOffer" min="0"/>
+             <button type="submit" class="button-submit" th:text="#{button.bid}"></button>
+         </form>
+        </div>
+        
+        <div class="modify-auction-container" th:if="${isChangePossible && articleDisplay.seller.userId==userSession.userId}">
+        	<a class="button-styled-link" th:href="@{/auctions/modifyArticle(articleId=${articleDisplay.articleId})}" th:text="#{button.modifySale}"></a>
+        </div>
+        <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
+    </div>
+     
+    <div th:if="${articleDisplay.seller.userId==userSession.userId}" class="auction-details-container">
+    	<h2 class="auction-title">Liste des enchères</h2>
+    	<div class="bids-container">
+    	
+	    	<table>
+				<thead>
+					<tr>
+						<th>Enchérisseur</th>
+						<th>Crédits</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="bid : ${bids}"> 
+						<td th:text="${bid.user.pseudo}">...</td>
+						<td th:text="${bid.bidAmount}">...</td>
+						<td th:text="${bid.formatedDate}">...</td>
+					</tr>
+				</tbody>
+			</table>
+    	
+    	</div>
+    </div>
 </main>
 
 <div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
