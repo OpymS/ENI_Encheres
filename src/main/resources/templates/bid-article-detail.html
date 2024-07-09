@@ -34,6 +34,7 @@
                 <label for="currentPrice" th:text="#{label.currentOffer}"></label>
                 
                 <span th:if="${isBeforeStart}" th:text="#{label.auctionNotStarted}"></span>
+                <span th:if="${isAuctionCanceled}" th:text="|L'enchère est annulée|"></span>
              
               	<span th:if="${articleDisplay.currentBuyer.userId == 0 && isBidPossible}" th:text="'Aucune offre pour le moment'"></span>
                 <span th:if="${articleDisplay.currentBuyer.userId != 0 && isBidPossible}" th:text="${articleDisplay.currentPrice} + ' pts par '+ ${articleDisplay.currentBuyer.pseudo}"></span>

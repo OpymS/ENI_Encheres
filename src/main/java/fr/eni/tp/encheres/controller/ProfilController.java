@@ -92,11 +92,11 @@ public class ProfilController {
 		try {
 			userService.deleteAccount(userId);
 			
-			
 			//Si pas d'erreur, on déconnecte
 			return "redirect:/logout";
 			
 		} catch (BusinessException e) {
+			//NOTE : Une seule erreur s'affiche, même si deux sont présente, à voir ...
 			e.getErreurs().forEach(err -> redirectAttributes.addFlashAttribute("globalError", err));
 			return "redirect:/profil/modify";
 		}
