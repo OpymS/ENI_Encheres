@@ -1,5 +1,6 @@
 package fr.eni.tp.encheres.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import fr.eni.tp.encheres.bll.AuctionService;
+import fr.eni.tp.encheres.bll.FileService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Category;
@@ -32,9 +35,12 @@ import jakarta.validation.Valid;
 @SessionAttributes({ "userSession", "categoriesSession" })
 public class AuctionController {
 	private AuctionService auctionService;
+	private FileService fileService;
 
-	public AuctionController(AuctionService auctionService) {
+	public AuctionController(AuctionService auctionService, FileService fileService) {
 		this.auctionService = auctionService;
+		this.fileService = fileService;
+	
 	}
 
 	@GetMapping
@@ -104,8 +110,21 @@ public class AuctionController {
 			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
-			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime
+			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
+			@RequestParam(name="inputImage", required=false) MultipartFile fileImage
 			) {
+		System.out.println("image :"+fileImage);
+		
+		try {
+			fileService.saveFile(fileImage);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 		
