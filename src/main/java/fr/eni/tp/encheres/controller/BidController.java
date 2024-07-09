@@ -69,13 +69,8 @@ public class BidController {
 		model.addAttribute("startDateDisplay", startDateDisplay);
 		model.addAttribute("endDateDisplay", endDateDisplay);
 		
-		//Récup des enchères sur cet article, tri, et mise en forme des dates
-		String BidDateDisplayFormat = "dd/MM/yyyy - HH:mm:ss";
-		DateTimeFormatter BidDtFormater = DateTimeFormatter.ofPattern(BidDateDisplayFormat);
+		//Récup des enchères sur cet article et tri
 		List<Auction> bidsList = auctionService.findAllAuctions(articleId);
-		bidsList.forEach(bid -> {
-			bid.setFormatedDate(BidDtFormater.format(bid.getAuctionDate()));
-		});
 		
 		bidsList.sort((a,b)->b.getBidAmount()-a.getBidAmount());
 		
