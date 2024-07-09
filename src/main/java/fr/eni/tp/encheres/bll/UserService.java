@@ -104,4 +104,6 @@ public interface UserService {
 	void updateUserCredit(User user);
 
 	List<User> getAllUsers();
+
+	void desactivateAccount(int userId) throws BusinessException;
 }

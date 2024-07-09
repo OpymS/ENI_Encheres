@@ -74,8 +74,9 @@ public class BidController {
 		
 		bidsList.sort((a,b)->b.getBidAmount()-a.getBidAmount());
 		
-		model.addAttribute("bids", bidsList);
 		
+		model.addAttribute("bids", bidsList);
+		model.addAttribute("isThereBids", bidsList.size()!=0);		
 		return "bid-article-detail";
 	}
 	

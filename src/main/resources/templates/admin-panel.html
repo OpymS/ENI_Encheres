@@ -39,7 +39,7 @@
 						<td th:text="${user.credit}">...</td>
 						<td th:text="${user.admin ? 'Administrateur' : 'Membre'}">...</td>
 						<td class="buttons-container">
-							<a href="" class="desac-button button">Désactiver</a>
+							<a href="#modal2" class="js-modal button desac-button" th:attr="data-user-id=${user.userId}">Désactiver</a>
 							<a href="#modal1" class="js-modal button delete-button" th:attr="data-user-id=${user.userId}">Supprimer</a>
 						</td>
 				</tbody>
@@ -63,7 +63,7 @@
 					</ul>
 				</div>
 				<div class="confirm-container">	
-					<a href="/" class="confirm-delete">Je confirme la suppression</a>
+					<a href="/" class="confirm-btn">Je confirme la suppression</a>
 				</div>
 				<button class="close-button js-close-modal">
 					<img src="/images/closing-cross.svg" alt="">
@@ -72,6 +72,27 @@
 
 		</aside>
 
+ 		<aside id="modal2" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
+			<div class="modal-wrapper js-modal-stop">
+				<div class="modal-content">
+					<h2 id="modaltitle">Êtes vous sûr ?</h2>
+
+					<p class="modal-description">La désactivation du compte entrainera :</p>
+					<ul>
+						<li>- L'annulation des ventes/enchères concernant les articles en cours de vente.</li>
+						<li>- L'annulation des ventes des articles qui n'ont pas encore commencées.</li>
+						<li>- L'impossibilité de créer de nouvelles ventes ou d'enchérir.</li>
+					</ul>
+				</div>
+				<div class="confirm-container">	
+					<a href="/" class="confirm-btn">Je confirme la désactivation</a>
+				</div>
+				<button class="close-button js-close-modal">
+					<img src="/images/closing-cross.svg" alt="">
+				</button>
+			</div>
+
+		</aside>
      
 </main>
 

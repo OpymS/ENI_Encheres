@@ -118,7 +118,7 @@
     flex-grow: 1;
 }
 
-.confirm-delete{
+.confirm-btn{
     text-decoration: none;
     padding:10px 20px;
     min-width:180px;

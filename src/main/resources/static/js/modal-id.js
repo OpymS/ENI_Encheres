@@ -30,10 +30,17 @@ function openModal(e){
 
 
     const userId = e.target.getAttribute("data-user-id");
+    console.log(e.target.classList[e.target.classList.length-1])
     console.log('User ID:', userId);
 
-    let deleteHref = `/admin/deleteAccount?userId=${userId}`
-    modal.querySelector(".confirm-delete").setAttribute("href", deleteHref)
+    if(e.target.classList[e.target.classList.length-1]=="delete-button"){
+        let deleteHref = `/admin/deleteAccount?userId=${userId}`
+        modal.querySelector(".confirm-btn").setAttribute("href", deleteHref)
+    }else if(e.target.classList[e.target.classList.length-1]=="desac-button"){
+        let deleteHref = `/admin/desacAccount?userId=${userId}`
+        modal.querySelector(".confirm-btn").setAttribute("href", deleteHref)
+    }
+
     
 }
 
@@ -49,7 +56,7 @@ function closeModal(e){
     modal.querySelector(".js-close-modal").removeEventListener("click", closeModal)
     modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
     
-    modal.querySelector(".confirm-delete").setAttribute("href", "/")
+    modal.querySelector(".confirm-btn").setAttribute("href", "/")
 
     modal = null
 

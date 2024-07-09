@@ -159,9 +159,54 @@ public class UserServiceImpl implements UserService {
 					});
 				}
 				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
-				articleDAO.eraserSellerByUserId(userId);
+				articleDAO.eraseSellerByUserId(userId);
 				//Supprimer l'utilisateur (car plus aucune foreign key)
 				userDAO.deleteById(userId);
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
+		
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = BusinessException.class)
+	public void desactivateAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
+		
+		//Check des conditions: 
+		// 1 - Pas d'article dont la vente est terminée mais non récupérée
+		// 2 - Pas acheteur courant d'un article en vente
+		boolean isDeleteAccepted = checkArticlesState(userId, be);
+		isDeleteAccepted &= checkUserBids(userId, be);
+				
+		
+		if (isDeleteAccepted) {
+			try {
+				//Modifier les "enchères" ou mises de l'utilisateur
+				//auctionDAO.eraseUserBidsByUserId(userId);
+				//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
+				// 1 - Récup les ventes de cet user, en état 2 et 3
+				// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
+				// 3 - Modifier les articles avec no_utilisateur à 0
+				List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
+				
+				if(userArticlesToCancel.size()!=0) {
+					userArticlesToCancel.forEach(article -> {
+						auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
+					});
+				}
+				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
+				//articleDAO.eraseSellerByUserId(userId);
+				//Supprimer l'utilisateur (car plus aucune foreign key)
+				userDAO.desactivateById(userId);
 				
 			} catch (DataAccessException e) {
 				e.printStackTrace();

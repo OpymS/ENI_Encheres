@@ -58,5 +58,30 @@ public class AdminPanelController {
 		return "redirect:/admin";
 	}
 	
+	@GetMapping("/desacAccount")
+	public String desactivateUserAccount(@RequestParam(name="userId", required=false) int userId, @SessionAttribute("userSession") User userSession) {
+		
+		System.err.println("userId : "+userId);
+		System.out.println(userSession);
+		
+		//On vérifie quand même si l'utilisateur qui appelle cet url est administrateur
+		if(!userSession.isAdmin()) {
+			System.err.println("Vous n'êtes pas admin ! Dégagez");
+			return "redirect:/auctions";
+		}
+		
+		try {
+			userService.desactivateAccount(userId);
+		} catch (BusinessException e) {
+			System.err.println(e);
+		}
+		
+		
+		
+		
+		return "redirect:/admin";
+	}
+	
+	
 	
 }

@@ -35,11 +35,15 @@ public class User {
 	private int credit;
 	private boolean admin;
 	
+	private boolean activated;
+	
+	
 	private List<Article> purchases;
 	private List<Article> sales;
 	private List<Auction> auctions;
 	
 	public User() {
+		this.activated = true;
 		purchases = new ArrayList<Article>();
 		sales = new ArrayList<Article>();
 		auctions = new ArrayList<Auction>();
@@ -148,6 +152,14 @@ public class User {
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
+	
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
 
 	public List<Article> getPurchases() {
 		return purchases;
@@ -176,9 +188,9 @@ public class User {
 	@Override
 	public String toString() {
 		return String.format(
-				"User [userId=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s]",
+				"User [userId=%s, pseudo=%s, name=%s, firstName=%s, email=%s, phoneNumber=%s, street=%s, zipCode=%s, city=%s, credit=%s, admin=%s, purchases=%s, sales=%s, auctions=%s%n, activated=%s]",
 				userId, pseudo, name, firstName, email, phoneNumber, street, zipCode, city, credit, admin,
-				purchases, sales, auctions);
+				purchases, sales, auctions, activated);
 	}
 
 	

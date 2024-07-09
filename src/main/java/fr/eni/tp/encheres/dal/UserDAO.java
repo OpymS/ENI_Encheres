@@ -91,4 +91,6 @@ public interface UserDAO {
 
 	void updateCredit(User user);
 
+	void desactivateById(int userId);
+
 }

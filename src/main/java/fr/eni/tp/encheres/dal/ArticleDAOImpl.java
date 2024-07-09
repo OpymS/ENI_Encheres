@@ -171,7 +171,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	}
 	
 	@Override
-	public void eraserSellerByUserId(int userId) {
+	public void eraseSellerByUserId(int userId) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
