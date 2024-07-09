@@ -1,5 +1,8 @@
 package fr.eni.tp.encheres.controller;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,9 +27,11 @@ import jakarta.validation.Valid;
 public class ProfilController {
 
 	private UserService userService;
+	private MessageSource messageSource;
 
-	public ProfilController(UserService userService) {
+	public ProfilController(UserService userService, MessageSource messageSource) {
 		this.userService = userService;
+		this.messageSource = messageSource;
 	}
 
 	@GetMapping // NOTE : Ajouter vérif sur id valide plus tard
@@ -51,7 +56,7 @@ public class ProfilController {
 	public String modifyUserInfos(@Valid @ModelAttribute("user") User userForm, BindingResult bindingResult,
 			@SessionAttribute("userSession") User userSession,
 			@RequestParam(name = "updatedPassword", required = false) String updatedPassword,
-			@RequestParam(name = "currentPassword", required = false) String currentPassword) {
+			@RequestParam(name = "currentPassword", required = false) String currentPassword, Locale locale) {
 
 		userForm.setUserId(userSession.getUserId());
 		userForm.setCredit(userSession.getCredit());
@@ -70,40 +75,41 @@ public class ProfilController {
 				return redirectUrl;
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
-					ObjectError error = new ObjectError("globalError", err);
+					String errorMessage = messageSource.getMessage(err, null, locale);
+					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
 				});
 				return "profil-modify";
 			}
 		}
 	}
-	
-	
+
 	@GetMapping("/deleteAccount")
-	public String deleteUserAccount(@SessionAttribute("userSession") User userSession, @RequestParam(name="userId") int userId, RedirectAttributes redirectAttributes) {
-		
-		//check si c'est bien l'utilisateur connecté qui veut supprimer
-		if(userSession.getUserId()!=userId) {
+	public String deleteUserAccount(@SessionAttribute("userSession") User userSession,
+			@RequestParam(name = "userId") int userId, RedirectAttributes redirectAttributes,
+			Locale locale) {
+
+		// check si c'est bien l'utilisateur connecté qui veut supprimer
+		if (userSession.getUserId() != userId) {
 			System.err.println("Pas le bon utilisateur !");
 			return "redirect:/auctions";
 		}
-		
-		
+
 		try {
 			userService.deleteAccount(userId);
-			
-			//Si pas d'erreur, on déconnecte
+
+			// Si pas d'erreur, on déconnecte
 			return "redirect:/logout";
-			
+
 		} catch (BusinessException e) {
-			//NOTE : Une seule erreur s'affiche, même si deux sont présente, à voir ...
-			e.getErreurs().forEach(err -> redirectAttributes.addFlashAttribute("globalError", err));
+			// NOTE : Une seule erreur s'affiche, même si deux sont présente, à voir ...
+			e.getErreurs().forEach(err -> {
+				String errorMessage = messageSource.getMessage(err, null, locale);
+				redirectAttributes.addFlashAttribute("globalError", errorMessage);
+			});
 			return "redirect:/profil/modify";
 		}
-		
-	
-		
+
 	}
-	
-	
+
 }

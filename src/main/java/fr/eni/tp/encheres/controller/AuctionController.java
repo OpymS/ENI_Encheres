@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,9 +34,11 @@ import jakarta.validation.Valid;
 @SessionAttributes({ "userSession", "categoriesSession" })
 public class AuctionController {
 	private AuctionService auctionService;
+	private MessageSource messageSource;
 
-	public AuctionController(AuctionService auctionService) {
+	public AuctionController(AuctionService auctionService, MessageSource messageSource) {
 		this.auctionService = auctionService;
+		this.messageSource = messageSource;
 	}
 
 	@GetMapping
@@ -104,8 +108,8 @@ public class AuctionController {
 			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
-			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime
-			) {
+			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
+			Locale locale) {
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 		
@@ -123,7 +127,8 @@ public class AuctionController {
 				return "redirect:/auctions";
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
-					ObjectError error = new ObjectError("globalError", err);
+					String errorMessage = messageSource.getMessage(err, null, locale);
+					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
 				});
 				return "article-create";
@@ -159,7 +164,7 @@ public class AuctionController {
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
-			Model model
+			Model model, Locale locale
 			) {
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
@@ -189,7 +194,8 @@ public class AuctionController {
 				
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
-					ObjectError error = new ObjectError("globalError", err);
+					String errorMessage = messageSource.getMessage(err, null, locale);
+					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
 				});
 				return "article-modify";
