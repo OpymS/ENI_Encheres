@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
     <meta charset="UTF-8">
-    <title>ENI Enchères - Nouvelle Vente</title>
+    <title th:text="#{title.newSale}"></title>
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/article-create.css">
 	<link rel="icon" href="images/favicon.png"/>
@@ -12,66 +12,72 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
-    <h1 class="title">NOUVELLE VENTE</h1>
+
+		<div>
+			<a th:href="@{/auctions/newArticle(language='en')}" data-th-text="#{label.lang.en}"></a>
+			<a th:href="@{/auctions/newArticle(language='fr')}" data-th-text="#{label.lang.fr}"></a>
+		</div>
+
+    <h1 class="title" th:text="#{title.newSale2}"></h1>
     <form th:action="@{/auctions/newArticle}" method="POST" class="article-create-form" th:object="${article}">
         <div class="inputs-container">
             <div class="input-container">
-                <label for="inputName">Article :</label>
+                <label for="inputName" th:text="#{label.article}"></label>
 <!--                <input id="inputName" th:field="*{articleName}" type="text" maxlength="30" required>-->
                 <input id="inputName" th:field="*{articleName}" type="text">
             </div>
             <div class="input-container">
-                <label for="inputDesc">Description :</label>
+                <label for="inputDesc" th:text="#{label.description}"></label>
 <!--                <textarea id="inputDesc" th:field="*{description}" maxlength="300"></textarea>-->
                 <textarea id="inputDesc" th:field="*{description}"></textarea>
             </div>
             <div class="input-container">
-                <label for="inputCategory">Catégorie :</label>
+                <label for="inputCategory" th:text="#{label.category}"></label>
                 <select name="inputCategory" id="inputCategory" th:field="*{category}">
                     <option th:each="item : ${categoriesSession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
                 </select>	
             </div>
             <div class="input-container">
-                <label for="inputPrice">Mise à prix :</label>
+                <label for="inputPrice" th:text="#{label.startingPrice}"></label>
 <!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
                 <input id="inputPrice" th:field="*{beginningPrice}" type="number">
             </div>
             <div class="input-container">
-                <label for="inputStartDate">Début de l'enchère :</label>
+                <label for="inputStartDate" th:text="#{label.auctionStart}"></label>
                 <div class="input-dateTime-container">
                     <input id="inputStartDate" name="startDateTemp" type="date">
                     <input id="inputStartTime" name="startTimeTemp" type="time">
                 </div>
             </div>
             <div class="input-container">
-                <label for="inputEndDate">Fin de l'enchère :</label>
+                <label for="inputEndDate" th:text="#{label.auctionEnd}"></label>
                 <div class="input-dateTime-container">
                     <input id="inputEndDate" name="endDateTemp" type="date">
                     <input id="inputEndTime" name="endTimeTemp" type="time">
                 </div>
             </div>
             <fieldset class="retrait-input">
-                <legend>Retrait</legend>
+                <legend th:text="#{label.retrait}"></legend>
                 <div class="input-container">
-                    <label for="inputStreet">Rue :</label>
+                    <label for="inputStreet" th:text="#{label.street}"></label>
 <!--                    <input id="inputStreet" type="text" th:field="*{pickupLocation.street}" maxlength="30">-->
                     <input id="inputStreet" type="text" th:field="*{pickupLocation.street}">
                 </div>
                 <div class="input-container">
-                    <label for="inputCpo">Code Postal :</label>
+                    <label for="inputCpo" th:text="#{label.zipCode}"></label>
 <!--                    <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}" pattern="^\d{5}$">-->
                     <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}">
                 </div>
                 <div class="input-container">
-                    <label for="inputCity">Ville :</label>
+                    <label for="inputCity" th:text="#{label.city}"></label>
 <!--                    <input id="inputCity" type="text" th:field="*{pickupLocation.city}" maxlength="30">-->
                     <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
                 </div>
             </fieldset>
             <div class="buttons-container">
-                <button type="submit" class="button-submit">Enregistrer</button>
-                <button type="button" class="button-cancel">Annuler</button>
-                <button style="visibility:hidden;">Annuler la vente</button>
+                <button type="submit" class="button-submit button" th:text="#{button.save}"></button>
+                <button type="button" class="button-cancel button" th:text="#{button.cancel}"></button>
+                <button style="visibility:hidden;"  th:text="#{button.cancelSale}"></button>
             </div>
         </div>
         <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>

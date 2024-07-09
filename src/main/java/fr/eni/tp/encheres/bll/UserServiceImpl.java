@@ -6,7 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.dal.ArticleDAO;
+import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.UserDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -17,9 +20,18 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @Service
 public class UserServiceImpl implements UserService {
 
-	/** The user DAO. */
-	@Autowired
+	private AuctionService auctionService;
+	
 	private UserDAO userDAO;
+	private ArticleDAO articleDAO;
+	private AuctionDAO auctionDAO;
+	
+	public UserServiceImpl(UserDAO userDAO,ArticleDAO articleDAO, AuctionDAO auctionDAO, AuctionService auctionService) {
+		this.userDAO= userDAO;
+		this.articleDAO = articleDAO;
+		this.auctionDAO = auctionDAO;
+		this.auctionService = auctionService;
+	}
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -103,10 +115,84 @@ public class UserServiceImpl implements UserService {
 	 * @param userId the user id
 	 */
 	@Override
-	public void deleteAccount(int userId) {
-		userDAO.deleteById(userId);
-
+	@Transactional(rollbackFor = BusinessException.class)
+	public void deleteAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
+		
+		//Check des conditions: 
+		// 1 - Pas d'article dont la vente est terminée mais non récupérée
+		// 2 - Pas acheteur courant d'un article en vente
+		boolean isDeleteAccepted = checkArticlesState(userId, be);
+		isDeleteAccepted &= checkUserBids(userId, be);
+				
+		
+		if (isDeleteAccepted) {
+			try {
+				//Modifier les "enchères" ou mises de l'utilisateur
+				auctionDAO.eraseUserBidsByUserId(userId);
+				//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
+				// 1 - Récup les ventes de cet user, en état 2 et 3
+				// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
+				// 3 - Modifier les articles avec no_utilisateur à 0
+				List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
+				
+				if(userArticlesToCancel.size()!=0) {
+					userArticlesToCancel.forEach(article -> {
+						auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
+					});
+				}
+				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
+				articleDAO.eraserSellerByUserId(userId);
+				//Supprimer l'utilisateur (car plus aucune foreign key)
+				userDAO.deleteById(userId);
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
+		
 	}
+	
+	
+	
+	private boolean checkArticlesState(int userId,  BusinessException be) {
+		boolean isDeleteOk = false;
+		
+		int nbArticlesFinished = articleDAO.countArticlesFinishedBySellerId(userId);
+		
+		if(nbArticlesFinished==0) {
+			isDeleteOk = true;
+		}else {
+			be.add("Pas possible, vous avez des articles vendus non récupérés !");
+		}
+		
+		return isDeleteOk;
+		
+	}
+	
+	private boolean checkUserBids(int userId,  BusinessException be) {
+		boolean isDeleteOk = false;
+		
+		int nbPossibleBuy = articleDAO.countArticlesByBuyerId(userId);
+		
+		if(nbPossibleBuy==0) {
+			isDeleteOk = true;
+		}else {
+			be.add("Pas possible, vous êtes le plus gros enchérisseur sur une vente !");
+		}
+		
+		return isDeleteOk;
+		
+	}
+	
+	
+	
+	
 
 	/**
 	 * View own points.

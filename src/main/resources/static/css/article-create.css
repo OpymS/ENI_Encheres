@@ -84,13 +84,14 @@ textarea {
     margin-top: 20px;
 }
 
-button {
+.button {
     padding: 10px 20px;
     font-size: 1rem;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     min-width: 120px; 
+    transition: background-color 0.3s ease;
 }
 
 .button-submit {
@@ -129,4 +130,94 @@ button {
 
 .button-styled-link:hover{
 	opacity:0.8;
+}
+
+/* MODALE */
+
+
+.modal{
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.modal-wrapper{
+	border-radius:5px;
+    background: #f1f1f1;
+    overflow: auto;
+    width:600px;
+    max-width: calc(100vw -20px);
+    height: 400px;
+    max-height: calc(100vh - 20px);
+    padding:20px;
+    position: relative;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-wrapper h2{
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+}
+
+.modal-description{
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.modal-wrapper li{
+    list-style: none;
+    margin-bottom:5px;
+    margin-left:5px;
+}
+
+.modal .close-button{
+    border-radius: 3px;
+    width:40px;
+    aspect-ratio: 1;
+    background:crimson;
+    color: #f1f1f1;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.confirm-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.confirm-delete{
+    text-decoration: none;
+    padding:10px 20px;
+    min-width:180px;
+    min-height: 60px;
+    border-radius: 5px;
+    background:crimson;
+    color: #f1f1f1;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:20px;
+    font-weight: 600;
 }

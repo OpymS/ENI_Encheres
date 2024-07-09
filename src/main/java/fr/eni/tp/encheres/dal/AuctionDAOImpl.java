@@ -3,6 +3,7 @@ package fr.eni.tp.encheres.dal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -23,6 +24,9 @@ public class AuctionDAOImpl implements AuctionDAO {
 	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :articleId, :date, :bidAmount)";
 	private static final String DELETE = "DELETE FROM ENCHERES WHERE no_utilisateur = :userId AND no_article = :articleId AND date_enchere = :auctionDate";
 
+	private static final String ERASE_BY_USER_ID = "UPDATE ENCHERES SET no_utilisateur = 0 WHERE no_utilisateur = :userId";
+	
+	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	public AuctionDAOImpl(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -76,6 +80,15 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 		jdbcTemplate.update(DELETE, mapSqlParameterSource);
 	}
+	
+	
+	@Override
+	public void eraseUserBidsByUserId(int userId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("userId", userId);
+
+		jdbcTemplate.update(ERASE_BY_USER_ID, mapSqlParameterSource);
+	}
 
 }
 
@@ -95,6 +108,11 @@ class AuctionRowMapper implements RowMapper<Auction> {
 
 		auction.setAuctionDate(rs.getTimestamp("date_enchere").toLocalDateTime());
 		auction.setBidAmount(rs.getInt("montant_enchere"));
+		
+		String BidDateDisplayFormat = "dd/MM/yyyy - HH:mm:ss";
+		DateTimeFormatter BidDtFormater = DateTimeFormatter.ofPattern(BidDateDisplayFormat);
+		auction.setFormatedDate(BidDtFormater.format(auction.getAuctionDate()));
+		
 		return auction;
 	}
 

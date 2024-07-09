@@ -1,7 +1,8 @@
 package fr.eni.tp.encheres.controller;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import fr.eni.tp.encheres.bll.AuctionService;
 import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
+import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -38,27 +41,22 @@ public class BidController {
 									Model model) {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
 		System.out.println(articleToDisplay);
-		// Check si on peut enchérir
-		// càd la date actuelle est entre la date de début et la date de fin de l'enchère.
-		boolean isBidPossible = (LocalDateTime.now().isAfter(articleToDisplay.getAuctionStartDate()) 
-								&& LocalDateTime.now().isBefore(articleToDisplay.getAuctionEndDate()));
 		
-		// Changement de l'enchère/article possible (modification/annulation)
-		// si la date actuelle est avant le début ou pendant l'enchère
-		boolean isBeforeStart = LocalDateTime.now().isBefore(articleToDisplay.getAuctionStartDate());
+		//GEstion de l'affichae conditionnel sur la page
+		boolean isBidPossible = articleToDisplay.getState().equals(ArticleState.STARTED);
+		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
 		boolean isChangePossible = isBeforeStart || isBidPossible;
-		
-		
-		boolean isAuctionFinished = LocalDateTime.now().isAfter(articleToDisplay.getAuctionEndDate());
+		boolean isAuctionCanceled = articleToDisplay.getState().equals(ArticleState.CANCELED);
+		boolean isAuctionFinished = articleToDisplay.getState().equals(ArticleState.FINISHED)
+				|| articleToDisplay.getState().equals(ArticleState.RETRIEVED);
 		
 		model.addAttribute("articleDisplay", articleToDisplay);
 		model.addAttribute("userSession", userSession);
 		model.addAttribute("isChangePossible", isChangePossible);
-		
-		
 		model.addAttribute("isBidPossible", isBidPossible);
 		model.addAttribute("isBeforeStart", isBeforeStart);
 		model.addAttribute("isAuctionFinished", isAuctionFinished);
+		model.addAttribute("isAuctionCanceled", isAuctionCanceled);
 		
 		
 		// Ajout de la date au bon format !
@@ -70,6 +68,13 @@ public class BidController {
 		
 		model.addAttribute("startDateDisplay", startDateDisplay);
 		model.addAttribute("endDateDisplay", endDateDisplay);
+		
+		//Récup des enchères sur cet article et tri
+		List<Auction> bidsList = auctionService.findAllAuctions(articleId);
+		
+		bidsList.sort((a,b)->b.getBidAmount()-a.getBidAmount());
+		
+		model.addAttribute("bids", bidsList);
 		
 		return "bid-article-detail";
 	}

@@ -14,17 +14,21 @@
 	<div data-th-replace="~{fragments/fragment-header :: header}"></div>
 
 	<main>
-		<h1 class="title">LISTE DES ENCHERES</h1>
-		<h2 class="subtitle">Filtres :</h2>
+		
+		<div>
+			<a th:href="@{|auctions?language=en|}" data-th-text="#{label.lang.en}"></a>
+			<a th:href="@{|auctions?language=fr|}" data-th-text="#{label.lang.fr}"></a>
+		</div>
+	
+		<h1 class="title" th:text="#{h1.auctions}"></h1>
+		<h2 class="subtitle" th:text="#{h2.auctions}"></h2>
 		<section class="filter-container">
 			<form th:action="@{/auctions}" method="post" th:object="${criteria}">
 				<div class="inputs-container">
-
 					<input id="inputSearch" type="text" th:field="*{wordToFind}"
 						placeholder="Le nom de l'article contient ...">
-
 					<div class="category">
-						<label for="inputCategory">Catégorie :</label>
+						<label for="inputCategory" th:text="#{label.category}"></label>
 						<select th:field="*{category}" id="inputCategory">
 							<option value="0">Toutes</option>
 							<option th:each="cat:${categoriesSession}" th:value="${cat.categoryId}"
@@ -77,7 +81,7 @@
 				</div>
 
 				<div class="button-container">
-					<button type="submit">Rechercher</button>
+					<button type="submit" th:text="#{label.search}"></button>
 				</div>
 			</form>
 		</section>
@@ -99,7 +103,6 @@
 <!--            <button th:if="${currentPage + 1 < totalPages}" th:href="@{/auctions(page=${currentPage + 1})}">Suivant</button>-->
         </div>
 	</main>
-
 
 	<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
 

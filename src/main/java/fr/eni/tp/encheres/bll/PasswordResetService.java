@@ -1,8 +1,10 @@
 package fr.eni.tp.encheres.bll;
 
-public interface PasswordResetService {
+import fr.eni.tp.encheres.bo.PasswordResetToken;
+import fr.eni.tp.encheres.bo.User;
 
+public interface PasswordResetService {
 	
-	void sendEmail(String to, String subject, String text);
+    PasswordResetToken createPasswordResetToken(String token, int user_id);
 
 }
