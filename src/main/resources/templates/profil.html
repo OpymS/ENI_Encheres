@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>ENI Enchères - Profil</title>
-    <link rel="stylesheet" href="/css/general.css">
+    <title th:text="#{title.profile}"></title>
+   	<link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/profil.css">
 	<link rel="icon" href="images/favicon.png"/>
 </head>
@@ -12,39 +12,46 @@
 <div th:replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
-    <h1 class="title">PROFIL</h1>
-    <div class="profil-info">
+
+    <div>
+        <a th:href="@{/profil(userId=${userDisplay.userId}, language='en')}" th:text="#{label.lang.en}">English</a>
+        <a th:href="@{/profil(userId=${userDisplay.userId}, language='fr')}" th:text="#{label.lang.fr}">Français</a>
+    </div>
+
+
+    <h1 class="title" th:text="#{title.profile2}"></h1>
+	<div class="profil-info">
         <h2 class="profil-username" th:text="${userDisplay.pseudo}"></h2>
         <div class="profil-field">
-            <label for="nom">Nom :</label>
+            <label for="nom" th:text="#{label.lastname}"></label>
             <span th:text="${userDisplay.name}"></span>
         </div>
         <div class="profil-field">
-            <label for="prenom">Prénom :</label>
-            <span th:text="${userDisplay.firstName}">Prénom</span>
+            <label for="prenom"  th:text="#{label.firstname}"></label>
+            <span th:text="${userDisplay.firstName}"></span>
         </div>
         <div class="profil-field">
-            <label for="email">Email :</label>
-            <span th:text="${userDisplay.email}">Email</span>
+            <label for="email" th:text="#{label.email}"></label>
+            <span th:text="${userDisplay.email}"></span>
         </div>
         <div class="profil-field">
-            <label for="telephone">Téléphone :</label>
-            <span th:text="${userDisplay.phoneNumber}">Téléphone</span>
+            <label for="telephone" th:text="#{label.phone}"></label>
+            <span th:text="${userDisplay.phoneNumber}"></span>
         </div>
         <div class="profil-field">
-            <label for="rue">Rue :</label>
-            <span th:text="${userDisplay.street}">Rue</span>
+            <label for="rue" th:text="#{label.street}"></label>
+            <span th:text="${userDisplay.street}"></span>
         </div>
         <div class="profil-field">
-            <label for="codePostal">Code Postal :</label>
+            <label for="codePostal" th:text="#{label.zipCode}"></label>
             <span th:text="${userDisplay.zipCode}">Code Postal</span>
         </div>
         <div class="profil-field">
-            <label for="ville">Ville :</label>
-            <span th:text="${userDisplay.city}">Ville</span>
+            <label for="ville" th:text="#{label.city}"></label>
+            <span th:text="${userDisplay.city}"></span>
         </div>
         <div class="modify-profile-container" th:if="${userDisplay.userId == userSession.userId}">
-  			<a th:href="@{/profil/modify}">Modifier mon profil</a>
+  			<a th:href="@{/profil/modify}" th:text="#{label.modifyProfile}"></a>
 		</div>    
     </div>
 </main>
