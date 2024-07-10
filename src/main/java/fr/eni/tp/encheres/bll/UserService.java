@@ -102,6 +102,10 @@ public interface UserService {
 	 * @return the user with the credit changed
 	 * @throws BusinessException 
 	 */
+
+	
+	void updatePassword(int userId, String newPassword);
+
 	void updateUserCredit(User user) throws BusinessException;
 
 	List<User> getAllUsers();

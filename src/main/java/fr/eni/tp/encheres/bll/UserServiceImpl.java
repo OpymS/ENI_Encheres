@@ -471,5 +471,11 @@ public class UserServiceImpl implements UserService {
 		userToFill.setActivated(userThatFills.isActivated());
 		return userToFill;
 	}
+	
+	   public void updatePassword(int userId, String newPassword) {
+	        User user = userDAO.readById(userId);
+	        user.setPassword(passwordEncoder.encode(newPassword));
+	        userDAO.update(user);
+	    }
 
 }

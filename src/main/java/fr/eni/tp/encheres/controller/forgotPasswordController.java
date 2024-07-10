@@ -1,6 +1,10 @@
 package fr.eni.tp.encheres.controller;
 
+
+import java.util.Date;
+
 import java.util.Locale;
+
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -17,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import fr.eni.tp.encheres.bll.EmailService;
 import fr.eni.tp.encheres.bll.PasswordResetService;
 import fr.eni.tp.encheres.bll.UserService;
+import fr.eni.tp.encheres.bo.PasswordResetToken;
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -68,5 +73,44 @@ public class forgotPasswordController {
         return "forgot-password";
     }
 	
-	
+    @GetMapping("/reset-password")
+    public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
+        PasswordResetToken resetToken = passwordResetService.findByToken(token);
+        if (resetToken == null) {
+            model.addAttribute("error", "Le token est invalide.");
+            return "error";
+        }
+        if (resetToken.getExpiryDate().before(new Date())) {
+            model.addAttribute("error", "Le token a expiré.");
+            return "error";
+        }
+        model.addAttribute("token", token);
+        return "reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String handleResetPassword(@RequestParam("token") String token,
+                                      @RequestParam("password") String password,
+                                      Model model) {
+        PasswordResetToken resetToken = passwordResetService.findByToken(token);
+        if (resetToken == null) {
+            model.addAttribute("error", "Le token est invalide.");
+            return "error";
+        }
+        if (resetToken.getExpiryDate().before(new Date())) {
+            model.addAttribute("error", "Le token a expiré.");
+            return "error";
+        }
+
+        try {
+            userService.updatePassword(resetToken.getUserId(), password);
+            passwordResetService.deleteToken(resetToken);
+        } catch (Exception e) {
+            model.addAttribute("error", "Une erreur s'est produite lors de la réinitialisation du mot de passe.");
+            return "error";
+        }
+
+        model.addAttribute("message", "Votre mot de passe a été réinitialisé avec succès.");
+        return "login";
+    }
 }

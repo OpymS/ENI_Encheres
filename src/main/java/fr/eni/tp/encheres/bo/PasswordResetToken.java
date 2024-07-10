@@ -21,8 +21,14 @@ public class PasswordResetToken {
         this.token = token;
         this.user_id = user_id;
     }
+    
+    public PasswordResetToken(String token, int user_id, Date expiryDate) {
+		this.token = token;
+		this.user_id = user_id;
+		this.expiryDate = expiryDate;
+	}
 
-    public int getId() {
+	public int getId() {
         return id;
     }
 
