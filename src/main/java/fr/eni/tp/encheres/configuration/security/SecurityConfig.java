@@ -1,15 +1,12 @@
 package fr.eni.tp.encheres.configuration.security;
 
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -17,26 +14,17 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	private final DataSource dataSource;
-	
-	public SecurityConfig(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
 	@Bean
     PasswordEncoder passwordEncoder() {
     	return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
-	
-	@Bean
-	UserDetailsManager users() {
-		JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-		users.setUsersByUsernameQuery("SELECT email, mot_de_passe password, 'true' as enabled FROM UTILISATEURS WHERE email = ?");
-		users.setAuthoritiesByUsernameQuery("SELECT email, role FROM UTILISATEURS ut INNER JOIN ROLES ro ON ut.administrateur = ro.is_admin WHERE email = ?");
-		return users;
-	}
-	
-	
+		
 	@Bean
 	SecurityFilterChain web(HttpSecurity http) throws Exception{
 		http
@@ -62,7 +50,7 @@ public class SecurityConfig {
 					.failureUrl("/login?error=true")
 			)
 			.rememberMe(rememberMe -> rememberMe
-					.userDetailsService(users())
+					.userDetailsService(userDetailsService)
 					.tokenValiditySeconds(86400)
 					.key("uniqueAndSecret")
 			)

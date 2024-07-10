@@ -2,11 +2,14 @@ package fr.eni.tp.encheres.controller;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.eni.tp.encheres.bll.AuctionService;
+import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Auction;
@@ -26,12 +30,17 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @RequestMapping("/bid")
 @SessionAttributes({ "userSession" })
 public class BidController {
+
 	private static final Logger bidLogger = LoggerFactory.getLogger(BidController.class);
 
 	private AuctionService auctionService;
+	private UserService userService;
+	private MessageSource messageSource;
 
-	public BidController(AuctionService auctionService) {
+	public BidController(AuctionService auctionService, UserService userService, MessageSource messageSource) {
 		this.auctionService = auctionService;
+		this.userService = userService;
+		this.messageSource = messageSource;
 	}
 
 	@GetMapping
@@ -42,6 +51,7 @@ public class BidController {
 		bidLogger.info("id utilisateur connecté : " + userSession.getUserId()
 				+ " - affichage page d'enchère sur article id : " + articleId);
 		// GEstion de l'affichage conditionnel sur la page
+
 		boolean isBidPossible = articleToDisplay.getState().equals(ArticleState.STARTED);
 		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
 		boolean isChangePossible = isBeforeStart || isBidPossible;
@@ -80,7 +90,7 @@ public class BidController {
 	@PostMapping
 	public String createBidOnArticle(@RequestParam(name = "articleId", required = true) int articleId,
 			@RequestParam(name = "bidOffer", required = true) int bidOffer,
-			@SessionAttribute("userSession") User userSession, RedirectAttributes redirectAttributes) {
+			@SessionAttribute("userSession") User userSession, RedirectAttributes redirectAttributes, Locale locale) {
 
 		String redirectUrl = "redirect:/bid?articleId=" + articleId;
 
@@ -90,7 +100,8 @@ public class BidController {
 					+ " sur l'artidle id : " + articleId);
 		} catch (BusinessException e) {
 			e.getErreurs().forEach(err -> {
-				redirectAttributes.addFlashAttribute("globalError", err);
+				String errorMessage = messageSource.getMessage(err, null, locale);
+				redirectAttributes.addFlashAttribute("globalError", errorMessage);
 				bidLogger.error("id utilisateur connecté : " + userSession.getUserId() + " - id article : " + articleId
 						+ " - erreur à la pose d'une enchère : " + err);
 			});

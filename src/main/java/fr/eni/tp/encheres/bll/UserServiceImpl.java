@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 				userDAO.create(user);
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -93,9 +93,9 @@ public class UserServiceImpl implements UserService {
 		if (!password.isBlank() && password.equals(passwordConfirm)) {
 			isValid = true;
 		} else if (password.isBlank()) {
-			be.add("Le mot de passe ne peut pas être vide");
+			be.add("error.password.blank");
 		} else {
-			be.add("Les mots de passe ne sont pas identiques");
+			be.add("error.password.different");
 		}
 		return isValid;
 	}
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 				
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
 		if(nbArticlesFinished==0) {
 			isDeleteOk = true;
 		}else {
-			be.add("Pas possible, vous avez des articles vendus non récupérés !");
+			be.add("error.accountsuppr.article");
 		}
 		
 		return isDeleteOk;
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
 		if(nbPossibleBuy==0) {
 			isDeleteOk = true;
 		}else {
-			be.add("Pas possible, vous êtes le plus gros enchérisseur sur une vente !");
+			be.add("error.accountsuppr.auction");
 		}
 		
 		return isDeleteOk;
@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
 				userDAO.update(userWithUpdate);
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -291,7 +291,7 @@ public class UserServiceImpl implements UserService {
 		if (passwordEncoder.matches(password1, password2)) {
 			isValid = true;
 		} else {
-			be.add("Vous n'avez pas saisi le bon mot de passe dans mot de passe actuel");
+			be.add("error.password.typo");
 		}
 		return isValid;
 	}
@@ -335,7 +335,7 @@ public class UserServiceImpl implements UserService {
 		if (nbPseudo == 0) {
 			isValid = true;
 		} else {
-			be.add("Ce pseudo n'est pas disponible");
+			be.add("error.pseudo.notavailable");
 		}
 		return isValid;
 	}
@@ -346,7 +346,7 @@ public class UserServiceImpl implements UserService {
 		if (nbEmail == 0) {
 			isValid = true;
 		} else {
-			be.add("Cet email n'est pas disponible");
+			be.add("error.email.notavailable");
 		}
 		return isValid;
 	}
