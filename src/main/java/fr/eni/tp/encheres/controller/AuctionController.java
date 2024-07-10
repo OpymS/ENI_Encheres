@@ -51,13 +51,13 @@ public class AuctionController {
 
 	private AuctionService auctionService;
 	private FileService fileService;
-  private MessageSource messageSource;
+	private MessageSource messageSource;
 
 	public AuctionController(AuctionService auctionService, FileService fileService, MessageSource messageSource) {
 		this.auctionService = auctionService;
 		this.fileService = fileService;
-    this.messageSource = messageSource;
-	
+		this.messageSource = messageSource;
+	}
 
 	@GetMapping
 	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
@@ -86,7 +86,7 @@ public class AuctionController {
 			@ModelAttribute("research") SearchCriteria sessionResearch, Model model,
 			@ModelAttribute("userSession") User userSession,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
-		
+
 		sessionResearch.setWordToFind(research.getWordToFind());
 		sessionResearch.setCategory(research.getCategory());
 		sessionResearch.setRadioButton(research.getRadioButton());
@@ -112,12 +112,12 @@ public class AuctionController {
 
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
-		
-		//Si utilisateur désactivé, on empèche l'enchère
-		if(!userSession.isActivated()) {
+
+		// Si utilisateur désactivé, on empèche l'enchère
+		if (!userSession.isActivated()) {
 			return "redirect:/auctions";
 		}
-		
+
 		Article article = new Article();
 		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(),
 				userSession.getCity());
@@ -129,16 +129,15 @@ public class AuctionController {
 	}
 
 	@PostMapping("/newArticle")
+	public String showArticleCreation(@Valid @ModelAttribute("article") Article article, BindingResult bindingResult,
+			@ModelAttribute("userSession") User userSession,
+			@RequestParam(name = "startDateTemp", required = false) LocalDate startDate,
+			@RequestParam(name = "endDateTemp", required = false) LocalDate endDate,
+			@RequestParam(name = "startTimeTemp", required = false) LocalTime startTime,
+			@RequestParam(name = "endTimeTemp", required = false) LocalTime endTime,
+			@RequestParam(name = "inputImage", required = false) MultipartFile fileImage, Locale locale) {
 
-	public String showArticleCreation(@Valid @ModelAttribute("article") Article article, BindingResult bindingResult, @ModelAttribute("userSession") User userSession,
-			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
-			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
-			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
-			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
-			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
-			Locale locale) {
-    
-    LocalDateTime startDateTime;
+		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 
 		if (bindingResult.hasErrors()) {
@@ -146,27 +145,26 @@ public class AuctionController {
 					+ userSession.getUserId() + " - erreur sur formulaire newArticle : " + err));
 			return "article-create";
 
-    } else {
-		
-		  try {
-        startDateTime = auctionService.convertDate(startDate, startTime);
+		} else {
+
+			try {
+				startDateTime = auctionService.convertDate(startDate, startTime);
 				endDateTime = auctionService.convertDate(endDate, endTime);
 				article.setAuctionStartDate(startDateTime);
 				article.setAuctionEndDate(endDateTime);
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());
-        //Sauvegarde de l'image dans le dossier static/uploadedImages
-			  fileService.saveFile(fileImage, article);
+				// Sauvegarde de l'image dans le dossier static/uploadedImages
+				fileService.saveFile(fileImage, article);
 				auctionService.sell(article);
 				auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
 						+ " - mise en vente d'un nouvel article - articleId : " + article.getArticleId());
 				return "redirect:/auctions";
-		} catch (IOException e) {
-			//ObjectError error = new ObjectError("globalError", e.getMessage());
-			return "article-create";
-		}
-		} catch (BusinessException e) {
-			e.getErreurs().forEach(err -> {
+			} catch (IOException err) {
+				// ObjectError error = new ObjectError("globalError", e.getMessage());
+				return "article-create";
+			} catch (BusinessException e) {
+				e.getErreurs().forEach(err -> {
 					String errorMessage = messageSource.getMessage(err, null, locale);
 					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
@@ -178,42 +176,41 @@ public class AuctionController {
 			}
 
 		}
-  }
-}
+	}
 
 	@GetMapping("/modifyArticle")
-	public String showArticleModifyPage(
-    @RequestParam(name="articleId", required=true) int articleId,
-		Model model,
-		@ModelAttribute("userSession") User userSession){
-		
-		//Si utilisateur désactivé, on empèche l'enchère
-		if(!userSession.isActivated()) {
+	public String showArticleModifyPage(@RequestParam(name = "articleId", required = true) int articleId, Model model,
+			@ModelAttribute("userSession") User userSession) {
+
+		// Si utilisateur désactivé, on empèche l'enchère
+		if (!userSession.isActivated()) {
 			return "redirect:/auctions";
 		}
-		
+
 		Article article = auctionService.findArticleById(articleId);
-    
+
 		// Si on est après la date de fin on ne montre pas la page
 		// (modification/annulation impossible !)
 		if (article.getAuctionEndDate().isBefore(LocalDateTime.now())) {
 			auctionLogger.error("id utilisateur connecté : " + userSession.getUserId()
 					+ " - tentative de modifier une enchère finie - articleId : " + article.getArticleId());
-		      return "redirect:/auctions";
-    };
+			return "redirect:/auctions";
+		}
+		;
 
 		model.addAttribute("article", article);
 		model.addAttribute("startDate", article.getAuctionStartDate().toLocalDate());
 		model.addAttribute("startTime", article.getAuctionStartDate().toLocalTime());
 		model.addAttribute("endDate", article.getAuctionEndDate().toLocalDate());
 		model.addAttribute("endTime", article.getAuctionEndDate().toLocalTime());
-		model.addAttribute("isCancelPossible", article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
-		model.addAttribute("imageSource", "/uploadedImages/"+article.getImageUUID());
-    
-    auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+		model.addAttribute("isCancelPossible",
+				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("imageSource", "/uploadedImages/" + article.getImageUUID());
+
+		auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
 				+ " - affichage page de modification de l'article - articleId : " + article.getArticleId());
 
-		System.err.println("/uploadedImages/"+article.getImageUUID());
+		System.err.println("/uploadedImages/" + article.getImageUUID());
 
 		return "article-modify";
 	}
@@ -221,14 +218,12 @@ public class AuctionController {
 	@PostMapping("/modifyArticle")
 	public String showArticleModifyPage(@Valid @ModelAttribute("article") Article article, BindingResult bindingResult,
 			@ModelAttribute("userSession") User userSession,
-			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
-			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
-			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
-			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
-			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
-			Model model, 
-      Locale locale) {
-		
+			@RequestParam(name = "startDateTemp", required = false) LocalDate startDate,
+			@RequestParam(name = "endDateTemp", required = false) LocalDate endDate,
+			@RequestParam(name = "startTimeTemp", required = false) LocalTime startTime,
+			@RequestParam(name = "endTimeTemp", required = false) LocalTime endTime,
+			@RequestParam(name = "inputImage", required = false) MultipartFile fileImage, Model model, Locale locale) {
+
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 
@@ -244,7 +239,7 @@ public class AuctionController {
 					+ userSession.getUserId() + " - erreur sur formulaire modifyArticle : " + err));
 			return "article-modify";
 		} else {
-      
+
 			try {
 				startDateTime = auctionService.convertDate(startDate, startTime);
 				endDateTime = auctionService.convertDate(endDate, endTime);
@@ -253,19 +248,19 @@ public class AuctionController {
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());
 
-        //Sauvegarde de l'image dans le dossier static/uploadedImages
-        fileService.saveFile(fileImage, article);
-        
+				// Sauvegarde de l'image dans le dossier static/uploadedImages
+				fileService.saveFile(fileImage, article);
+
 				auctionService.updateArticle(article);
 				auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
 						+ " - modification d'un article - articleId : " + article.getArticleId());
 
 				return "redirect:/auctions";
-        
-    } catch (IOException) {
-			//ObjectError error = new ObjectError("globalError", e.getMessage());
-			return "article-modify";
-		}	catch (BusinessException e) {
+
+			} catch (IOException err) {
+				// ObjectError error = new ObjectError("globalError", e.getMessage());
+				return "article-modify";
+			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
 					String errorMessage = messageSource.getMessage(err, null, locale);
 					ObjectError error = new ObjectError("globalError", errorMessage);
