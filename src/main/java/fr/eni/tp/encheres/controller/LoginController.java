@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.UserService;
@@ -19,6 +20,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @Controller
+@RequestMapping("/")
 @SessionAttributes({ "userSession" })
 public class LoginController {
 

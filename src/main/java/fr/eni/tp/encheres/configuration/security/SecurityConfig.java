@@ -40,6 +40,7 @@ public class SecurityConfig {
 		    .requestMatchers("/profil").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/profil/modify").hasAnyRole("ADMIN", "MEMBRE")
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
+		    .requestMatchers("/admin/**").hasRole("ADMIN")
 		    .requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)

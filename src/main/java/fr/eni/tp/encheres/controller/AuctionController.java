@@ -1,17 +1,20 @@
 package fr.eni.tp.encheres.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import org.springframework.context.MessageSource;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import fr.eni.tp.encheres.bll.AuctionService;
+import fr.eni.tp.encheres.bll.FileService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Category;
@@ -41,12 +46,14 @@ public class AuctionController {
 	private static final int PAGE_SIZE = 6;
 	
 	private AuctionService auctionService;
-	private MessageSource messageSource;
+	private FileService fileService;
+  private MessageSource messageSource;
 
-	public AuctionController(AuctionService auctionService, MessageSource messageSource) {
+	public AuctionController(AuctionService auctionService, FileService fileService, MessageSource messageSource) {
 		this.auctionService = auctionService;
-		this.messageSource = messageSource;
-	}
+		this.fileService = fileService;
+    this.messageSource = messageSource;
+	
 
 	@GetMapping
 	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
@@ -97,6 +104,12 @@ public class AuctionController {
 
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
+		
+		//Si utilisateur désactivé, on empèche l'enchère
+		if(!userSession.isActivated()) {
+			return "redirect:/auctions";
+		}
+		
 		Article article = new Article();
 		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(),
 				userSession.getCity());
@@ -112,54 +125,71 @@ public class AuctionController {
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
+			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
 			Locale locale) {
-		LocalDateTime startDateTime;
+    
+    LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
-
-		if (bindingResult.hasErrors()) {
-			return "article-create";
+		
+    if (bindingResult.hasErrors()) {
+			  return "article-create";
 		} else {
-			try {
-				startDateTime = auctionService.convertDate(startDate, startTime);
+		
+		  try {
+        startDateTime = auctionService.convertDate(startDate, startTime);
 				endDateTime = auctionService.convertDate(endDate, endTime);
 				article.setAuctionStartDate(startDateTime);
 				article.setAuctionEndDate(endDateTime);
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());
+        //Sauvegarde de l'image dans le dossier static/uploadedImages
+			  fileService.saveFile(fileImage, article);
 				auctionService.sell(article);
 				return "redirect:/auctions";
-			} catch (BusinessException e) {
-				e.getErreurs().forEach(err -> {
+		} catch (IOException e) {
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-create";
+		}
+		} catch (BusinessException e) {
+			e.getErreurs().forEach(err -> {
 					String errorMessage = messageSource.getMessage(err, null, locale);
 					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
-				});
-				return "article-create";
-			}
-
+			});
+			return "article-create";
 		}
-	}
+  }
+}
 
 	@GetMapping("/modifyArticle")
-	public String showArticleModifyPage(@RequestParam(name = "articleId", required = true) int articleId, Model model,
-			@ModelAttribute("userSession") User userSession) {
-		Article article = auctionService.findArticleById(articleId);
 
-		// Si on est après la date de fin on ne montre pas la page
-		// (modification/annulation impossible !)
-		if (article.getAuctionEndDate().isBefore(LocalDateTime.now())) {
+	public String showArticleModifyPage(
+    @RequestParam(name="articleId", required=true) int articleId,
+		Model model,
+		@ModelAttribute("userSession") User userSession){
+		
+		//Si utilisateur désactivé, on empèche l'enchère
+		if(!userSession.isActivated()) {
 			return "redirect:/auctions";
 		}
-		;
+		
+		Article article = auctionService.findArticleById(articleId);
+    
+		// Si on est après la date de fin on ne montre pas la page (modification/annulation impossible !)
+		if(article.getAuctionEndDate().isBefore(LocalDateTime.now())) { 
+			return "redirect:/auctions";
+		};
 
 		model.addAttribute("article", article);
-		model.addAttribute("startDate", article.getAuctionStartDate().toLocalDate());
-		model.addAttribute("startTime", article.getAuctionStartDate().toLocalTime());
-		model.addAttribute("endDate", article.getAuctionEndDate().toLocalDate());
-		model.addAttribute("endTime", article.getAuctionEndDate().toLocalTime());
-		model.addAttribute("isCancelPossible",
-				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
-
+		model.addAttribute("startDate",article.getAuctionStartDate().toLocalDate());
+		model.addAttribute("startTime",article.getAuctionStartDate().toLocalTime());
+		model.addAttribute("endDate",article.getAuctionEndDate().toLocalDate());
+		model.addAttribute("endTime",article.getAuctionEndDate().toLocalTime());
+		model.addAttribute("isCancelPossible", article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("imageSource", "/uploadedImages/"+article.getImageUUID());
+		
+		System.err.println("/uploadedImages/"+article.getImageUUID());
+		
 		return "article-modify";
 	}
 
@@ -170,35 +200,40 @@ public class AuctionController {
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
-			Model model, Locale locale
-			) {
+			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
+			Model model, 
+      Locale locale) {
+		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
-
-		// On les repasse dans le modèle pour réafficher les valeurs par défaut en cas
-		// d'erreurs
-		model.addAttribute("startDate", startDate);
-		model.addAttribute("startTime", startTime);
-		model.addAttribute("endDate", endDate);
-		model.addAttribute("endTime", endTime);
-
-		if (bindingResult.hasErrors()) {
-
+   
+    //On les repasse dans le modèle pour réafficher les valeurs par défaut en cas d'erreurs
+		model.addAttribute("startDate",startDate);
+		model.addAttribute("startTime",startTime);
+		model.addAttribute("endDate",endDate);
+		model.addAttribute("endTime",endTime);
+    
+    if (bindingResult.hasErrors()) {
 			return "article-modify";
 		} else {
-			try {
-				startDateTime = auctionService.convertDate(startDate, startTime);
-				endDateTime = auctionService.convertDate(endDate, endTime);
-				article.setAuctionStartDate(startDateTime);
-				article.setAuctionEndDate(endDateTime);
-				article.setSeller(userSession);
-				article.setCurrentPrice(article.getBeginningPrice());
-				// System.out.println(article);
-
-				auctionService.updateArticle(article);
+      try {
+        startDateTime = auctionService.convertDate(startDate, startTime);
+        endDateTime = auctionService.convertDate(endDate, endTime);
+        article.setAuctionStartDate(startDateTime);
+        article.setAuctionEndDate(endDateTime);
+        article.setSeller(userSession);
+        article.setCurrentPrice(article.getBeginningPrice());
+        
+        //Sauvegarde de l'image dans le dossier static/uploadedImages
+        fileService.saveFile(fileImage, article);
+        
+        auctionService.updateArticle(article);
 				return "redirect:/auctions";
-
-			} catch (BusinessException e) {
+        
+    } catch (IOException) {
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-modify";
+		}	catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
 					String errorMessage = messageSource.getMessage(err, null, locale);
 					ObjectError error = new ObjectError("globalError", errorMessage);
