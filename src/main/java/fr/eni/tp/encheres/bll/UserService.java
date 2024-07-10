@@ -100,4 +100,6 @@ public interface UserService {
 	 * @return the user with the credit changed
 	 */
 	void updateUserCredit(User user);
+	
+	void updatePassword(int userId, String newPassword);
 }
