@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -37,8 +39,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/auctions")
 @SessionAttributes({ "userSession", "categoriesSession", "research" })
 public class AuctionController {
+	private static final Logger auctionLogger = LoggerFactory.getLogger(LoginController.class);
+
 	private static final int PAGE_SIZE = 6;
-	
+
 	private AuctionService auctionService;
 
 	public AuctionController(AuctionService auctionService) {
@@ -57,6 +61,9 @@ public class AuctionController {
 		model.addAttribute("currentPage", currentPage);
 
 		int totalPages = articlesList.getTotalPages();
+		auctionLogger.info(
+				"id utilisateur connecté : " + userSession.getUserId() + " affichage des enchères selon critères : "
+						+ sessionResearch + " - nombre total de pages : " + totalPages);
 		if (totalPages > 0) {
 			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
 			model.addAttribute("pageNumbers", pageNumbers);
@@ -66,17 +73,18 @@ public class AuctionController {
 	}
 
 	@PostMapping
-	public String showAuctions(@ModelAttribute("criteria") SearchCriteria research,@ModelAttribute("research") SearchCriteria sessionResearch , Model model,
+	public String showAuctions(@ModelAttribute("criteria") SearchCriteria research,
+			@ModelAttribute("research") SearchCriteria sessionResearch, Model model,
 			@ModelAttribute("userSession") User userSession,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
 		System.out.println("showAuctions début");
 		System.out.println("post " + research);
-		
+
 		sessionResearch.setWordToFind(research.getWordToFind());
 		sessionResearch.setCategory(research.getCategory());
 		sessionResearch.setRadioButton(research.getRadioButton());
 		sessionResearch.setFilters(research.getFilters());
-		
+
 		model.addAttribute("criteria", research);
 		Page<Article> articlesList = auctionService.selectArticles(research, userSession.getUserId(),
 				PageRequest.of(currentPage - 1, PAGE_SIZE));
@@ -84,6 +92,9 @@ public class AuctionController {
 		model.addAttribute("currentPage", currentPage);
 
 		int totalPages = articlesList.getTotalPages();
+		auctionLogger.info(
+				"id utilisateur connecté : " + userSession.getUserId() + " - recherche des enchères selon critères : "
+						+ sessionResearch + " - nombre total de pages : " + totalPages);
 		if (totalPages > 0) {
 			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
 			model.addAttribute("pageNumbers", pageNumbers);
@@ -99,6 +110,8 @@ public class AuctionController {
 				userSession.getCity());
 		article.setPickupLocation(defaultPickupLocation);
 		model.addAttribute("article", article);
+		auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+				+ " - affichage du formulaire de création d'article");
 		return "article-create";
 	}
 
@@ -113,6 +126,8 @@ public class AuctionController {
 		LocalDateTime endDateTime;
 
 		if (bindingResult.hasErrors()) {
+			bindingResult.getAllErrors().forEach(err -> auctionLogger.error("id utilisateur connecté : "
+					+ userSession.getUserId() + " - erreur sur formulaire newArticle : " + err));
 			return "article-create";
 		} else {
 			try {
@@ -123,11 +138,15 @@ public class AuctionController {
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());
 				auctionService.sell(article);
+				auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+						+ " - mise en vente d'un nouvel article - articleId : " + article.getArticleId());
 				return "redirect:/auctions";
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
 					ObjectError error = new ObjectError("globalError", err);
 					bindingResult.addError(error);
+					auctionLogger.error("id utilisateur connecté : " + userSession.getUserId()
+							+ " - erreur à la mise en vente d'un article " + err);
 				});
 				return "article-create";
 			}
@@ -143,6 +162,8 @@ public class AuctionController {
 		// Si on est après la date de fin on ne montre pas la page
 		// (modification/annulation impossible !)
 		if (article.getAuctionEndDate().isBefore(LocalDateTime.now())) {
+			auctionLogger.error("id utilisateur connecté : " + userSession.getUserId()
+					+ " - tentative de modifier une enchère finie - articleId : " + article.getArticleId());
 			return "redirect:/auctions";
 		}
 		;
@@ -154,7 +175,8 @@ public class AuctionController {
 		model.addAttribute("endTime", article.getAuctionEndDate().toLocalTime());
 		model.addAttribute("isCancelPossible",
 				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
-
+		auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+				+ " - affichage page de modification de l'article - articleId : " + article.getArticleId());
 		return "article-modify";
 	}
 
@@ -176,7 +198,8 @@ public class AuctionController {
 		model.addAttribute("endTime", endTime);
 
 		if (bindingResult.hasErrors()) {
-
+			bindingResult.getAllErrors().forEach(err -> auctionLogger.error("id utilisateur connecté : "
+					+ userSession.getUserId() + " - erreur sur formulaire modifyArticle : " + err));
 			return "article-modify";
 		} else {
 			try {
@@ -189,12 +212,16 @@ public class AuctionController {
 				// System.out.println(article);
 
 				auctionService.updateArticle(article);
+				auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+						+ " - modification d'un article - articleId : " + article.getArticleId());
 				return "redirect:/auctions";
 
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
 					ObjectError error = new ObjectError("globalError", err);
 					bindingResult.addError(error);
+					auctionLogger.error("id utilisateur connecté : " + userSession.getUserId()
+							+ " - erreur à la modification d'un article " + err);
 				});
 				return "article-modify";
 			}
@@ -211,8 +238,14 @@ public class AuctionController {
 		if (articleToCancel.getSeller().getUserId() == userSession.getUserId()) {
 
 			auctionService.cancelArticle(articleToCancel);
+			auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+					+ " - annulation d'une vente - articleId : " + articleToCancel.getArticleId());
 
 		} else { // Sinon c'est un imposteur
+			auctionLogger.error("id utilisateur connecté : " + userSession.getUserId()
+					+ " - tentative d'annulation d'une vente d'un autre utilisateur - articleId : "
+					+ articleToCancel.getArticleId() + " - id utilisateur légitime de cet article : "
+					+ articleToCancel.getSeller().getUserId());
 			return "redirect:/auctions";
 		}
 
@@ -221,13 +254,14 @@ public class AuctionController {
 
 	@ModelAttribute("categoriesSession")
 	public List<Category> loadCategories() {
+		auctionLogger.debug("création du ModelAttribute categoriesSession");
 		List<Category> categories = auctionService.findCategories();
 		return categories;
 	}
 
 	@ModelAttribute("research")
 	public SearchCriteria research() {
-		System.out.println("création du ModelAttribute research");
+		auctionLogger.debug("création du ModelAttribute research");
 		SearchCriteria research = new SearchCriteria();
 		research.setWordToFind("");
 		Category category = new Category();

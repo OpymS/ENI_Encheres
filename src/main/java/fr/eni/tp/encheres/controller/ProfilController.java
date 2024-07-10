@@ -1,5 +1,7 @@
 package fr.eni.tp.encheres.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/profil")
 @SessionAttributes({ "userSession" })
 public class ProfilController {
+	private static final Logger profilLogger = LoggerFactory.getLogger(LoginController.class);
 
 	private UserService userService;
 
@@ -37,7 +40,7 @@ public class ProfilController {
 		userToDisplay.setPassword(null); // Pas de stockage de mot de passe
 
 		model.addAttribute("userDisplay", userToDisplay);
-
+		profilLogger.info("affichage profil - userId : " + userToDisplay.getUserId());
 		return "profil";
 	}
 
@@ -59,6 +62,8 @@ public class ProfilController {
 		userSession.setPassword(currentPassword); // On met le mot de passe actuel renseigné dans le formulaire dans
 													// l'utilsateur en session pour le récupérer dans le service.
 		if (bindingResult.hasErrors()) {
+			bindingResult.getAllErrors().forEach(err -> profilLogger.error("id utilisateur connecté : "
+					+ userSession.getUserId() + " - erreur sur formulaire modify : " + err));
 			return "profil-modify";
 		} else {
 			try {
@@ -72,38 +77,40 @@ public class ProfilController {
 				e.getErreurs().forEach(err -> {
 					ObjectError error = new ObjectError("globalError", err);
 					bindingResult.addError(error);
+					profilLogger.error("id utilisateur connecté : " + userSession.getUserId()
+							+ " erreur à la modification du profil : " + err);
 				});
 				return "profil-modify";
 			}
 		}
 	}
-	
-	
+
 	@GetMapping("/deleteAccount")
-	public String deleteUserAccount(@SessionAttribute("userSession") User userSession, @RequestParam(name="userId") int userId, RedirectAttributes redirectAttributes) {
-		
-		//check si c'est bien l'utilisateur connecté qui veut supprimer
-		if(userSession.getUserId()!=userId) {
-			System.err.println("Pas le bon utilisateur !");
+	public String deleteUserAccount(@SessionAttribute("userSession") User userSession,
+			@RequestParam(name = "userId") int userId, RedirectAttributes redirectAttributes) {
+
+		// check si c'est bien l'utilisateur connecté qui veut supprimer
+		if (userSession.getUserId() != userId) {
+			profilLogger.error("Pas le bon utilisateur !");
 			return "redirect:/auctions";
 		}
-		
-		
+
 		try {
 			userService.deleteAccount(userId);
-			
-			//Si pas d'erreur, on déconnecte
+			profilLogger.info("suppression d'un utilisateur - userId : " + userId);
+			// Si pas d'erreur, on déconnecte
 			return "redirect:/logout";
-			
+
 		} catch (BusinessException e) {
-			//NOTE : Une seule erreur s'affiche, même si deux sont présente, à voir ...
-			e.getErreurs().forEach(err -> redirectAttributes.addFlashAttribute("globalError", err));
+			// NOTE : Une seule erreur s'affiche, même si deux sont présente, à voir ...
+			e.getErreurs().forEach(err -> {
+				redirectAttributes.addFlashAttribute("globalError", err);
+				profilLogger.error("id utilisateur connecté : " + userSession.getUserId()
+						+ " - erreur à la suppression du compte : " + err);
+			});
 			return "redirect:/profil/modify";
 		}
-		
-	
-		
+
 	}
-	
-	
+
 }

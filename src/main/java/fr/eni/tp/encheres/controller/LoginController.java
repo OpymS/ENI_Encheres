@@ -2,6 +2,8 @@ package fr.eni.tp.encheres.controller;
 
 import java.security.Principal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +21,8 @@ import jakarta.validation.Valid;
 @Controller
 @SessionAttributes({ "userSession" })
 public class LoginController {
-
+	private static final Logger loginLogger = LoggerFactory.getLogger(LoginController.class);
+	
 	private UserService userService;
 
 	public LoginController(UserService userService) {
@@ -47,7 +50,7 @@ public class LoginController {
 	@PostMapping("/signup")
 	public String processSignup(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
-			bindingResult.getAllErrors().forEach(e -> System.out.println(e));
+			bindingResult.getAllErrors().forEach(err -> loginLogger.error("erreur sur formulaire signup : " + err));
 			return "signup";
 		} else {
 			try {
@@ -62,12 +65,14 @@ public class LoginController {
 						user.getCity(),
 						user.getPassword(),
 						user.getPasswordConfirm());
+				loginLogger.info("inscription nouvel utilisateur - userId : "+user.getUserId());
 				return "redirect:/login";
 
 			} catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
 					ObjectError error = new ObjectError("globalError", err);
 					bindingResult.addError(error);
+					loginLogger.error(err);
 				});
 				return "signup";
 			}
@@ -95,6 +100,7 @@ public class LoginController {
 			userSession.setUserId(0);
 			userSession.setEmail(email);
 		}
+		loginLogger.info("idUser mis en session : "+userSession.getUserId());
 
 		return "redirect:/auctions";
 	}
