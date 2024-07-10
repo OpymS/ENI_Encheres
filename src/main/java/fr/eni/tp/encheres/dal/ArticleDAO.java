@@ -1,12 +1,13 @@
 package fr.eni.tp.encheres.dal;
 
-import java.util.HashMap;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 
-public interface ArticleDAO {
+
+public interface ArticleDAO{
 	Article read(int articleId);
 	List<Article> findAll();
 	List<Article> findByCategory(int categoryId);
@@ -19,7 +20,7 @@ public interface ArticleDAO {
 	int countArticles();
 	List<Article> findArticleToUpdateToFinished();
 	List<Article> findArticleToUpdateToStarted();
-	List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId);
+	List<Article> findWithFilters(SearchCriteria research, int userId);
 	int countArticlesByBuyerId(int userId);
 	int countArticlesFinishedBySellerId(int userId);
 	void eraseSellerByUserId(int userId);

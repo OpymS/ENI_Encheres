@@ -66,6 +66,27 @@
     transition: background-color 0.3s ease;
 }
 
+/* bouton enregistrer et supp compte de modifier le profil*/
+.buttons-container .button.save {
+	background-color: #2196F3;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.buttons-container .button.save:hover {
+	background-color: #1976D2;
+}
+
+.buttons-container .button.delete {
+	background-color: #f44336;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.buttons-container .button.delete:hover {
+    background-color: darkred;
+}
+
+/* bouton pour s'inscrire créer et annuler */
+
 .buttons-container .button.create {
     background-color: #4CAF50;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -83,7 +104,6 @@
 .buttons-container .button.cancel:hover {
     background-color: darkred;
 }
-
 
 /*BOITE MODALE*/
 
@@ -174,9 +194,7 @@
     font-weight: 600;
 }
 
-
-
-
+/* Responsive pour singup & modify profile*/
 
 @media only screen and (max-width: 1280px) {
     .title {
