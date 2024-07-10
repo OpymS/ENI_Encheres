@@ -37,16 +37,19 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public String showLoginForm() {
+		loginLogger.info("Méthode showLoginForm");
 		return "login";
 	}
 
 	@GetMapping("/")
 	public String redirectToAuctions() {
+		loginLogger.info("Méthode redirectToAuctions");
 		return "redirect:/auctions";
 	}
 
 	@GetMapping("/signup")
 	public String showSignupPage(Model model) {
+		loginLogger.info("Méthode showSignupPage");
 		User user = new User();
 		model.addAttribute("user", user);
 
@@ -55,6 +58,7 @@ public class LoginController {
 
 	@PostMapping("/signup")
 	public String processSignup(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model, Locale locale) {
+		loginLogger.info("Méthode processSignup");
 		if (bindingResult.hasErrors()) {
 			bindingResult.getAllErrors().forEach(err -> loginLogger.error("erreur sur formulaire signup : " + err));
 			return "signup";
@@ -81,10 +85,10 @@ public class LoginController {
 
 	@GetMapping("/session")
 	public String fillUserSession(@ModelAttribute("userSession") User userSession, Principal principal) {
-		System.out.println("début du getMapping session");
+		loginLogger.info("Méthode fillUserSession");
+		
 		String email;
 		User userRecup;
-		System.out.println("ppal " + principal);
 		if (principal != null) {
 			email = principal.getName();
 			userRecup = userService.getUserByEmail(email);
@@ -95,7 +99,6 @@ public class LoginController {
 		if (userRecup != null) {
 			userService.fillUserAttributes(userSession, userRecup);
 
-			System.out.println(userSession);
 		} else {
 			userSession.setUserId(0);
 			userSession.setEmail(email);
@@ -107,6 +110,7 @@ public class LoginController {
 
 	@ModelAttribute("userSession")
 	public User addUserSession() {
+		loginLogger.info("Méthode addUserSession");
 		User userSession = new User();
 
 		return userSession;

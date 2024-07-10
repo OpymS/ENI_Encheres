@@ -100,8 +100,9 @@ public interface UserService {
 	 *
 	 * @param User the user
 	 * @return the user with the credit changed
+	 * @throws BusinessException 
 	 */
-	void updateUserCredit(User user);
+	void updateUserCredit(User user) throws BusinessException;
 
 	List<User> getAllUsers();
 

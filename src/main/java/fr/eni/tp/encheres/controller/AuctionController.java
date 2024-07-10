@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -63,6 +62,7 @@ public class AuctionController {
 	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
 			@ModelAttribute("userSession") User userSession, Model model,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
+		auctionLogger.info("Méthode showAuctionsPage");
 		model.addAttribute("criteria", sessionResearch);
 		Page<Article> articlesList = auctionService.selectArticles(sessionResearch, userSession.getUserId(),
 				PageRequest.of(currentPage - 1, PAGE_SIZE));
@@ -86,7 +86,8 @@ public class AuctionController {
 			@ModelAttribute("research") SearchCriteria sessionResearch, Model model,
 			@ModelAttribute("userSession") User userSession,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
-
+		auctionLogger.info("Méthode showAuctions");
+		
 		sessionResearch.setWordToFind(research.getWordToFind());
 		sessionResearch.setCategory(research.getCategory());
 		sessionResearch.setRadioButton(research.getRadioButton());
@@ -112,9 +113,12 @@ public class AuctionController {
 
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
-
+		auctionLogger.info("Méthode showArticleCreation en Get");
+		
 		// Si utilisateur désactivé, on empèche l'enchère
 		if (!userSession.isActivated()) {
+			auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+				+ " utilisateur désactivé. Refus de la création d'article");
 			return "redirect:/auctions";
 		}
 
@@ -136,7 +140,8 @@ public class AuctionController {
 			@RequestParam(name = "startTimeTemp", required = false) LocalTime startTime,
 			@RequestParam(name = "endTimeTemp", required = false) LocalTime endTime,
 			@RequestParam(name = "inputImage", required = false) MultipartFile fileImage, Locale locale) {
-
+		auctionLogger.info("Méthode showArticleCreation en Post");
+		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 
@@ -181,9 +186,12 @@ public class AuctionController {
 	@GetMapping("/modifyArticle")
 	public String showArticleModifyPage(@RequestParam(name = "articleId", required = true) int articleId, Model model,
 			@ModelAttribute("userSession") User userSession) {
-
+		auctionLogger.info("Méthode showArticleModifyPage en Get");
+		
 		// Si utilisateur désactivé, on empèche l'enchère
 		if (!userSession.isActivated()) {
+			auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
+			+ " utilisateur désactivé. Refus de la modification d'article");
 			return "redirect:/auctions";
 		}
 
@@ -223,7 +231,8 @@ public class AuctionController {
 			@RequestParam(name = "startTimeTemp", required = false) LocalTime startTime,
 			@RequestParam(name = "endTimeTemp", required = false) LocalTime endTime,
 			@RequestParam(name = "inputImage", required = false) MultipartFile fileImage, Model model, Locale locale) {
-
+		auctionLogger.info("Méthode showArticleModifiyPage en Post");
+		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 
@@ -297,6 +306,8 @@ public class AuctionController {
 	@GetMapping("/cancelArticle")
 	public String cancelArticle(@RequestParam(name = "articleId") int articleId,
 			@SessionAttribute("userSession") User userSession) {
+		auctionLogger.info("Méthode cancelArticle");
+		
 		Article articleToCancel = auctionService.findArticleById(articleId);
 
 		// On vérifie si c'est bien le vendeur de l'article qui accède à ce lien
@@ -319,14 +330,14 @@ public class AuctionController {
 
 	@ModelAttribute("categoriesSession")
 	public List<Category> loadCategories() {
-		auctionLogger.debug("création du ModelAttribute categoriesSession");
+		auctionLogger.info("création du ModelAttribute categoriesSession");
 		List<Category> categories = auctionService.findCategories();
 		return categories;
 	}
 
 	@ModelAttribute("research")
 	public SearchCriteria research() {
-		auctionLogger.debug("création du ModelAttribute research");
+		auctionLogger.info("création du ModelAttribute research");
 		SearchCriteria research = new SearchCriteria();
 		research.setWordToFind("");
 		Category category = new Category();

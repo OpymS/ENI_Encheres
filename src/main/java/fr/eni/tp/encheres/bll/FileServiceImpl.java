@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import fr.eni.tp.encheres.dal.ArticleDAO;
 
 @Service
 public class FileServiceImpl implements FileService {
+	private static final Logger fileServiceLogger = LoggerFactory.getLogger(FileServiceImpl.class);
 	
 	@Value("${upload.path}") //Affecte la valeur égale à celle dans app.properties
 	private String uploadPath;
@@ -28,6 +31,7 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public void saveFile(MultipartFile file, Article article) throws IOException {
+		fileServiceLogger.info("Méthode saveFile");
         if (file.isEmpty()) {
            String NonUniqueFilename = "placeholderImage.jpg";
            affectAndUpdateArticle(article, NonUniqueFilename);
@@ -59,6 +63,7 @@ public class FileServiceImpl implements FileService {
     }
 	
 	private void affectAndUpdateArticle(Article article, String uniqueFilename) {
+		fileServiceLogger.info("Méthode affectAndUpdateArticle");
 		article.setImageUUID(uniqueFilename);
 		
 		//Il faut modifer UPDATE dans la DAO

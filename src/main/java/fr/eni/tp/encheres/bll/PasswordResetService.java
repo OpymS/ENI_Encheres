@@ -1,7 +1,6 @@
 package fr.eni.tp.encheres.bll;
 
 import fr.eni.tp.encheres.bo.PasswordResetToken;
-import fr.eni.tp.encheres.bo.User;
 
 public interface PasswordResetService {
 	

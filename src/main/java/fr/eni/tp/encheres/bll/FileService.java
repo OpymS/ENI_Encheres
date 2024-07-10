@@ -6,8 +6,6 @@ import fr.eni.tp.encheres.bo.Article;
 
 import java.io.IOException;
 
-import org.springframework.core.io.Resource;
-
 public interface FileService {
 
 	

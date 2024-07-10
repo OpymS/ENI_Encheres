@@ -4,13 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import fr.eni.tp.encheres.bo.User;
@@ -20,6 +21,7 @@ import fr.eni.tp.encheres.bo.User;
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
+	private static final Logger userDaoLogger = LoggerFactory.getLogger(UserDAOImpl.class);
 	
 	/** The Constant INSERT. */
 	private static final String INSERT = "INSERT INTO UTILISATEURS(pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :mot_de_passe, :credit, :administrateur, :etat_utilisateur)";
@@ -71,6 +73,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public void create(User user) {
+		userDaoLogger.info("Méthode create");
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
@@ -102,6 +105,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public User readByPseudo(String pseudo) {
+		userDaoLogger.info("Méthode readByPseudo");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("pseudo", pseudo);
 		
@@ -116,12 +120,12 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public User readByEmail(String email) {
+		userDaoLogger.info("Méthode readByEmail");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("email", email);
 		
 		return jdbcTemplate.queryForObject(FIND_BY_EMAIL, namedParameters,  new UserRowMapper());
 	}
-
 
 	/**
 	 * Read by id.
@@ -131,12 +135,12 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public User readById(int id) {
+		userDaoLogger.info("Méthode readById");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", id);
 		
 		return jdbcTemplate.queryForObject(FIND_BY_ID, namedParameters,  new UserRowMapper());
 	}
-
 
 	/**
 	 * Update.
@@ -145,6 +149,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public void update(User user) {
+		userDaoLogger.info("Méthode update");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", user.getUserId());
 		namedParameters.addValue("pseudo", user.getPseudo());
@@ -164,7 +169,6 @@ public class UserDAOImpl implements UserDAO {
 		
 	}
 
-
 	/**
 	 * Delete by email.
 	 *
@@ -172,13 +176,13 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public void deleteByEmail(String email) {
+		userDaoLogger.info("Méthode deleteByEmail");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("email", email);
 		
 		jdbcTemplate.update(DELETE_BY_EMAIL, namedParameters);
 
 	}
-
 
 	/**
 	 * Delete by id.
@@ -187,6 +191,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public void deleteById(int id) {
+		userDaoLogger.info("Méthode deleteById");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", id);
 		
@@ -196,6 +201,7 @@ public class UserDAOImpl implements UserDAO {
 	
 	@Override
 	public void desactivateById(int userId) {
+		userDaoLogger.info("Méthode desactivateById");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("userId", userId);
 		
@@ -204,13 +210,12 @@ public class UserDAOImpl implements UserDAO {
 	
 	@Override
 	public void reactivateById(int userId) {
+		userDaoLogger.info("Méthode reactivateById");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("userId", userId);
 		
 		jdbcTemplate.update(REACTIVATE_BY_ID, namedParameters);
 	}
-
-
 
 	/**
 	 * Find all.
@@ -219,10 +224,10 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public List<User> findAll() {
+		userDaoLogger.info("Méthode findAll");
 		return jdbcTemplate.query(FIND_ALL,  new UserRowMapper());
 	}
-	
-	
+		
 	/**
 	 * Read the password hash by id.
 	 *
@@ -231,22 +236,22 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public String readPasswordById(int idUser) {
+		userDaoLogger.info("Méthode readPasswordById");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", idUser);
 		
 		return jdbcTemplate.queryForObject(GET_PASSWORD_HASH_BY_ID, namedParameters,  String.class);
 	}
-	
-	
+		
 	@Override
 	public void updateCredit(User user) {
+		userDaoLogger.info("Méthode updateCredit");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", user.getUserId());
 		namedParameters.addValue("newCredit", user.getCredit());
 		
 		jdbcTemplate.update(UPDATE_CREDIT_BY_ID, namedParameters);
 	}
-	
 	
 	/**
 	 * Count the users in DB by pseudo in order to check if the pseudo is available
@@ -255,6 +260,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public int countPseudo(String pseudoUser) {
+		userDaoLogger.info("Méthode countPseudo");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		
 		namedParameters.addValue("pseudo", pseudoUser);
@@ -269,6 +275,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public int countEmail(String emailUser) {
+		userDaoLogger.info("Méthode countEmail");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		
 		namedParameters.addValue("email", emailUser);

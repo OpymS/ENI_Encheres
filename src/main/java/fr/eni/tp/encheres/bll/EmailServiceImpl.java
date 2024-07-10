@@ -2,9 +2,12 @@ package fr.eni.tp.encheres.bll;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
@@ -14,6 +17,7 @@ import jakarta.mail.MessagingException;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+	private static final Logger emailServiceLogger = LoggerFactory.getLogger(EmailServiceImpl.class);
 	
     @Value("${mail.smtp.host}")
     private String host;
@@ -25,15 +29,18 @@ public class EmailServiceImpl implements EmailService {
     private String baseUrl;
 
     @Override
-    public void sendPasswordResetEmail(String to, String token) {
-        String resetLink = buildResetLink(baseUrl, token);
+    public void sendPasswordResetEmail(String to, String token) throws BusinessException {
+    	emailServiceLogger.info("méthode sendPasswordReset");
+    	String resetLink = buildResetLink(baseUrl, token);
         String subject = buildPasswordResetSubject();
         String content = buildPasswordResetEmail(resetLink);
 
         sendEmail(to, subject, content);
     }
 
-    private void sendEmail(String to, String subject, String content) {
+    private void sendEmail(String to, String subject, String content) throws BusinessException {
+    	emailServiceLogger.info("méthode sendEmail");
+    	BusinessException be = new BusinessException();
         Properties props = new Properties();
         props.put("mail.smtp.auth", "false");
         props.put("mail.smtp.starttls.enable", "true");
@@ -50,14 +57,16 @@ public class EmailServiceImpl implements EmailService {
             message.setText(content);
 
             Transport.send(message);
-            System.out.println("Email envoyé avec succès!");
+            emailServiceLogger.info("Email envoyé avec succès!");
 
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+        	be.add("error.email.send");
+			throw be;
         }
     }
 
     private String buildPasswordResetEmail(String resetLink) {
+    	emailServiceLogger.info("méthode buildPasswordResetEmail");
         return "Hello,\n\n" +
                "We received a request to reset your password. Please click the link below to reset your password:\n" +
                resetLink + "\n\n" +
@@ -67,10 +76,12 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private String buildPasswordResetSubject() {
+    	emailServiceLogger.info("méthode buildPasswordResetSubject");
         return "Password Reset Request";
     }
 
     private String buildResetLink(String baseUrl, String token) {
+    	emailServiceLogger.info("méthode buildResetLink");
         return baseUrl + "/reset-password?token=" + token;
     }
 

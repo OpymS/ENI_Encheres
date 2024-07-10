@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.eni.tp.encheres.bll.AuctionService;
-import fr.eni.tp.encheres.bll.UserService;
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Auction;
@@ -34,18 +32,17 @@ public class BidController {
 	private static final Logger bidLogger = LoggerFactory.getLogger(BidController.class);
 
 	private AuctionService auctionService;
-	private UserService userService;
 	private MessageSource messageSource;
 
-	public BidController(AuctionService auctionService, UserService userService, MessageSource messageSource) {
+	public BidController(AuctionService auctionService, MessageSource messageSource) {
 		this.auctionService = auctionService;
-		this.userService = userService;
 		this.messageSource = messageSource;
 	}
 
 	@GetMapping
 	public String showArticleToBidOn(@RequestParam(name = "articleId", required = true) int articleId,
 			@SessionAttribute("userSession") User userSession, Model model) {
+		bidLogger.info("Méthode showArticleToBidOn");
 		Article articleToDisplay = auctionService.findArticleById(articleId);
 		
     bidLogger.debug(articleToDisplay.toString());
@@ -95,7 +92,8 @@ public class BidController {
 	public String createBidOnArticle(@RequestParam(name = "articleId", required = true) int articleId,
 			@RequestParam(name = "bidOffer", required = true) int bidOffer,
 			@SessionAttribute("userSession") User userSession, RedirectAttributes redirectAttributes, Locale locale) {
-
+		bidLogger.info("Méthode createBidOnArticle");
+		
 		String redirectUrl = "redirect:/bid?articleId=" + articleId;
 
 		try {
