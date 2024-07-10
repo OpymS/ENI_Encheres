@@ -204,7 +204,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -217,11 +217,11 @@ public class AuctionServiceImpl implements AuctionService {
 		// On enlève 2 minutes pour se laisser le temps du traitement.
 		LocalDateTime now = LocalDateTime.now().minusMinutes(2);
 		if (startDate == null || endDate == null) {
-			be.add("Vente impossible. Les dates de début et de fin d'enchères doivent être renseignées");
+			be.add("error.sales.nodate");
 		} else if (startDate.isBefore(now)) {
-			be.add("Vente impossible. Les enchères ne peuvent pas commencer avant maintenant");
+			be.add("error.sales.begintooearly");
 		} else if (startDate.isAfter(endDate)) {
-			be.add("Vente impossible. Les enchères doivent finir après avoir commencé");
+			be.add("error.sales.endtooearly");
 		} else {
 			isValid = true;
 		}
@@ -232,7 +232,7 @@ public class AuctionServiceImpl implements AuctionService {
 		boolean isValid = false;
 		if (pickupLocation.getStreet().isEmpty() || pickupLocation.getZipCode().isEmpty()
 				|| pickupLocation.getCity().isEmpty()) {
-			be.add("Vente impossible. Remplissez tous les champs du lieu de retrait de l'article");
+			be.add("error.sales.pickuplocation");
 		} else {
 			isValid = true;
 		}
@@ -259,7 +259,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -345,7 +345,7 @@ public class AuctionServiceImpl implements AuctionService {
 				userDAO.updateCredit(userSession);
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -358,7 +358,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (user.getCredit() >= bidOffer) {
 			isValid = true;
 		} else {
-			be.add("Vous n'avez pas suffisamment de crédit pour enchérir à un tel niveau.");
+			be.add("error.auction.notenoughcredit");
 		}
 		return isValid;
 	}
@@ -368,7 +368,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (auction.getArticle().getCurrentPrice() < auction.getBidAmount()) {
 			isValid = true;
 		} else {
-			be.add("Votre offre est inférieure à la meilleure offre.");
+			be.add("error.auction.weakoffer");
 		}
 		return isValid;
 	}
@@ -378,7 +378,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate())) {
 			isValid = true;
 		} else {
-			be.add("L'enchère est finie. Il n'est pas possible de surenchérir.");
+			be.add("error.auction.toolate");
 		}
 		return isValid;
 	}
@@ -395,7 +395,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (date != null && time != null) {
 			dateTime = LocalDateTime.of(date, time);
 		} else {
-			be.add("Les dates et heures doivent être renseignées");
+			be.add("error.missingdate");
 			throw be;
 		}
 		return dateTime;
