@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
 
 public interface ArticleDAO {
 	Article read(int articleId);
@@ -23,4 +24,5 @@ public interface ArticleDAO {
 	int countArticlesFinishedBySellerId(int userId);
 	void eraseSellerByUserId(int userId);
 	List<Article> findCancellableBySellerId(int userId);
+	void updateArticleState(ArticleState articleState, int articleId);
 }

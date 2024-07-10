@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.User;
@@ -38,5 +39,6 @@ public interface AuctionService {
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;
 	void cancelArticle(Article article);
 	List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buySale, int userId);
+	void updateArticleState(ArticleState articleState, int articleId);
 
 }

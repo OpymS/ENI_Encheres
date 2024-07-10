@@ -248,6 +248,24 @@ public class AuctionController {
 		}
 	}
 	
+	@GetMapping("/retrieveArticle")
+	public String retrieveArticle(@RequestParam(name="articleId", required=true) int articleId,
+			@SessionAttribute("userSession") User userSession) {
+		String redirectUrl = "redirect:/bid?articleId=" + articleId;
+		
+		Article articleToUpdate = auctionService.findArticleById(articleId);
+		//check état article avant de l'update ?
+		if(!articleToUpdate.getState().equals(ArticleState.FINISHED)) {
+			System.err.println("Pas possible de retirer un article déjà retiré ou dont l'enchère n'est pas terminée  !");
+			return redirectUrl;
+		}
+		auctionService.updateArticleState(ArticleState.RETRIEVED, articleId);
+		
+		
+		
+		return redirectUrl;
+	}
+	
 	
 	
 	@GetMapping("/cancelArticle")
