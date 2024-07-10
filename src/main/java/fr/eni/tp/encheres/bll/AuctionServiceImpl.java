@@ -269,6 +269,14 @@ public class AuctionServiceImpl implements AuctionService {
 			throw be;
 		}
 	}
+	
+	
+	@Override
+	public void updateArticleState(ArticleState articleState, int articleId) {
+		//check état article ?
+		articleDAO.updateArticleState(articleState, articleId);
+		
+	}
 
 	@Override
 	public Category findCategoryById(int categoryId) {

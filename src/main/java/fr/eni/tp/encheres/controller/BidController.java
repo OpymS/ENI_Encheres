@@ -58,8 +58,9 @@ public class BidController {
 		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
 		boolean isChangePossible = isBeforeStart || isBidPossible;
 		boolean isAuctionCanceled = articleToDisplay.getState().equals(ArticleState.CANCELED);
-		boolean isAuctionFinished = articleToDisplay.getState().equals(ArticleState.FINISHED)
-				|| articleToDisplay.getState().equals(ArticleState.RETRIEVED);
+
+		boolean isAuctionFinished = articleToDisplay.getState().equals(ArticleState.FINISHED);
+		boolean isAuctionRetrieved = articleToDisplay.getState().equals(ArticleState.RETRIEVED);
 
 		model.addAttribute("articleDisplay", articleToDisplay);
 		model.addAttribute("userSession", userSession);
@@ -67,7 +68,7 @@ public class BidController {
 		model.addAttribute("isBidPossible", isBidPossible);
 		model.addAttribute("isBeforeStart", isBeforeStart);
 		model.addAttribute("isAuctionFinished", isAuctionFinished);
-		model.addAttribute("isAuctionCanceled", isAuctionCanceled);
+		model.addAttribute("isAuctionRetrieved", isAuctionRetrieved);
 
 		// Ajout de la date au bon format !
 		String dateDisplayFormat = "dd/MM/yyyy - HH:mm";

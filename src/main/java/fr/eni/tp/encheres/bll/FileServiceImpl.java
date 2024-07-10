@@ -31,28 +31,30 @@ public class FileServiceImpl implements FileService {
         if (file.isEmpty()) {
            String NonUniqueFilename = "placeholderImage.jpg";
            affectAndUpdateArticle(article, NonUniqueFilename);
+        }else {
+        	
+	        // Créer le répertoire de sauvegarde s'il n'existe pas
+	        File uploadDir = new File(uploadPath);
+	        if (!uploadDir.exists()) {
+	            uploadDir.mkdirs();
+	        }
+	
+	        // Générer un nom de fichier unique
+	        String originalFilename = file.getOriginalFilename();
+	        String extension = "";
+	        if(originalFilename != null && originalFilename.contains(".")) {
+	        	// On récupère l'extension du fichier (jpg, jpeg, png etc....)
+	        	extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+	        }
+	        String uniqueFilename = UUID.randomUUID().toString() + extension;
+	        Path destinationFile = Paths.get(uploadDir.getAbsolutePath(), uniqueFilename).normalize();
+	
+	        // Copier le fichier uploadé dans le répertoire de destination
+	        Files.copy(file.getInputStream(), destinationFile);
+	
+	        affectAndUpdateArticle(article, uniqueFilename);
+	        
         }
-
-        // Créer le répertoire de sauvegarde s'il n'existe pas
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        // Générer un nom de fichier unique
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-        if(originalFilename != null && originalFilename.contains(".")) {
-        	// On récupère l'extension du fichier (jpg, jpeg, png etc....)
-        	extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-        }
-        String uniqueFilename = UUID.randomUUID().toString() + extension;
-        Path destinationFile = Paths.get(uploadDir.getAbsolutePath(), uniqueFilename).normalize();
-
-        // Copier le fichier uploadé dans le répertoire de destination
-        Files.copy(file.getInputStream(), destinationFile);
-
-        affectAndUpdateArticle(article, uniqueFilename);
         
     }
 	
