@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 @SessionAttributes({ "userSession" })
 public class LoginController {
 	private static final Logger loginLogger = LoggerFactory.getLogger(LoginController.class);
-	
+
 	private UserService userService;
 
 	public LoginController(UserService userService) {
@@ -54,18 +54,11 @@ public class LoginController {
 			return "signup";
 		} else {
 			try {
-				userService.createAccount(
-						user.getPseudo(),
-						user.getName(),
-						user.getFirstName(),
-						user.getEmail(),
-						user.getPhoneNumber(),
-						user.getStreet(),
-						user.getZipCode(),
-						user.getCity(),
-						user.getPassword(),
+				userService.createAccount(user.getPseudo(), user.getName(), user.getFirstName(), user.getEmail(),
+						user.getPhoneNumber(), user.getStreet(), user.getZipCode(), user.getCity(), user.getPassword(),
 						user.getPasswordConfirm());
-				loginLogger.info("inscription nouvel utilisateur - userId : "+user.getUserId());
+				loginLogger.info("inscription nouvel utilisateur - userId : "
+						+ userService.getUserByEmail(user.getEmail()).getUserId());
 				return "redirect:/login";
 
 			} catch (BusinessException e) {
@@ -84,8 +77,8 @@ public class LoginController {
 		System.out.println("début du getMapping session");
 		String email;
 		User userRecup;
-		System.out.println("ppal "+principal);
-		if(principal != null) {
+		System.out.println("ppal " + principal);
+		if (principal != null) {
 			email = principal.getName();
 			userRecup = userService.getUserByEmail(email);
 		} else {
@@ -100,7 +93,7 @@ public class LoginController {
 			userSession.setUserId(0);
 			userSession.setEmail(email);
 		}
-		loginLogger.info("idUser mis en session : "+userSession.getUserId());
+		loginLogger.info("idUser mis en session : " + userSession.getUserId());
 
 		return "redirect:/auctions";
 	}

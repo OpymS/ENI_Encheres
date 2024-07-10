@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,6 +24,7 @@ import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 
 @Repository
 public class ArticleDAOImpl implements ArticleDAO{
+	private static final Logger articleDaoLogger = LoggerFactory.getLogger(ArticleDAOImpl.class);
 	
 	private static final String FIND_BY_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
@@ -274,7 +277,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 		mapSqlParameterSource.addValue("textFilter", textFilter);
 		
 		
-		System.err.println(SQLQuery);
+		articleDaoLogger.debug(SQLQuery);
 		return jdbcTemplate.query(SQLQuery, mapSqlParameterSource, new ArticleRowMapper());
 			
 	}

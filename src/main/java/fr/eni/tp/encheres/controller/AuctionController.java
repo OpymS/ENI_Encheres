@@ -53,7 +53,6 @@ public class AuctionController {
 	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
 			@ModelAttribute("userSession") User userSession, Model model,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
-		System.out.println("get " + sessionResearch);
 		model.addAttribute("criteria", sessionResearch);
 		Page<Article> articlesList = auctionService.selectArticles(sessionResearch, userSession.getUserId(),
 				PageRequest.of(currentPage - 1, PAGE_SIZE));
@@ -77,9 +76,7 @@ public class AuctionController {
 			@ModelAttribute("research") SearchCriteria sessionResearch, Model model,
 			@ModelAttribute("userSession") User userSession,
 			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
-		System.out.println("showAuctions début");
-		System.out.println("post " + research);
-
+		
 		sessionResearch.setWordToFind(research.getWordToFind());
 		sessionResearch.setCategory(research.getCategory());
 		sessionResearch.setRadioButton(research.getRadioButton());

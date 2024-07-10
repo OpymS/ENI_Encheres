@@ -40,7 +40,7 @@ public class BidController {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
 		bidLogger.debug(articleToDisplay.toString());
 		bidLogger.info("id utilisateur connecté : " + userSession.getUserId()
-				+ " - affichage page d'endhère sur article id : " + articleId);
+				+ " - affichage page d'enchère sur article id : " + articleId);
 		// GEstion de l'affichage conditionnel sur la page
 		boolean isBidPossible = articleToDisplay.getState().equals(ArticleState.STARTED);
 		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
