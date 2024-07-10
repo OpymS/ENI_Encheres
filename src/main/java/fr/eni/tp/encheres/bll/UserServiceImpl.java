@@ -2,6 +2,8 @@ package fr.eni.tp.encheres.bll;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
  */
 @Service
 public class UserServiceImpl implements UserService {
+	private static final Logger userServiceLogger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	private AuctionService auctionService;
 	
@@ -58,6 +61,7 @@ public class UserServiceImpl implements UserService {
 	public void createAccount(String pseudo, String name, String firstName, String email, String phoneNumber,
 			String street, String zipCode, String city, String password, String passwordConfirm)
 			throws BusinessException {
+		userServiceLogger.info("Méthode createAccount");
 		BusinessException be = new BusinessException();
 		boolean isValid = checkPassword(password, passwordConfirm, be) && checkPseudoAvailable(pseudo, be)
 				&& checkEmailAvailable(email, be);
@@ -89,6 +93,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean checkPassword(String password, String passwordConfirm, BusinessException be) {
+		userServiceLogger.info("Méthode checkPassword");
 		boolean isValid = false;
 		if (!password.isBlank() && password.equals(passwordConfirm)) {
 			isValid = true;
@@ -103,15 +108,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public List<User> getAllUsers(){
+		userServiceLogger.info("Méthode getAllUsers");
 		return userDAO.findAll();
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/**
@@ -121,6 +120,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void forgotPassword(String email) {
+		userServiceLogger.info("Méthode forgotPassword");
 		// TODO Auto-generated method stub
 
 	}
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void deleteAccount(int userId) throws BusinessException{
-		
+		userServiceLogger.info("Méthode deleteAccount");
 		BusinessException be = new BusinessException();
 		
 		//Check des conditions: 
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void desactivateAccount(int userId) throws BusinessException{
-		
+		userServiceLogger.info("Méthode desactivateAccount");
 		BusinessException be = new BusinessException();
 		
 		//Check des conditions: 
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void reactivateAccount(int userId) throws BusinessException{
-		
+		userServiceLogger.info("Méthode reactivateAccount");
 		BusinessException be = new BusinessException();
 		
 		//Pour réactiver un compte, pas de check à faire car les articles vendus à la désactivation auront été annulés
@@ -235,7 +235,7 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (DataAccessException e) {
 			e.printStackTrace();
-			be.add("Un problème est survenu lors de l'accès à la base de données");
+			be.add("error.database.access");
 			throw be;
 		}
 		
@@ -243,6 +243,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	private boolean checkArticlesState(int userId,  BusinessException be) {
+		userServiceLogger.info("Méthode checkArticlesState");
 		boolean isDeleteOk = false;
 		
 		int nbArticlesFinished = articleDAO.countArticlesFinishedBySellerId(userId);
@@ -258,6 +259,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private boolean checkUserBids(int userId,  BusinessException be) {
+		userServiceLogger.info("Méthode checkUserBids");
 		boolean isDeleteOk = false;
 		
 		int nbPossibleBuy = articleDAO.countArticlesByBuyerId(userId);
@@ -284,6 +286,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public int viewOwnPoints(int userId) {
+		userServiceLogger.info("Méthode viewOwnPoints");
 		// TODO Auto-generated method stub
 		return userId;
 
@@ -297,6 +300,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User viewUserProfile(int userId) {
+		userServiceLogger.info("Méthode viewUserProfile");
 		return userDAO.readById(userId);
 	}
 
@@ -317,7 +321,9 @@ public class UserServiceImpl implements UserService {
 	 * @throws BusinessException
 	 */
 	@Override
+	@Transactional(rollbackFor = BusinessException.class)
 	public void updateProfile(User userWithUpdate, User currentUser) throws BusinessException {
+		userServiceLogger.info("Méthode updateProfile");
 		BusinessException be = new BusinessException();
 		boolean isValid = false;
 
@@ -357,16 +363,26 @@ public class UserServiceImpl implements UserService {
 	 *
 	 * @param User the user
 	 * @return nothing
+	 * @throws BusinessException 
 	 */
 	@Override
-	public void updateUserCredit(User user) {
-		userDAO.updateCredit(user);
+	@Transactional(rollbackFor = BusinessException.class)
+	public void updateUserCredit(User user) throws BusinessException {
+		userServiceLogger.info("Méthode updateUserCredit");
+		BusinessException be = new BusinessException();
+		try {
+			userDAO.updateCredit(user);
+		} catch (DataAccessException e) {
+			be.add("error.database.access");
+			throw be;
+		}
 	}
 	
 	
 	
 
 	private boolean verifyPasswordMatch(String password1, String password2, BusinessException be) {
+		userServiceLogger.info("Méthode verifyPasswordMatch");
 		boolean isValid = false;
 		if (passwordEncoder.matches(password1, password2)) {
 			isValid = true;
@@ -384,6 +400,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User getUserByEmail(String email) {
+		userServiceLogger.info("Méthode getUserByEmail");
 		return userDAO.readByEmail(email);
 	}
 
@@ -395,6 +412,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User getUserById(int userId) {
+		userServiceLogger.info("Méthode getUserById");
 		return userDAO.readById(userId);
 	}
 
@@ -406,10 +424,12 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public String getUserPasswordById(int idUser) {
+		userServiceLogger.info("Méthode getUserPasswordById");
 		return userDAO.readPasswordById(idUser);
 	}
 
 	private boolean checkPseudoAvailable(String pseudo, BusinessException be) {
+		userServiceLogger.info("Méthode checkPseudoAvailable");
 		boolean isValid = false;
 		int nbPseudo = userDAO.countPseudo(pseudo);
 		if (nbPseudo == 0) {
@@ -421,6 +441,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean checkEmailAvailable(String email, BusinessException be) {
+		userServiceLogger.info("Méthode checkEmailAvailable");
 		boolean isValid = false;
 		int nbEmail = userDAO.countEmail(email);
 		if (nbEmail == 0) {
@@ -433,6 +454,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override // Fonctionne par référence ou en retournant une instance de l'user hydraté
 	public User fillUserAttributes(User userToFill, User userThatFills) {
+		userServiceLogger.info("Méthode fillUserAttributes");
 		userToFill.setUserId(userThatFills.getUserId());
 		userToFill.setPseudo(userThatFills.getPseudo());
 		userToFill.setName(userThatFills.getName());

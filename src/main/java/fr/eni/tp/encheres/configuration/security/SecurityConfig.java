@@ -1,5 +1,7 @@
 package fr.eni.tp.encheres.configuration.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	private static final Logger securityConfigLogger = LoggerFactory.getLogger(SecurityConfig.class);
 	
     private final UserDetailsService userDetailsService;
 
@@ -22,11 +25,13 @@ public class SecurityConfig {
 
 	@Bean
     PasswordEncoder passwordEncoder() {
-    	return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		securityConfigLogger.info("Méthode passwordEncoder");
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 		
 	@Bean
 	SecurityFilterChain web(HttpSecurity http) throws Exception{
+		securityConfigLogger.info("Méthode web");
 		http
 			.authorizeHttpRequests((authorize) -> authorize
 			.requestMatchers("/").permitAll()

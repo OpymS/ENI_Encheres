@@ -26,6 +26,7 @@ public class ArticleWatcher {
 
 	//@Scheduled(fixedDelay = 3000)
 	public void printArticleCount() {
+		articleWatcherLogger.info("Méthode printArticleCount");
 		int articleCount = articleDAO.countArticles();
 		articleWatcherLogger.info("Il y a actuellement "+articleCount+" articles en base de donnée");
 	}
@@ -33,6 +34,7 @@ public class ArticleWatcher {
 	
 	@Scheduled(cron = "0 * * * * *") //à 0 seconde de chaque minute
 	public void updateArticleState() {
+		articleWatcherLogger.info("Méthode updateArticleState");
 		//Récupérer tous les articles dont la date de fin est dépassée
 		List<Article> articlesToUpdateToFinished = articleDAO.findArticleToUpdateToFinished();	
 		if (articlesToUpdateToFinished.size() != 0) {

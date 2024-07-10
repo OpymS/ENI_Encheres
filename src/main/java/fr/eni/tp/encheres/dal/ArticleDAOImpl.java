@@ -71,6 +71,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public Article read(int articleId) {
+		articleDaoLogger.info("Méthode read");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -79,11 +80,13 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findAll() {
+		articleDaoLogger.info("Méthode findAll");
 		return jdbcTemplate.query(FIND_ALL, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findCancellableBySellerId(int userId) {
+		articleDaoLogger.info("Méthode findCancellableBySellerId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
@@ -92,6 +95,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByCategory(int categoryId) {
+		articleDaoLogger.info("Méthode findByCategory");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("categoryId", categoryId);
 		
@@ -100,6 +104,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByCategoryAndName(int categoryId, String name) {
+		articleDaoLogger.info("Méthode findByCategoryAndName");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("categoryId", categoryId);
 		mapSqlParameterSource.addValue("name", name);
@@ -109,6 +114,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByName(String name) {
+		articleDaoLogger.info("Méthode findByName");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("name", "%"+name+"%");
 
@@ -117,6 +123,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public void create(Article article) {
+		articleDaoLogger.info("Méthode create");
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("name", article.getArticleName());
@@ -140,6 +147,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	@Override
 	public void updateSellPriceAndBuyer(int articleId, int newPrice, int userId) {
+		articleDaoLogger.info("Méthode updateSellPriceAndBuyer");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		mapSqlParameterSource.addValue("userId", userId);
@@ -150,6 +158,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	@Override
 	public void updateArticle(Article article) {
+		articleDaoLogger.info("Méthode updateArticle");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", article.getArticleId());
 		mapSqlParameterSource.addValue("name", article.getArticleName());
@@ -168,6 +177,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public void delete(int articleId) {
+		articleDaoLogger.info("Méthode delete");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -176,54 +186,55 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	@Override
 	public void eraseSellerByUserId(int userId) {
+		articleDaoLogger.info("Méthode eraseSellerByUserId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
 		jdbcTemplate.update(ERASE_BY_USER_ID, mapSqlParameterSource);
 	}
 	
-	
-	
 	@Override
 	public int countArticles() {
+		articleDaoLogger.info("Méthode countArticles");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("idMin", 0);
 
 		return jdbcTemplate.queryForObject(SCHEDULED_COUNT,mapSqlParameterSource, Integer.class);
 	}
-	
-	
+		
 	@Override
 	public int countArticlesFinishedBySellerId(int userId) {
+		articleDaoLogger.info("Méthode countArticlesFinishedBySeller");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 
 		return jdbcTemplate.queryForObject(COUNT_FINISHED_BY_USER_ID,mapSqlParameterSource, Integer.class);
 	}
-	
 
 	@Override
 	public int countArticlesByBuyerId(int userId) {
+		articleDaoLogger.info("Méthode countArticlesByBuyerId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 
 		return jdbcTemplate.queryForObject(COUNT_BUYERS_BY_USER_ID,mapSqlParameterSource, Integer.class);
 	}
 	
-	
-	
 	@Override
 	public List<Article> findArticleToUpdateToFinished() {
+		articleDaoLogger.info("Méthode findArticleToUpdateToFinished");
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_FINISHED, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findArticleToUpdateToStarted() {
+		articleDaoLogger.info("Méthode findArticleToUpdateToStarted");
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findWithFilters(SearchCriteria research, int userId){
+		articleDaoLogger.info("Méthode findWithFilters");
 		//Récupérer les paramètres de filtre :
     
 		String textFilter = "%"+research.getWordToFind()+"%";
@@ -284,8 +295,8 @@ public class ArticleDAOImpl implements ArticleDAO{
 			
 	}
 	
-
 	private String mapToSQLCondition(String conditionTitle) {
+		articleDaoLogger.info("Méthode mapToSQLCondition");
 		String conditionSQL = "";
 		switch(conditionTitle) {
 			case "open":
@@ -309,8 +320,6 @@ public class ArticleDAOImpl implements ArticleDAO{
 		}
 		return conditionSQL;
 	}
-	
-	
 	
 
 	class ArticleRowMapper implements RowMapper<Article> {

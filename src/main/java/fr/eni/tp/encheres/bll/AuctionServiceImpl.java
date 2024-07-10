@@ -56,32 +56,38 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public Article findArticleById(int articleId) {
+		auctionServiceLogger.info("méthode findArticleById");
 		return articleDAO.read(articleId);
 	}
 
 	@Override
 	public List<Article> findArticlesByName(String name) {
+		auctionServiceLogger.info("méthode findArticlesByName");
 		return articleDAO.findByName(name);
 	}
 
 	@Override
 	public List<Article> findArticlesByCategory(Category category) {
+		auctionServiceLogger.info("méthode findArticlesByCategory");
 		return articleDAO.findByCategory(category.getCategoryId());
 	}
 
 	@Override
 	public List<Article> findArticlesByCategoryAndName(Category category, String name) {
+		auctionServiceLogger.info("méthode findArticlesByCategoryAndName");
 		return articleDAO.findByCategoryAndName(category.getCategoryId(), name);
 
 	}
 
 	@Override
 	public List<Article> findArticles() {
+		auctionServiceLogger.info("méthode findArticles");
 		return articleDAO.findAll();
 	}
 	
 	@Override
 	public Page<Article> selectArticles(SearchCriteria research, int userId, Pageable pageable){
+		auctionServiceLogger.info("méthode selectArticles");
 		if (research.getRadioButton()==null) {
 			research.setRadioButton("purchases");
 		}
@@ -122,6 +128,7 @@ public class AuctionServiceImpl implements AuctionService {
 	@Deprecated
 	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won,
 			boolean currentVente, boolean notstarted, boolean finished, String buySale) {
+		auctionServiceLogger.info("méthode selectArticles deprecated");
 		List<Article> articlesList;
 
 		// si pas de mot dans l'input et pas de catégorie choisie
@@ -195,6 +202,7 @@ public class AuctionServiceImpl implements AuctionService {
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void sell(Article article) throws BusinessException {
+		auctionServiceLogger.info("méthode sell");
 		BusinessException be = new BusinessException();
 		boolean isValid = false;
 		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be)
@@ -216,6 +224,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private boolean checkDates(LocalDateTime startDate, LocalDateTime endDate, BusinessException be) {
+		auctionServiceLogger.info("méthode checkDates");
 		boolean isValid = false;
 		// On enlève 2 minutes pour se laisser le temps du traitement.
 		LocalDateTime now = LocalDateTime.now().minusMinutes(2);
@@ -232,6 +241,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private boolean checkPickUpLocation(PickupLocation pickupLocation, BusinessException be) {
+		auctionServiceLogger.info("méthode checkPickUpLocation");
 		boolean isValid = false;
 		if (pickupLocation.getStreet().isEmpty() || pickupLocation.getZipCode().isEmpty()
 				|| pickupLocation.getCity().isEmpty()) {
@@ -244,12 +254,14 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public void deleteArticle(int articleId) {
+		auctionServiceLogger.info("méthode deleteArticle");
 		articleDAO.delete(articleId);
 	}
 
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void updateArticle(Article article) throws BusinessException {
+		auctionServiceLogger.info("méthode updateArticle");
 		BusinessException be = new BusinessException();
 		boolean isValid = false;
 		isValid = checkDates(article.getAuctionStartDate(), article.getAuctionEndDate(), be)
@@ -272,28 +284,33 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public Category findCategoryById(int categoryId) {
+		auctionServiceLogger.info("méthode findCategoryById");
 		Category category = categoryDAO.readById(categoryId);
 		return category;
 	}
 
 	@Override
 	public List<Category> findCategories() {
+		auctionServiceLogger.info("méthode findCategories");
 		List<Category> categories = categoryDAO.findAll();
 		return categories;
 	}
 
 	@Override
 	public void newCategory(Category category) {
+		auctionServiceLogger.info("méthode newCategory");
 		categoryDAO.create(category);
 	}
 
 	@Override
 	public void updateCategory(Category category) {
+		auctionServiceLogger.info("méthode updateCategory");
 		categoryDAO.update(category);
 	}
 
 	@Override
 	public List<Auction> findAuctions(int userId, int articleId) {
+		auctionServiceLogger.info("méthode findAuctions");
 		List<Auction> auctions = auctionDAO.read(userId, articleId);
 		auctions.forEach(auction -> {
 			auction.setArticle(articleDAO.read(articleId));
@@ -304,6 +321,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public List<Auction> findAuctionsByUser(int userId) {
+		auctionServiceLogger.info("méthode findAuctionsByUser");
 		List<Auction> auctions = auctionDAO.findByUser(userId);
 		auctions.forEach(auction -> {
 			auction.setArticle(articleDAO.read(auction.getArticle().getArticleId()));
@@ -314,6 +332,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public List<Auction> findAllAuctions(int articleId) {
+		auctionServiceLogger.info("méthode findAllAuctions");
 		List<Auction> auctions = auctionDAO.findByArticle(articleId);
 		auctions.forEach(auction -> {
 			auction.setArticle(articleDAO.read(articleId));
@@ -325,6 +344,7 @@ public class AuctionServiceImpl implements AuctionService {
 	@Override
 	@Transactional(rollbackFor = BusinessException.class)
 	public void newAuction(int articleId, int bidOffer, User userSession) throws BusinessException {
+		auctionServiceLogger.info("méthode newAuction");
 		BusinessException be = new BusinessException();
 		Auction newAuction = new Auction();
 		
@@ -357,6 +377,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private boolean checkCredit(User user, int bidOffer, BusinessException be) {
+		auctionServiceLogger.info("méthode checkCredit");
 		boolean isValid = false;
 		if (user.getCredit() >= bidOffer) {
 			isValid = true;
@@ -367,6 +388,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 	
 	private boolean checkBidAmount(Auction auction, BusinessException be) {
+		auctionServiceLogger.info("méthode checkBidAmount");
 		boolean isValid = false;
 		if (auction.getArticle().getCurrentPrice() < auction.getBidAmount()) {
 			isValid = true;
@@ -377,6 +399,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private boolean checkBidDate(Auction auction, BusinessException be) {
+		auctionServiceLogger.info("méthode checkBidDate");
 		boolean isValid = false;
 		if (auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate())) {
 			isValid = true;
@@ -388,11 +411,13 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	public void deleteAuction(Auction auction) {
+		auctionServiceLogger.info("méthode deleteAuction");
 		auctionDAO.delete(auction.getUser().getUserId(), auction.getArticle().getArticleId(), auction.getAuctionDate());
 	}
 
 	@Override
 	public LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException {
+		auctionServiceLogger.info("méthode convertDate");
 		BusinessException be = new BusinessException();
 		LocalDateTime dateTime;
 		if (date != null && time != null) {
@@ -407,6 +432,7 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	@Override
 	public void cancelArticle(Article article) {
+		auctionServiceLogger.info("méthode cancelArticle");
 		if(article.getState().equals(ArticleState.NOT_STARTED)) {
 			
 			//personne à rembourser si pas commencée

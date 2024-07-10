@@ -40,6 +40,7 @@ public class ProfilController {
 	@GetMapping // NOTE : Ajouter vérif sur id valide plus tard
 	public String showProfilPage(@SessionAttribute("userSession") User userSession,
 			@RequestParam(name = "userId", required = false) int userId, Model model) {
+		profilLogger.info("Méthode showProfilPage");
 		User userToDisplay = new User();
 		userService.fillUserAttributes(userToDisplay, userService.getUserById(userId));
 		userToDisplay.setPassword(null); // Pas de stockage de mot de passe
@@ -51,6 +52,7 @@ public class ProfilController {
 
 	@GetMapping("/modify")
 	public String showModifyProfilPage(Model model, @SessionAttribute("userSession") User userSession) {
+		profilLogger.info("Méthode showModifyProfilPage");
 		model.addAttribute("user", userSession);
 		return "profil-modify";
 	}
@@ -60,7 +62,8 @@ public class ProfilController {
 			@SessionAttribute("userSession") User userSession,
 			@RequestParam(name = "updatedPassword", required = false) String updatedPassword,
 			@RequestParam(name = "currentPassword", required = false) String currentPassword, Locale locale) {
-
+		profilLogger.info("Méthode modifyUserInfos");
+		
 		userForm.setUserId(userSession.getUserId());
 		userForm.setCredit(userSession.getCredit());
 		userForm.setPassword(updatedPassword);
@@ -94,7 +97,8 @@ public class ProfilController {
 	@GetMapping("/deleteAccount")
 	public String deleteUserAccount(@SessionAttribute("userSession") User userSession,
 			@RequestParam(name = "userId") int userId, RedirectAttributes redirectAttributes, Locale locale) {
-
+		profilLogger.info("Méthode deleteUserAccount");
+		
 		// check si c'est bien l'utilisateur connecté qui veut supprimer
 		if (userSession.getUserId() != userId) {
 			profilLogger.error("Pas le bon utilisateur !");

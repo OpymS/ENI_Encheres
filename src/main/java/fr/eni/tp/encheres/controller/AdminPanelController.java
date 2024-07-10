@@ -2,6 +2,8 @@ package fr.eni.tp.encheres.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @RequestMapping("/admin")
 @SessionAttributes({"userSession"})
 public class AdminPanelController {
+	private static final Logger adminPannelLogger = LoggerFactory.getLogger(AdminPanelController.class);
 	
 	private UserService userService;
 	
@@ -28,6 +31,7 @@ public class AdminPanelController {
 	
 	@GetMapping
 	public String showAdminPanel(Model model) {
+		adminPannelLogger.info("Méthode showAdminPanel");
 		List<User> usersList = userService.getAllUsers();
 		
 		model.addAttribute("users", usersList);
@@ -39,6 +43,7 @@ public class AdminPanelController {
 	public String deleteUserAccount(@RequestParam(name="userId", required=false) int userId,
 			@SessionAttribute("userSession") User userSession,
 			RedirectAttributes redirectAttributes){
+		adminPannelLogger.info("Méthode deleteUserAccount");
 		
 		System.err.println("userId : "+userId);
 		System.out.println(userSession);
@@ -63,6 +68,7 @@ public class AdminPanelController {
 	public String desactivateUserAccount(@RequestParam(name="userId", required=false) int userId,
 			@SessionAttribute("userSession") User userSession,
 			RedirectAttributes redirectAttributes) {
+		adminPannelLogger.info("Méthode desactivateUserAccount");
 		
 		//On vérifie quand même si l'utilisateur qui appelle cet url est administrateur
 		if(!userSession.isAdmin()) {
@@ -85,7 +91,7 @@ public class AdminPanelController {
 	public String reactivateUserAccount(@RequestParam(name="userId", required=false) int userId,
 			@SessionAttribute("userSession") User userSession,
 			RedirectAttributes redirectAttributes) {
-		
+		adminPannelLogger.info("Méthode reactivateUserAccount");
 		//On vérifie quand même si l'utilisateur qui appelle cet url est administrateur
 		if(!userSession.isAdmin()) {
 			System.err.println("Vous n'êtes pas admin ! Dégagez");
