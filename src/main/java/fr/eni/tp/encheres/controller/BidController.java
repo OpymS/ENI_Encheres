@@ -47,11 +47,13 @@ public class BidController {
 	public String showArticleToBidOn(@RequestParam(name = "articleId", required = true) int articleId,
 			@SessionAttribute("userSession") User userSession, Model model) {
 		Article articleToDisplay = auctionService.findArticleById(articleId);
-		bidLogger.debug(articleToDisplay.toString());
+		
+    bidLogger.debug(articleToDisplay.toString());
 		bidLogger.info("id utilisateur connecté : " + userSession.getUserId()
 				+ " - affichage page d'enchère sur article id : " + articleId);
-		// GEstion de l'affichage conditionnel sur la page
 
+
+		// Gestion de l'affichage conditionnel sur la page
 		boolean isBidPossible = articleToDisplay.getState().equals(ArticleState.STARTED);
 		boolean isBeforeStart = articleToDisplay.getState().equals(ArticleState.NOT_STARTED);
 		boolean isChangePossible = isBeforeStart || isBidPossible;
@@ -79,10 +81,11 @@ public class BidController {
 
 		// Récup des enchères sur cet article et tri
 		List<Auction> bidsList = auctionService.findAllAuctions(articleId);
-
-		bidsList.sort((a, b) -> b.getBidAmount() - a.getBidAmount());
-
+		
+		bidsList.sort((a,b)->b.getBidAmount()-a.getBidAmount());
+		
 		model.addAttribute("bids", bidsList);
+		model.addAttribute("isThereBids", bidsList.size()!=0);		
 
 		return "bid-article-detail";
 	}
@@ -95,6 +98,13 @@ public class BidController {
 		String redirectUrl = "redirect:/bid?articleId=" + articleId;
 
 		try {
+			//Si utilisateur désactivé, on empèche l'enchère
+			if(!userSession.isActivated()) {
+				BusinessException be = new BusinessException();
+				be.add("Votre compte est désactivé, impossible d'enchérir !");
+				throw be;
+			}
+			
 			auctionService.newAuction(articleId, bidOffer, userSession);
 			bidLogger.info("id utilisateur connecté : " + userSession.getUserId() + " - mise de " + bidOffer
 					+ " sur l'artidle id : " + articleId);

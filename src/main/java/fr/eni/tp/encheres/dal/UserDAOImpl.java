@@ -22,19 +22,19 @@ import fr.eni.tp.encheres.bo.User;
 public class UserDAOImpl implements UserDAO {
 	
 	/** The Constant INSERT. */
-	private static final String INSERT = "INSERT INTO UTILISATEURS(pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :mot_de_passe, :credit, :administrateur)";
+	private static final String INSERT = "INSERT INTO UTILISATEURS(pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :mot_de_passe, :credit, :administrateur, :etat_utilisateur)";
 	
 	/** The Constant FIND_BY_PSEUDO. */
-	private static final String FIND_BY_PSEUDO = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = :pseudo";
+	private static final String FIND_BY_PSEUDO = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur FROM UTILISATEURS WHERE pseudo = :pseudo";
 	
 	/** The Constant FIND_BY_EMAIL. */
-	private static final String FIND_BY_EMAIL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE email = :email";
+	private static final String FIND_BY_EMAIL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur FROM UTILISATEURS WHERE email = :email";
 	
 	/** The Constant FIND_BY_ID. */
-	private static final String FIND_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = :id";
+	private static final String FIND_BY_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	/** The Constant UPDATE. */ //Attention mot_de_passe enlever pour le moment
-	private static final String UPDATE_BY_ID = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur WHERE no_utilisateur = :id";
+	private static final String UPDATE_BY_ID = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal , ville = :ville, mot_de_passe = :mot_de_passe, credit = :credit, administrateur = :administrateur, etat_utilisateur = :etat_utilisateur WHERE no_utilisateur = :id";
 	
 	/** The Constant DELETE_BY_EMAIL. */
 	private static final String DELETE_BY_EMAIL = "DELETE FROM UTILISATEURS WHERE email = :email";
@@ -42,11 +42,14 @@ public class UserDAOImpl implements UserDAO {
 	/** The Constant DELETE_BY_ID. */
 	private static final String DELETE_BY_ID = "DELETE FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
+	private static final String DESACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 0 WHERE no_utilisateur = :userId";
+	private static final String REACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 1 WHERE no_utilisateur = :userId";
+	
+	
 	/** The Constant FIND_ALL. */
-	private static final String FIND_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS";
+	private static final String FIND_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur FROM UTILISATEURS";
 	
 	private static final String GET_PASSWORD_HASH_BY_ID = "SELECT mot_de_passe FROM UTILISATEURS WHERE no_utilisateur = :id";
-	
 	
 	private static final String UPDATE_CREDIT_BY_ID ="UPDATE UTILISATEURS SET credit = :newCredit WHERE no_utilisateur = :id";
 	
@@ -82,6 +85,7 @@ public class UserDAOImpl implements UserDAO {
 		namedParameters.addValue("mot_de_passe", user.getPassword());
 		namedParameters.addValue("credit", user.getCredit());
 		namedParameters.addValue("administrateur", user.isAdmin());
+		namedParameters.addValue("etat_utilisateur", user.isActivated());
 		
 		jdbcTemplate.update(INSERT, namedParameters, keyHolder);
 		
@@ -154,6 +158,7 @@ public class UserDAOImpl implements UserDAO {
 		namedParameters.addValue("mot_de_passe", user.getPassword());
 		namedParameters.addValue("credit", user.getCredit());
 		namedParameters.addValue("administrateur", user.isAdmin());
+		namedParameters.addValue("etat_utilisateur", user.isActivated());
 		
 		jdbcTemplate.update(UPDATE_BY_ID, namedParameters);
 		
@@ -188,6 +193,23 @@ public class UserDAOImpl implements UserDAO {
 		jdbcTemplate.update(DELETE_BY_ID, namedParameters);
 		
 	}
+	
+	@Override
+	public void desactivateById(int userId) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("userId", userId);
+		
+		jdbcTemplate.update(DESACTIVATE_BY_ID, namedParameters);
+	}
+	
+	@Override
+	public void reactivateById(int userId) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("userId", userId);
+		
+		jdbcTemplate.update(REACTIVATE_BY_ID, namedParameters);
+	}
+
 
 
 	/**
@@ -273,6 +295,7 @@ public class UserDAOImpl implements UserDAO {
 			user.setPassword(rs.getString("mot_de_passe"));
 			user.setCredit(rs.getInt("credit"));
 			user.setAdmin(rs.getBoolean("administrateur"));
+			user.setActivated(rs.getBoolean("etat_utilisateur"));
 			
 			return user;
 		}

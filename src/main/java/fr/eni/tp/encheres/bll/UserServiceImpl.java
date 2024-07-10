@@ -100,6 +100,20 @@ public class UserServiceImpl implements UserService {
 		return isValid;
 	}
 
+	
+	@Override
+	public List<User> getAllUsers(){
+		return userDAO.findAll();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Forgot password.
 	 *
@@ -145,7 +159,7 @@ public class UserServiceImpl implements UserService {
 					});
 				}
 				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
-				articleDAO.eraserSellerByUserId(userId);
+				articleDAO.eraseSellerByUserId(userId);
 				//Supprimer l'utilisateur (car plus aucune foreign key)
 				userDAO.deleteById(userId);
 				
@@ -160,6 +174,72 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = BusinessException.class)
+	public void desactivateAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
+		
+		//Check des conditions: 
+		// 1 - Pas d'article dont la vente est terminée mais non récupérée
+		// 2 - Pas acheteur courant d'un article en vente
+		boolean isDesactivateAccepted = checkArticlesState(userId, be);
+		isDesactivateAccepted &= checkUserBids(userId, be);
+				
+		
+		if (isDesactivateAccepted) {
+			try {
+				//Modifier les "enchères" ou mises de l'utilisateur
+				//auctionDAO.eraseUserBidsByUserId(userId);
+				//Annuler les ventes de cet utilisateur (utiliser cancelArticle de AuctionService ?)
+				// 1 - Récup les ventes de cet user, en état 2 et 3
+				// 2 - Annuler ces ventes (rembourser les utilisateurs etc...)
+				// 3 - Modifier les articles avec no_utilisateur à 0
+				List<Article> userArticlesToCancel = articleDAO.findCancellableBySellerId(userId);
+				
+				if(userArticlesToCancel.size()!=0) {
+					userArticlesToCancel.forEach(article -> {
+						auctionService.cancelArticle(article); // On annule toutes les ventes d'articles quand c'est possible.
+					});
+				}
+				//Modifier les articles vendus par cet utilisateur (passer le no_utilisateur à 0)
+				//articleDAO.eraseSellerByUserId(userId);
+				//Supprimer l'utilisateur (car plus aucune foreign key)
+				userDAO.desactivateById(userId);
+				
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				be.add("Un problème est survenu lors de l'accès à la base de données");
+				throw be;
+			}
+		} else {
+			throw be;
+		}
+		
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = BusinessException.class)
+	public void reactivateAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
+		
+		//Pour réactiver un compte, pas de check à faire car les articles vendus à la désactivation auront été annulés
+		// il faut juste changr l'etat_utilisateur en BDD
+		
+		try {
+			
+			userDAO.reactivateById(userId);
+			
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.add("Un problème est survenu lors de l'accès à la base de données");
+			throw be;
+		}
+		
+	}
 	
 	
 	private boolean checkArticlesState(int userId,  BusinessException be) {
@@ -365,6 +445,7 @@ public class UserServiceImpl implements UserService {
 		userToFill.setCity(userThatFills.getCity());
 		userToFill.setPassword(null); // On ne stocke jamais le mot de passe d'un utilisateur.
 		userToFill.setAdmin(userThatFills.isAdmin());
+		userToFill.setActivated(userThatFills.isActivated());
 		return userToFill;
 	}
 

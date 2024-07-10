@@ -12,6 +12,7 @@
                 <a th:href="@{/login}" class="link">Se connecter</a>
             </div>
             <div class="auth-links" sec:authorize="isAuthenticated()">
+            	<a th:if="${userSession.admin}" th:href="@{/admin}">Gestion</a>
                 <a th:href="@{/auctions}" class="link">Enchères</a>
                 <a th:href="@{/auctions/newArticle}" class="link">Vendre un article</a>
                 <a th:href="@{/profil(userId=${userSession.userId})}" class="link">Mon profil</a>
