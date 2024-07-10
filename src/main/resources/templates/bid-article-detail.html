@@ -89,6 +89,7 @@
     <div th:if="${articleDisplay.seller.userId==userSession.userId}" class="auction-details-container">
     	<h2 class="auction-title">Liste des enchères</h2>
     	<div class="bids-container">
+    	
 	    	<table th:if="${isThereBids}">
 				<thead>
 					<tr>
@@ -105,6 +106,7 @@
 					</tr>
 				</tbody>
 			</table>
+			
     		<p th:if="${!isThereBids}">Aucune enchères sur cet article ...</p>
     	</div>
     </div>

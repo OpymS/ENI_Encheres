@@ -99,6 +99,12 @@ public class AuctionController {
 
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
+		
+		//Si utilisateur désactivé, on empèche l'enchère
+		if(!userSession.isActivated()) {
+			return "redirect:/auctions";
+		}
+		
 		Article article = new Article();
 		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(), userSession.getCity());
 		article.setPickupLocation(defaultPickupLocation);
@@ -153,9 +159,13 @@ public class AuctionController {
 	public String showArticleModifyPage(@RequestParam(name="articleId", required=true) int articleId,
 			Model model,
 			@ModelAttribute("userSession") User userSession){
+		
+		//Si utilisateur désactivé, on empèche l'enchère
+		if(!userSession.isActivated()) {
+			return "redirect:/auctions";
+		}
+		
 		Article article = auctionService.findArticleById(articleId);
-		
-		
 		// Si on est après la date de fin on ne montre pas la page (modification/annulation impossible !)
 		if(article.getAuctionEndDate().isBefore(LocalDateTime.now())) { 
 			return "redirect:/auctions";

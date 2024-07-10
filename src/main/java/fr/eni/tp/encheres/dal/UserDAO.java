@@ -93,4 +93,6 @@ public interface UserDAO {
 
 	void desactivateById(int userId);
 
+	void reactivateById(int userId);
+
 }

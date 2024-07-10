@@ -39,7 +39,7 @@
 						<td th:text="${user.credit}">...</td>
 						<td th:text="${user.admin ? 'Administrateur' : 'Membre'}">...</td>
 						<td class="buttons-container">
-							<a href="#modal2" class="js-modal button desac-button" th:attr="data-user-id=${user.userId}">Désactiver</a>
+							<a href="#modal2" th:class="'js-modal button desac-button'+${user.activated ? ' activated' : ' desactivated'}" th:attr="data-user-id=${user.userId}"  th:text="${user.activated ? 'Désactiver' : 'Réactiver'}">...</a>
 							<a href="#modal1" class="js-modal button delete-button" th:attr="data-user-id=${user.userId}">Supprimer</a>
 						</td>
 				</tbody>
@@ -49,6 +49,7 @@
     	
     </div>
     
+    <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
     
     <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
 			<div class="modal-wrapper js-modal-stop">

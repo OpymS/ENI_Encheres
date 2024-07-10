@@ -184,11 +184,11 @@ public class UserServiceImpl implements UserService {
 		//Check des conditions: 
 		// 1 - Pas d'article dont la vente est terminée mais non récupérée
 		// 2 - Pas acheteur courant d'un article en vente
-		boolean isDeleteAccepted = checkArticlesState(userId, be);
-		isDeleteAccepted &= checkUserBids(userId, be);
+		boolean isDesactivateAccepted = checkArticlesState(userId, be);
+		isDesactivateAccepted &= checkUserBids(userId, be);
 				
 		
-		if (isDeleteAccepted) {
+		if (isDesactivateAccepted) {
 			try {
 				//Modifier les "enchères" ou mises de l'utilisateur
 				//auctionDAO.eraseUserBidsByUserId(userId);
@@ -219,6 +219,27 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = BusinessException.class)
+	public void reactivateAccount(int userId) throws BusinessException{
+		
+		BusinessException be = new BusinessException();
+		
+		//Pour réactiver un compte, pas de check à faire car les articles vendus à la désactivation auront été annulés
+		// il faut juste changr l'etat_utilisateur en BDD
+		
+		try {
+			
+			userDAO.reactivateById(userId);
+			
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.add("Un problème est survenu lors de l'accès à la base de données");
+			throw be;
+		}
+		
+	}
 	
 	
 	private boolean checkArticlesState(int userId,  BusinessException be) {
@@ -424,6 +445,7 @@ public class UserServiceImpl implements UserService {
 		userToFill.setCity(userThatFills.getCity());
 		userToFill.setPassword(null); // On ne stocke jamais le mot de passe d'un utilisateur.
 		userToFill.setAdmin(userThatFills.isAdmin());
+		userToFill.setActivated(userThatFills.isActivated());
 		return userToFill;
 	}
 

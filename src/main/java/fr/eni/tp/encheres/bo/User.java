@@ -43,7 +43,6 @@ public class User {
 	private List<Auction> auctions;
 	
 	public User() {
-		this.activated = true;
 		purchases = new ArrayList<Article>();
 		sales = new ArrayList<Article>();
 		auctions = new ArrayList<Auction>();

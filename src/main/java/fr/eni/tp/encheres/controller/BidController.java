@@ -88,7 +88,18 @@ public class BidController {
 		
 		String redirectUrl = "redirect:/bid?articleId=" + articleId;
 		
+		
+		
 		try {
+			
+			//Si utilisateur désactivé, on empèche l'enchère
+			if(!userSession.isActivated()) {
+				BusinessException be = new BusinessException();
+				be.add("Votre compte est désactivé, impossible d'enchérir !");
+				throw be;
+			}
+			
+			
 			auctionService.newAuction(articleId, bidOffer, userSession);
 			
 		} catch (BusinessException e) {

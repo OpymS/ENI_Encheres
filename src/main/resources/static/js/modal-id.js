@@ -36,9 +36,27 @@ function openModal(e){
     if(e.target.classList[e.target.classList.length-1]=="delete-button"){
         let deleteHref = `/admin/deleteAccount?userId=${userId}`
         modal.querySelector(".confirm-btn").setAttribute("href", deleteHref)
-    }else if(e.target.classList[e.target.classList.length-1]=="desac-button"){
-        let deleteHref = `/admin/desacAccount?userId=${userId}`
-        modal.querySelector(".confirm-btn").setAttribute("href", deleteHref)
+    }else if(e.target.classList[e.target.classList.length-2]=="desac-button"){
+
+        if(e.target.classList[e.target.classList.length-1]=="activated"){
+
+            let confirmBtn = modal.querySelector(".confirm-btn")
+
+            let deleteHref = `/admin/desacAccount?userId=${userId}`
+            confirmBtn.setAttribute("href", deleteHref)
+            confirmBtn.textContent = "Je confirme la désactivation"
+
+        }else if(e.target.classList[e.target.classList.length-1]=="desactivated"){
+
+            let confirmBtn = modal.querySelector(".confirm-btn")
+            console.log(confirmBtn)
+
+            let deleteHref = `/admin/reactivateAccount?userId=${userId}`
+            confirmBtn.setAttribute("href", deleteHref)
+            confirmBtn.textContent = "Je confirme la réactivation"
+        }
+
+
     }
 
     

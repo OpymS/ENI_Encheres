@@ -43,6 +43,7 @@ public class UserDAOImpl implements UserDAO {
 	private static final String DELETE_BY_ID = "DELETE FROM UTILISATEURS WHERE no_utilisateur = :id";
 	
 	private static final String DESACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 0 WHERE no_utilisateur = :userId";
+	private static final String REACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 1 WHERE no_utilisateur = :userId";
 	
 	
 	/** The Constant FIND_ALL. */
@@ -200,6 +201,15 @@ public class UserDAOImpl implements UserDAO {
 		
 		jdbcTemplate.update(DESACTIVATE_BY_ID, namedParameters);
 	}
+	
+	@Override
+	public void reactivateById(int userId) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("userId", userId);
+		
+		jdbcTemplate.update(REACTIVATE_BY_ID, namedParameters);
+	}
+
 
 
 	/**

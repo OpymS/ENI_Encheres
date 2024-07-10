@@ -30,6 +30,7 @@
     text-decoration:none;
 	color:#f1f1f1;
 	font-weight:500;
+	text-align:center;
 }
 
 .button:hover{
@@ -37,8 +38,14 @@
 }
 
 
-.desac-button{
+
+
+.desac-button.activated{
 	background-color:#2b2009;
+}
+
+.desac-button.desactivated{
+	background-color:#173b05;
 }
 
 .delete-button{

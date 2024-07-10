@@ -106,4 +106,6 @@ public interface UserService {
 	List<User> getAllUsers();
 
 	void desactivateAccount(int userId) throws BusinessException;
+
+	void reactivateAccount(int userId) throws BusinessException;
 }
