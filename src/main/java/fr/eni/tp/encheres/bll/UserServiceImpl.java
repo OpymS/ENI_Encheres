@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
 				user.setPassword(passwordEncoder.encode(password));
 				user.setCredit(0);
 				user.setAdmin(false);
+				user.setActivated(true);
 
 				userDAO.create(user);
 			} catch (DataAccessException e) {

@@ -47,7 +47,6 @@ public class UserDAOImpl implements UserDAO {
 	private static final String DESACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 0 WHERE no_utilisateur = :userId";
 	private static final String REACTIVATE_BY_ID = "UPDATE UTILISATEURS SET etat_utilisateur = 1 WHERE no_utilisateur = :userId";
 	
-	
 	/** The Constant FIND_ALL. */
 	private static final String FIND_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur, etat_utilisateur FROM UTILISATEURS";
 	

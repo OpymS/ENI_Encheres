@@ -1,12 +1,16 @@
 package fr.eni.tp.encheres.bll;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.User;
@@ -18,6 +22,10 @@ public class CustomerUserDetailService implements UserDetailsService {
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	public CustomerUserDetailService(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 
 	 @Override
 	    public UserDetails loadUserByUsername(String username) {
@@ -30,7 +38,19 @@ public class CustomerUserDetailService implements UserDetailsService {
 	            	customerUserDetailLogger.info("login avec le pseudo");
 	                user = userDAO.readByPseudo(username);
 	            }
-	        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+	            
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }     
+        
+        // Récupérer les rôles de l'utilisateur
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        if (user.isAdmin()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_MEMBRE"));
+
+	    return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
 
 	 }
 	 

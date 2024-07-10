@@ -38,7 +38,7 @@ public class SecurityConfig {
 		    .requestMatchers("/css/*").permitAll()
 		    .requestMatchers("/images/**").permitAll()
 		    .requestMatchers("/auctions").permitAll()
-		    .requestMatchers("/auctions/newArticle").hasAnyRole("ADMIN", "MEMBRE")
+		    .requestMatchers("/auctions/newArticle").hasAnyRole("ADMIN","MEMBRE")
 		    .requestMatchers("/forgot-password").permitAll()
 		    .requestMatchers("/signup").anonymous()
 		    .requestMatchers("/login").anonymous()

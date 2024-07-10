@@ -43,7 +43,6 @@ public interface AuctionService {
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;
 	void cancelArticle(Article article);
 
-	List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buySale, int userId);
 	void updateArticleState(ArticleState articleState, int articleId);
 
 

@@ -104,7 +104,8 @@ public class LoginController {
 			userSession.setEmail(email);
 		}
 		loginLogger.info("idUser mis en session : " + userSession.getUserId());
-
+		
+		System.err.println("userSession : " + userSession);
 		return "redirect:/auctions";
 	}
 
