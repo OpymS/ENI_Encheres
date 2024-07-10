@@ -25,6 +25,8 @@ public class Article {
 	private User seller;
 	private User currentBuyer;
 
+	private String imageUUID;
+	
 	public Article() {
 		//bids = new ArrayList<Auction>();
 		currentBuyer = new User();
@@ -136,13 +138,22 @@ public class Article {
 	public void setCurrentBuyer(User currentBuyer) {
 		this.currentBuyer = currentBuyer;
 	}
+	
+	public String getImageUUID() {
+		return imageUUID;
+	}
+
+	public void setImageUUID(String imageUUID) {
+		this.imageUUID = imageUUID;
+	}
+
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Article [articleId=%s%n, articleName=%s%n, description=%s%n, auctionStartDate=%s%n, auctionEndDate=%s%n, beginningPrice=%s%n, currentPrice=%s%n, state=%s%n, category=%s%n, pickupLocation=%s%n, bids=...%n, seller=%s%n, currentBuyer=%s%n]",
+				"Article [articleId=%s%n, articleName=%s%n, description=%s%n, auctionStartDate=%s%n, auctionEndDate=%s%n, beginningPrice=%s%n, currentPrice=%s%n, state=%s%n, category=%s%n, pickupLocation=%s%n, bids=...%n, seller=%s%n, currentBuyer=%s%n, imageUUID=%s%n]",
 				articleId, articleName, description, auctionStartDate, auctionEndDate, beginningPrice, currentPrice,
 				state, category, pickupLocation, //bids,
-				seller, currentBuyer);
+				seller, currentBuyer, imageUUID);
 	}
 }

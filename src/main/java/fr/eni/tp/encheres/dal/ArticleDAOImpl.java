@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,29 +24,31 @@ import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 
 @Repository
 public class ArticleDAOImpl implements ArticleDAO{
+	private static final Logger articleDaoLogger = LoggerFactory.getLogger(ArticleDAOImpl.class);
 	
-	private static final String FIND_BY_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_article = :articleId";
+	private static final String FIND_BY_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
-	private static final String FIND_ALL = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS";
-	private static final String FIND_BY_CATEGORY = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId";
-	private static final String FIND_BY_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE nom_article LIKE :name";
-	private static final String FIND_BY_CATEGORY_AND_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId AND nom_article LIKE :name";
+	private static final String FIND_ALL = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS";
+	private static final String FIND_BY_CATEGORY = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId";
+	private static final String FIND_BY_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE nom_article LIKE :name";
+	private static final String FIND_BY_CATEGORY_AND_NAME = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE no_categorie = :categoryId AND nom_article LIKE :name";
 	
-	private static final String INSERT = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur,no_categorie, etat_vente) VALUES (:name, :description, :startDate, :endDate, :startPrice, :endPrice, :userId, :categoryId, :state)";
+	private static final String INSERT = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur,no_categorie, etat_vente, imageUUID) VALUES (:name, :description, :startDate, :endDate, :startPrice, :endPrice, :userId, :categoryId, :state, :imageUUID)";
 	private static final String DELETE = "DELETE FROM ARTICLES_VENDUS WHERE no_article = :articleId";
 	
 	private static final String UPDATE_SELL_PRICE_AND_BUYER = "UPDATE ARTICLES_VENDUS SET prix_vente = :newBid, no_acheteur = :userId WHERE no_article = :articleId";
-	private static final String UPDATE = "UPDATE ARTICLES_VENDUS SET nom_article = :name, description =:description, date_debut_encheres =:startDate, date_fin_encheres=:endDate, prix_initial=:startPrice, prix_vente=:endPrice, no_categorie=:categoryId, no_acheteur =:buyerId, etat_vente =:state WHERE no_article = :articleId";
+	private static final String UPDATE = "UPDATE ARTICLES_VENDUS SET nom_article = :name, description =:description, date_debut_encheres =:startDate, date_fin_encheres=:endDate, prix_initial=:startPrice, prix_vente=:endPrice, no_categorie=:categoryId, no_acheteur =:buyerId, etat_vente =:state, imageUUID = :imageUUID WHERE no_article = :articleId";
+	private static final String UPDATE_STATE_BY_ID ="UPDATE ARTICLES_VENDUS SET etat_vente =:state WHERE no_article = :articleId";
 	
 	private static final String SCHEDULED_COUNT = "SELECT count(*) FROM ARTICLES_VENDUS WHERE no_article > :idMin";
 	
 	private static final String COUNT_FINISHED_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 3 AND no_utilisateur = :userId";
 	private static final String COUNT_BUYERS_BY_USER_ID = "SELECT count(*) FROM ARTICLES_VENDUS WHERE etat_vente = 2 AND no_acheteur = :userId";
 
-	private static final String FIND_TO_UPDATE_TO_FINISHED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_fin_encheres < GETDATE() AND etat_vente = 2";
-	private static final String FIND_TO_UPDATE_TO_STARTED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE date_debut_encheres < GETDATE() AND etat_vente = 1";
+	private static final String FIND_TO_UPDATE_TO_FINISHED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE date_fin_encheres < GETDATE() AND etat_vente = 2";
+	private static final String FIND_TO_UPDATE_TO_STARTED = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE date_debut_encheres < GETDATE() AND etat_vente = 1";
 	
-	private static final String FIND_CANCELLABLE_BY_SELLER_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS WHERE no_utilisateur = :userId AND etat_vente IN (2,3)";
+	private static final String FIND_CANCELLABLE_BY_SELLER_ID = "SELECT no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS WHERE no_utilisateur = :userId AND etat_vente IN (2,3)";
 	private static final String ERASE_BY_USER_ID = "UPDATE ARTICLES_VENDUS SET no_utilisateur = 0 WHERE no_utilisateur = :userId";
 	
 	
@@ -68,6 +72,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public Article read(int articleId) {
+		articleDaoLogger.info("Méthode read");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -76,11 +81,13 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findAll() {
+		articleDaoLogger.info("Méthode findAll");
 		return jdbcTemplate.query(FIND_ALL, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findCancellableBySellerId(int userId) {
+		articleDaoLogger.info("Méthode findCancellableBySellerId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
@@ -89,6 +96,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByCategory(int categoryId) {
+		articleDaoLogger.info("Méthode findByCategory");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("categoryId", categoryId);
 		
@@ -97,6 +105,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByCategoryAndName(int categoryId, String name) {
+		articleDaoLogger.info("Méthode findByCategoryAndName");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("categoryId", categoryId);
 		mapSqlParameterSource.addValue("name", name);
@@ -106,6 +115,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public List<Article> findByName(String name) {
+		articleDaoLogger.info("Méthode findByName");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("name", "%"+name+"%");
 
@@ -114,6 +124,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 
 	@Override
 	public void create(Article article) {
+		articleDaoLogger.info("Méthode create");
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("name", article.getArticleName());
@@ -125,6 +136,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 		mapSqlParameterSource.addValue("userId", article.getSeller().getUserId());
 		mapSqlParameterSource.addValue("categoryId", article.getCategory().getCategoryId());
 		mapSqlParameterSource.addValue("state", ArticleState.toInt(article.getState()));
+		mapSqlParameterSource.addValue("imageUUID", article.getImageUUID());
 		
 		jdbcTemplate.update(INSERT, mapSqlParameterSource, keyHolder);
 		
@@ -136,6 +148,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	@Override
 	public void updateSellPriceAndBuyer(int articleId, int newPrice, int userId) {
+		articleDaoLogger.info("Méthode updateSellPriceAndBuyer");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		mapSqlParameterSource.addValue("userId", userId);
@@ -146,6 +159,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 	
 	@Override
 	public void updateArticle(Article article) {
+		articleDaoLogger.info("Méthode updateArticle");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", article.getArticleId());
 		mapSqlParameterSource.addValue("name", article.getArticleName());
@@ -157,12 +171,24 @@ public class ArticleDAOImpl implements ArticleDAO{
 		mapSqlParameterSource.addValue("categoryId", article.getCategory().getCategoryId());
 		mapSqlParameterSource.addValue("buyerId", article.getCurrentBuyer().getUserId());
 		mapSqlParameterSource.addValue("state", ArticleState.toInt(article.getState()));
+		mapSqlParameterSource.addValue("imageUUID", article.getImageUUID());
 		
 		jdbcTemplate.update(UPDATE, mapSqlParameterSource);
 	}
 
 	@Override
+	public void updateArticleState(ArticleState articleState, int articleId) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("articleId", articleId);
+		mapSqlParameterSource.addValue("state", ArticleState.toInt(articleState));
+		
+		jdbcTemplate.update(UPDATE_STATE_BY_ID, mapSqlParameterSource);
+	}
+	
+	
+	@Override
 	public void delete(int articleId) {
+		articleDaoLogger.info("Méthode delete");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 		
@@ -170,55 +196,56 @@ public class ArticleDAOImpl implements ArticleDAO{
 	}
 	
 	@Override
-	public void eraserSellerByUserId(int userId) {
+	public void eraseSellerByUserId(int userId) {
+		articleDaoLogger.info("Méthode eraseSellerByUserId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
 		jdbcTemplate.update(ERASE_BY_USER_ID, mapSqlParameterSource);
 	}
 	
-	
-	
 	@Override
 	public int countArticles() {
+		articleDaoLogger.info("Méthode countArticles");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("idMin", 0);
 
 		return jdbcTemplate.queryForObject(SCHEDULED_COUNT,mapSqlParameterSource, Integer.class);
 	}
-	
-	
+		
 	@Override
 	public int countArticlesFinishedBySellerId(int userId) {
+		articleDaoLogger.info("Méthode countArticlesFinishedBySeller");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 
 		return jdbcTemplate.queryForObject(COUNT_FINISHED_BY_USER_ID,mapSqlParameterSource, Integer.class);
 	}
-	
 
 	@Override
 	public int countArticlesByBuyerId(int userId) {
+		articleDaoLogger.info("Méthode countArticlesByBuyerId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 
 		return jdbcTemplate.queryForObject(COUNT_BUYERS_BY_USER_ID,mapSqlParameterSource, Integer.class);
 	}
 	
-	
-	
 	@Override
 	public List<Article> findArticleToUpdateToFinished() {
+		articleDaoLogger.info("Méthode findArticleToUpdateToFinished");
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_FINISHED, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findArticleToUpdateToStarted() {
+		articleDaoLogger.info("Méthode findArticleToUpdateToStarted");
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
 	}
 	
 	@Override
 	public List<Article> findWithFilters(SearchCriteria research, int userId){
+		articleDaoLogger.info("Méthode findWithFilters");
 		//Récupérer les paramètres de filtre :
     
 		String textFilter = "%"+research.getWordToFind()+"%";
@@ -228,7 +255,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 		String SQLQuery = "";
 
 		//Corps commun de requête
-		SQLQuery = SQLQuery.concat("SELECT DISTINCT av.no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, av.no_utilisateur, no_categorie, no_acheteur, etat_vente FROM ARTICLES_VENDUS av LEFT JOIN ENCHERES en ON av.no_article = en.no_article");
+		SQLQuery = SQLQuery.concat("SELECT DISTINCT av.no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, av.no_utilisateur, no_categorie, no_acheteur, etat_vente, imageUUID FROM ARTICLES_VENDUS av LEFT JOIN ENCHERES en ON av.no_article = en.no_article");
 		
 		//Permettra de savoir si il faudra enlever le OR ou AND à la fin de la requête.
 		boolean containsConditions = false;
@@ -274,13 +301,13 @@ public class ArticleDAOImpl implements ArticleDAO{
 		mapSqlParameterSource.addValue("textFilter", textFilter);
 		
 		
-		System.err.println(SQLQuery);
+		articleDaoLogger.debug(SQLQuery);
 		return jdbcTemplate.query(SQLQuery, mapSqlParameterSource, new ArticleRowMapper());
 			
 	}
 	
-
 	private String mapToSQLCondition(String conditionTitle) {
+		articleDaoLogger.info("Méthode mapToSQLCondition");
 		String conditionSQL = "";
 		switch(conditionTitle) {
 			case "open":
@@ -305,8 +332,6 @@ public class ArticleDAOImpl implements ArticleDAO{
 		return conditionSQL;
 	}
 	
-	
-	
 
 	class ArticleRowMapper implements RowMapper<Article> {
 		
@@ -328,6 +353,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 				article.setCurrentBuyer(currentBuyer);
 			}
 			
+			article.setImageUUID(rs.getString("imageUUID"));
 			
 			article.setState(ArticleState.toArticleState(rs.getInt("etat_vente")));
 			

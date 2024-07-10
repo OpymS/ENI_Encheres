@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,9 +20,11 @@ import fr.eni.tp.encheres.bo.User;
 
 @Repository
 public class PasswordResetDAOImpl implements PasswordResetDAO {
-  
-	private static final String INSERT = "INSERT INTO TOKEN(token, user_id) VALUES(:token, :user_id)";
-    private static final String FIND_BY_USER_ID = "SELECT * FROM TOKEN WHERE user_id = :user_id";
+	private static final Logger passwordResetDaoLogger = LoggerFactory.getLogger(PasswordResetDAOImpl.class);
+
+	  private static final String INSERT = "INSERT INTO TOKEN(token, user_id) VALUES(:token, :user_id)";
+  	private static final String FIND_BY_USER_ID = "SELECT * FROM TOKEN WHERE user_id = :user_id";
+
     private static final String FIND_BY_TOKEN = "SELECT * FROM TOKEN WHERE token = :token";
     private static final String DELETE = "DELETE FROM TOKEN WHERE id = :id";
     
@@ -44,6 +48,7 @@ public class PasswordResetDAOImpl implements PasswordResetDAO {
 
     @Override
     public void save(PasswordResetToken token) {
+      passwordResetDaoLogger.info("Méthode save");
     	KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
         namedParameters.addValue("token", token.getToken());
@@ -55,16 +60,18 @@ public class PasswordResetDAOImpl implements PasswordResetDAO {
             token.setId(keyHolder.getKey().intValue());
         }
     }
-    
         @Override
-        public PasswordResetToken findByUserId(int userId) {
+        public PasswordResetToken findByUserId(int userId) {         
+		        passwordResetDaoLogger.info("Méthode findByUserId");
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
             namedParameters.addValue("user_id", userId);
             return jdbcTemplate.queryForObject(FIND_BY_USER_ID, namedParameters, rowMapper);
         }
-        
+
+  
         @Override
         public PasswordResetToken findByToken(String token) {
+          passwordResetDaoLogger.info("Méthode findByToken");
             List<PasswordResetToken> tokens = jdbcTemplate.query("SELECT * FROM TOKEN", rowMapper);
             for (PasswordResetToken storedToken : tokens) {
                 if (passwordEncoder.matches(token, storedToken.getToken())) {
@@ -76,6 +83,7 @@ public class PasswordResetDAOImpl implements PasswordResetDAO {
 	
         @Override
         public void delete(PasswordResetToken token) {
+          passwordResetDaoLogger.info("Méthode delete");
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
             namedParameters.addValue("id", token.getId());
             jdbcTemplate.update(DELETE, namedParameters);

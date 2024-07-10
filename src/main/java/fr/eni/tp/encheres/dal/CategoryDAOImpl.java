@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -19,7 +21,8 @@ import fr.eni.tp.encheres.bo.Category;
  */
 @Repository
 public class CategoryDAOImpl implements CategoryDAO {
-	
+	private static final Logger categoryDaoLogger = LoggerFactory.getLogger(CategoryDAOImpl.class);
+			
 	/** The Constant INSERT. */
 	private static final String INSERT = "INSERT INTO CATEGORIES( no_categorie, libelle) VALUES (:idCategory, :libelle)";
 	
@@ -45,6 +48,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 */
 	@Override
 	public void create(Category category) {
+		categoryDaoLogger.info("Méthode create");
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
@@ -67,6 +71,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 */
 	@Override
 	public Category readById(int id) {
+		categoryDaoLogger.info("Méthode readByInt");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("id", id);
 		
@@ -81,6 +86,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 */
 	@Override
 	public void update(Category category) {
+		categoryDaoLogger.info("Méthode update");
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("idCategory", category.getCategoryId());
 		namedParameters.addValue("libelle", category.getLabel());
@@ -96,6 +102,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 	 */
 	@Override
 	public List<Category> findAll() {
+		categoryDaoLogger.info("Méthode findAll");
 		return jdbcTemplate.query(FIND_ALL, new CategoryRowMapper());
 	}
 	

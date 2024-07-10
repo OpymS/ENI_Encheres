@@ -2,6 +2,8 @@ package fr.eni.tp.encheres.scheduler;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import fr.eni.tp.encheres.dal.UserDAO;
 
 @Component
 public class ArticleWatcher {
+	private static final Logger articleWatcherLogger = LoggerFactory.getLogger(ArticleWatcher.class);
 
 	private ArticleDAO articleDAO;
 	private UserDAO userDAO;
@@ -23,13 +26,15 @@ public class ArticleWatcher {
 
 	//@Scheduled(fixedDelay = 3000)
 	public void printArticleCount() {
+		articleWatcherLogger.info("Méthode printArticleCount");
 		int articleCount = articleDAO.countArticles();
-		System.err.println("Il y a actuellement "+articleCount+" articles en base de donnée");
+		articleWatcherLogger.info("Il y a actuellement "+articleCount+" articles en base de donnée");
 	}
 	
 	
 	@Scheduled(cron = "0 * * * * *") //à 0 seconde de chaque minute
 	public void updateArticleState() {
+		articleWatcherLogger.info("Méthode updateArticleState");
 		//Récupérer tous les articles dont la date de fin est dépassée
 		List<Article> articlesToUpdateToFinished = articleDAO.findArticleToUpdateToFinished();	
 		if (articlesToUpdateToFinished.size() != 0) {
@@ -37,7 +42,7 @@ public class ArticleWatcher {
 				// On ajoute aux crédits du vendeur le montant d'achat de l'article avant de la passé en FINISHED
 				// Et on modifie en BDD.
 				
-				System.out.println("prix article : "+ article.getCurrentPrice() + " vendeur/credit : "+article.getSeller().getPseudo()+"/"+article.getSeller().getCredit());
+				articleWatcherLogger.info("prix article : "+ article.getCurrentPrice() + " vendeur/credit : "+article.getSeller().getPseudo()+"/"+article.getSeller().getCredit());
 				article.getSeller().setCredit(article.getSeller().getCredit() + article.getCurrentPrice());
 				userDAO.updateCredit(article.getSeller());
 				

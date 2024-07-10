@@ -1,5 +1,7 @@
 package fr.eni.tp.encheres.bll;
 
+import java.util.List;
+
 import fr.eni.tp.encheres.bo.User;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -98,8 +100,17 @@ public interface UserService {
 	 *
 	 * @param User the user
 	 * @return the user with the credit changed
+	 * @throws BusinessException 
 	 */
-	void updateUserCredit(User user);
+
 	
 	void updatePassword(int userId, String newPassword);
+
+	void updateUserCredit(User user) throws BusinessException;
+
+	List<User> getAllUsers();
+
+	void desactivateAccount(int userId) throws BusinessException;
+
+	void reactivateAccount(int userId) throws BusinessException;
 }

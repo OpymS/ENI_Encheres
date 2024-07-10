@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,7 +19,8 @@ import fr.eni.tp.encheres.bo.User;
 
 @Repository
 public class AuctionDAOImpl implements AuctionDAO {
-
+	private static final Logger auctionDaoLogger = LoggerFactory.getLogger(AuctionDAOImpl.class);
+	
 	private static final String FIND_BY_USER_AND_ARTICLE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = :userId and no_article = :articleId";
 	private static final String FIND_BY_USER = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = :userId";
 	private static final String FIND_BY_ARTICLE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_article = :articleId";
@@ -35,6 +38,7 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	@Override
 	public List<Auction> read(int userId, int articleId) {
+		auctionDaoLogger.info("Méthode read");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		mapSqlParameterSource.addValue("articleId", articleId);
@@ -44,6 +48,7 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	@Override
 	public List<Auction> findByUser(int userId) {
+		auctionDaoLogger.info("Méthode findByUser");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		
@@ -52,6 +57,7 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	@Override
 	public List<Auction> findByArticle(int articleId) {
+		auctionDaoLogger.info("Méthode findByArticle");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("articleId", articleId);
 
@@ -60,6 +66,7 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	@Override
 	public void create(Auction auction) {
+		auctionDaoLogger.info("Méthode create");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", auction.getUser().getUserId());
 		mapSqlParameterSource.addValue("articleId", auction.getArticle().getArticleId());
@@ -70,9 +77,9 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 	}
 
-
 	@Override
 	public void delete(int userId, int articleId, LocalDateTime auctionDate) {
+		auctionDaoLogger.info("Méthode delete");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 		mapSqlParameterSource.addValue("articleId", articleId);
@@ -80,10 +87,10 @@ public class AuctionDAOImpl implements AuctionDAO {
 
 		jdbcTemplate.update(DELETE, mapSqlParameterSource);
 	}
-	
-	
+		
 	@Override
 	public void eraseUserBidsByUserId(int userId) {
+		auctionDaoLogger.info("Méthode eraseUserBidsByUserId");
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		mapSqlParameterSource.addValue("userId", userId);
 

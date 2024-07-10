@@ -2,6 +2,8 @@ package fr.eni.tp.encheres.configuration.internationalization;
 
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +16,12 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 public class MessageConfig implements WebMvcConfigurer{
+	private static final Logger messageConfigLogger = LoggerFactory.getLogger(MessageConfig.class);
 	
 	@Bean("messageSource")
 	MessageSource messageSource() {
-	    ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageConfigLogger.info("Méthode messageSource");
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 	    messageSource.setBasenames("language/messages");
 	    messageSource.setDefaultEncoding("UTF-8");
 	    return messageSource;
@@ -25,6 +29,7 @@ public class MessageConfig implements WebMvcConfigurer{
 	
 	@Bean
 	LocaleResolver localeResolver() {
+		messageConfigLogger.info("Méthode localResolver");
 	    SessionLocaleResolver slr = new SessionLocaleResolver();
 	    slr.setDefaultLocale(Locale.FRENCH);
 	    slr.setLocaleAttributeName("current.locale");
@@ -34,6 +39,7 @@ public class MessageConfig implements WebMvcConfigurer{
 	
 	@Bean
 	LocaleChangeInterceptor localeChangeInterceptor() {
+		messageConfigLogger.info("Méthode localeChangeInterceptor");
 	    LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 	    localeChangeInterceptor.setParamName("language");
 	    return localeChangeInterceptor;
@@ -41,6 +47,7 @@ public class MessageConfig implements WebMvcConfigurer{
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		messageConfigLogger.info("Méthode addInterceptors");
 	    registry.addInterceptor(localeChangeInterceptor());
 	}
 

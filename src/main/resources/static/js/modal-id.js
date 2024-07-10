@@ -6,7 +6,6 @@ let focusables = []
 let previouslyFocusedElement = null
 
 
-
 document.querySelectorAll(".js-modal").forEach(a => {
     a.addEventListener("click", openModal)
     
@@ -29,6 +28,38 @@ function openModal(e){
     modal.querySelector(".js-close-modal").addEventListener("click", closeModal)
     modal.querySelector(".js-modal-stop").addEventListener("click", stopPropagation)
 
+
+    const userId = e.target.getAttribute("data-user-id");
+    console.log(e.target.classList[e.target.classList.length-1])
+    console.log('User ID:', userId);
+
+    if(e.target.classList[e.target.classList.length-1]=="delete-button"){
+        let deleteHref = `/admin/deleteAccount?userId=${userId}`
+        modal.querySelector(".confirm-btn").setAttribute("href", deleteHref)
+    }else if(e.target.classList[e.target.classList.length-2]=="desac-button"){
+
+        if(e.target.classList[e.target.classList.length-1]=="activated"){
+
+            let confirmBtn = modal.querySelector(".confirm-btn")
+
+            let deleteHref = `/admin/desacAccount?userId=${userId}`
+            confirmBtn.setAttribute("href", deleteHref)
+            confirmBtn.textContent = "Je confirme la désactivation"
+
+        }else if(e.target.classList[e.target.classList.length-1]=="desactivated"){
+
+            let confirmBtn = modal.querySelector(".confirm-btn")
+            console.log(confirmBtn)
+
+            let deleteHref = `/admin/reactivateAccount?userId=${userId}`
+            confirmBtn.setAttribute("href", deleteHref)
+            confirmBtn.textContent = "Je confirme la réactivation"
+        }
+
+
+    }
+
+    
 }
 
 function closeModal(e){
@@ -42,8 +73,11 @@ function closeModal(e){
     modal.removeEventListener("click", closeModal)
     modal.querySelector(".js-close-modal").removeEventListener("click", closeModal)
     modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
+    
+    modal.querySelector(".confirm-btn").setAttribute("href", "/")
 
     modal = null
+
 
     stopPropagation(e)
 

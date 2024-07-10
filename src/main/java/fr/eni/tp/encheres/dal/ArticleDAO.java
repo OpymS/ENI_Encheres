@@ -3,7 +3,9 @@ package fr.eni.tp.encheres.dal;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Article;
+import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.dto.SearchCriteria;
+
 
 public interface ArticleDAO{
 	Article read(int articleId);
@@ -21,6 +23,7 @@ public interface ArticleDAO{
 	List<Article> findWithFilters(SearchCriteria research, int userId);
 	int countArticlesByBuyerId(int userId);
 	int countArticlesFinishedBySellerId(int userId);
-	void eraserSellerByUserId(int userId);
+	void eraseSellerByUserId(int userId);
 	List<Article> findCancellableBySellerId(int userId);
+	void updateArticleState(ArticleState articleState, int articleId);
 }

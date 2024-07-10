@@ -5,7 +5,7 @@
     <title>ENI Enchères - Nouvelle Vente</title>
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/article-create.css">
-	<link rel="icon" href="images/favicon.png"/>
+	<link rel="icon" href="/images/favicon.png"/>
 </head>
 <body>
 
@@ -13,7 +13,7 @@
 	
 <main>
     <h1 class="title">NOUVELLE VENTE</h1>
-    <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}">
+    <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
         <div class="inputs-container">
             <div class="input-container">
                 <label for="inputName">Article :</label>
@@ -30,6 +30,11 @@
                 <select name="inputCategory" id="inputCategory" th:field="*{category}">
                     <option th:each="item : ${categoriesSession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
                 </select>	
+            </div>
+            <div class="input-container">
+                <label for="inputImage">Photo de l'article :</label>
+<!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
+                <input id="inputImage" name="inputImage" type="file" accept="image/png, image/jpeg">
             </div>
             <div class="input-container">
                 <label for="inputPrice">Mise à prix :</label>
@@ -68,6 +73,11 @@
                     <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
                 </div>
             </fieldset>
+            
+            <div class="image-test">
+            	<p>Image ici</p>
+            	<img th:src="@{${imageSource}}" alt="test-image" />
+            </div>
             <div class="buttons-container">
                 <button type="submit" class="button button-submit">Enregistrer</button>
                 <button type="button" class="button button-cancel">Annuler</button>
