@@ -72,3 +72,36 @@ main {
 .modify-profile-container a:hover {
   background-color: #1976D2;
 }
+
+/* Responsive profil */
+
+@media only screen and (min-width: 300px) and (max-width: 1280px) {
+    main {
+        padding: 15px;
+    }
+    
+    .profil-info{
+    	max-width: 90%;
+        padding: 20px;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+    
+    .profil-username {
+    	font-size: 3.5rem;
+    }
+    
+    .profil-field label {
+    	font-size: 3rem;
+    }
+    
+    .profil-field span {
+    	font-size: 3rem;
+    }
+    
+    .modify-profile-container a {
+    	font-size: 3.5rem;
+    }
+}

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
 	<meta charset="utf-8">
-	<title>ENI - Enchères</title>
+	<title th:text="#{title.index}"></title>
 	<link rel="stylesheet" th:href="@{/css/general.css}" />
 	<link rel="icon" href="images/favicon.png"/>
 
@@ -13,7 +13,7 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
-	<h1 style="text-align:center; margin-top:200px;"> Site d'enchère</h1>
+	<h1 style="text-align:center; margin-top:200px;" th:text="#{title.index2}"></h1>
 </main>
 
 

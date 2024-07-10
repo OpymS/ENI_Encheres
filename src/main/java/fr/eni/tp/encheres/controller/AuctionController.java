@@ -6,7 +6,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,72 +35,70 @@ import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/auctions")
-@SessionAttributes({ "userSession", "categoriesSession" })
+@SessionAttributes({ "userSession", "categoriesSession", "research" })
 public class AuctionController {
+	private static final int PAGE_SIZE = 6;
+	
 	private AuctionService auctionService;
 	private FileService fileService;
+  private MessageSource messageSource;
 
-	public AuctionController(AuctionService auctionService, FileService fileService) {
+	public AuctionController(AuctionService auctionService, FileService fileService, MessageSource messageSource) {
 		this.auctionService = auctionService;
 		this.fileService = fileService;
+    this.messageSource = messageSource;
 	
-	}
 
 	@GetMapping
-	public String showAuctionsPage(Model model) {
-		Article article = new Article();
-		model.addAttribute("article", article);
+	public String showAuctionsPage(@ModelAttribute("research") SearchCriteria sessionResearch,
+			@ModelAttribute("userSession") User userSession, Model model,
+			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
+		System.out.println("get " + sessionResearch);
+		model.addAttribute("criteria", sessionResearch);
+		Page<Article> articlesList = auctionService.selectArticles(sessionResearch, userSession.getUserId(),
+				PageRequest.of(currentPage - 1, PAGE_SIZE));
+		model.addAttribute("articles", articlesList);
+		model.addAttribute("currentPage", currentPage);
+
+		int totalPages = articlesList.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+		}
+
 		return "auctions";
 	}
 
 	@PostMapping
-	public String showAuctions(@ModelAttribute("article") Article article, Model model,
+	public String showAuctions(@ModelAttribute("criteria") SearchCriteria research,@ModelAttribute("research") SearchCriteria sessionResearch , Model model,
 			@ModelAttribute("userSession") User userSession,
-			@RequestParam(name = "open", required = false) boolean open,
-			@RequestParam(name = "current", required = false) boolean current,
-			@RequestParam(name = "won", required = false) boolean won,
-			@RequestParam(name = "currentVente", required = false) boolean currentVente,
-			@RequestParam(name = "notstarted", required = false) boolean notstarted,
-			@RequestParam(name = "finished", required = false) boolean finished,
-			@RequestParam(name = "achats-ventes", required = false) String buySale) {
+			@RequestParam(name = "currentPage", defaultValue = "1") int currentPage) {
+		System.out.println("showAuctions début");
+		System.out.println("post " + research);
 		
+		sessionResearch.setWordToFind(research.getWordToFind());
+		sessionResearch.setCategory(research.getCategory());
+		sessionResearch.setRadioButton(research.getRadioButton());
+		sessionResearch.setFilters(research.getFilters());
 		
-		HashMap<String, Boolean> filters = new HashMap<>();
-		filters.put("open", open);
-		filters.put("current", current);
-		filters.put("won", won);
-		filters.put("currentVente", currentVente);
-		filters.put("notstarted", notstarted);
-		filters.put("finished", finished);
-		
-		
-		List<Article> articlesList = auctionService.selectArticlesBis(article, filters, buySale, userSession.getUserId());
-		
-		//List<Article> articlesList = auctionService.selectArticles(article, userSession, open, current, won, currentVente, notstarted, finished, buySale);
-		
-		model.addAttribute("article", article);
+		model.addAttribute("criteria", research);
+		Page<Article> articlesList = auctionService.selectArticles(research, userSession.getUserId(),
+				PageRequest.of(currentPage - 1, PAGE_SIZE));
 		model.addAttribute("articles", articlesList);
-		model.addAttribute("open", open);
-		model.addAttribute("current", current);
-		model.addAttribute("won", won);
-		model.addAttribute("currentVente", currentVente);
-		model.addAttribute("notstarted", notstarted);
-		model.addAttribute("finished", finished);
-		boolean sales = false;
-		boolean purchases = false;
-		if (buySale != null && buySale.equals("sales")) {
-			sales = true;
+		model.addAttribute("currentPage", currentPage);
+
+		int totalPages = articlesList.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
 		}
-		if (buySale != null && buySale.equals("purchases")) {
-			purchases = true;
-		}
-		model.addAttribute("sales", sales);
-		model.addAttribute("purchases", purchases);
+
 		return "auctions";
 	}
 
@@ -106,59 +111,62 @@ public class AuctionController {
 		}
 		
 		Article article = new Article();
-		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(), userSession.getCity());
+		PickupLocation defaultPickupLocation = new PickupLocation(userSession.getStreet(), userSession.getZipCode(),
+				userSession.getCity());
 		article.setPickupLocation(defaultPickupLocation);
 		model.addAttribute("article", article);
 		return "article-create";
 	}
-	
+
 	@PostMapping("/newArticle")
+
 	public String showArticleCreation(@Valid @ModelAttribute("article") Article article, BindingResult bindingResult, @ModelAttribute("userSession") User userSession,
 			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
-			@RequestParam(name="inputImage", required=false) MultipartFile fileImage
-			) {
-		
-		//Sauvegarde de l'image dans le dossier static/uploadedImages
-		try {
-			fileService.saveFile(fileImage, article);
-		} catch (IOException e) {
-			//ObjectError error = new ObjectError("globalError", e.getMessage());
-			return "article-create";
-		}
-		
-		LocalDateTime startDateTime;
+			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
+			Locale locale) {
+    
+    LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
 		
-		if (bindingResult.hasErrors()) {
-			return "article-create";
+    if (bindingResult.hasErrors()) {
+			  return "article-create";
 		} else {
-			try {
-				startDateTime = auctionService.convertDate(startDate, startTime);
+		
+		  try {
+        startDateTime = auctionService.convertDate(startDate, startTime);
 				endDateTime = auctionService.convertDate(endDate, endTime);
 				article.setAuctionStartDate(startDateTime);
 				article.setAuctionEndDate(endDateTime);
 				article.setSeller(userSession);
 				article.setCurrentPrice(article.getBeginningPrice());
+        //Sauvegarde de l'image dans le dossier static/uploadedImages
+			  fileService.saveFile(fileImage, article);
 				auctionService.sell(article);
 				return "redirect:/auctions";
-			} catch (BusinessException e) {
-				e.getErreurs().forEach(err -> {
-					ObjectError error = new ObjectError("globalError", err);
-					bindingResult.addError(error);
-				});
-				return "article-create";
-			}
-			
+		} catch (IOException e) {
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-create";
 		}
-	}
-	
+		} catch (BusinessException e) {
+			e.getErreurs().forEach(err -> {
+					String errorMessage = messageSource.getMessage(err, null, locale);
+					ObjectError error = new ObjectError("globalError", errorMessage);
+					bindingResult.addError(error);
+			});
+			return "article-create";
+		}
+  }
+}
+
 	@GetMapping("/modifyArticle")
-	public String showArticleModifyPage(@RequestParam(name="articleId", required=true) int articleId,
-			Model model,
-			@ModelAttribute("userSession") User userSession){
+
+	public String showArticleModifyPage(
+    @RequestParam(name="articleId", required=true) int articleId,
+		Model model,
+		@ModelAttribute("userSession") User userSession){
 		
 		//Si utilisateur désactivé, on empèche l'enchère
 		if(!userSession.isActivated()) {
@@ -166,13 +174,12 @@ public class AuctionController {
 		}
 		
 		Article article = auctionService.findArticleById(articleId);
+    
 		// Si on est après la date de fin on ne montre pas la page (modification/annulation impossible !)
 		if(article.getAuctionEndDate().isBefore(LocalDateTime.now())) { 
 			return "redirect:/auctions";
 		};
-		
-		
-		
+
 		model.addAttribute("article", article);
 		model.addAttribute("startDate",article.getAuctionStartDate().toLocalDate());
 		model.addAttribute("startTime",article.getAuctionStartDate().toLocalTime());
@@ -185,85 +192,73 @@ public class AuctionController {
 		
 		return "article-modify";
 	}
-	
+
 	@PostMapping("/modifyArticle")
-	public String showArticleModifyPage(@Valid @ModelAttribute("article") Article article, 
-			BindingResult bindingResult,
+	public String showArticleModifyPage(@Valid @ModelAttribute("article") Article article, BindingResult bindingResult,
 			@ModelAttribute("userSession") User userSession,
 			@RequestParam(name="startDateTemp", required=false) LocalDate startDate,
 			@RequestParam(name="endDateTemp", required=false) LocalDate endDate,
 			@RequestParam(name="startTimeTemp", required=false) LocalTime startTime,
 			@RequestParam(name="endTimeTemp", required=false) LocalTime endTime,
 			@RequestParam(name="inputImage", required=false) MultipartFile fileImage,
-			Model model
-			) {
+			Model model, 
+      Locale locale) {
 		
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
-		
-		
-		//Sauvegarde de l'image dans le dossier static/uploadedImages
-		try {
-			article.setAuctionStartDate(auctionService.convertDate(startDate, startTime));
-			article.setAuctionEndDate(auctionService.convertDate(endDate, endTime));
-			article.setSeller(userSession);
-			article.setCurrentPrice(article.getBeginningPrice());	
-			fileService.saveFile(fileImage, article);
-		} catch (IOException | BusinessException e) {
-			//ObjectError error = new ObjectError("globalError", e.getMessage());
-			return "article-modify";
-		}
-		
-		//On les repasse dans le modèle pour réafficher les valeurs par défaut en cas d'erreurs
+   
+    //On les repasse dans le modèle pour réafficher les valeurs par défaut en cas d'erreurs
 		model.addAttribute("startDate",startDate);
 		model.addAttribute("startTime",startTime);
 		model.addAttribute("endDate",endDate);
 		model.addAttribute("endTime",endTime);
-		
-		if (bindingResult.hasErrors()) {
-			
-			
+    
+    if (bindingResult.hasErrors()) {
 			return "article-modify";
 		} else {
-			try {
-				startDateTime = auctionService.convertDate(startDate, startTime);
-				endDateTime = auctionService.convertDate(endDate, endTime);
-				article.setAuctionStartDate(startDateTime);
-				article.setAuctionEndDate(endDateTime);
-				article.setSeller(userSession);
-				article.setCurrentPrice(article.getBeginningPrice());			
-				//System.out.println(article);
-				
-				auctionService.updateArticle(article);
+      try {
+        startDateTime = auctionService.convertDate(startDate, startTime);
+        endDateTime = auctionService.convertDate(endDate, endTime);
+        article.setAuctionStartDate(startDateTime);
+        article.setAuctionEndDate(endDateTime);
+        article.setSeller(userSession);
+        article.setCurrentPrice(article.getBeginningPrice());
+        
+        //Sauvegarde de l'image dans le dossier static/uploadedImages
+        fileService.saveFile(fileImage, article);
+        
+        auctionService.updateArticle(article);
 				return "redirect:/auctions";
-				
-			} catch (BusinessException e) {
+        
+    } catch (IOException) {
+			//ObjectError error = new ObjectError("globalError", e.getMessage());
+			return "article-modify";
+		}	catch (BusinessException e) {
 				e.getErreurs().forEach(err -> {
-					ObjectError error = new ObjectError("globalError", err);
+					String errorMessage = messageSource.getMessage(err, null, locale);
+					ObjectError error = new ObjectError("globalError", errorMessage);
 					bindingResult.addError(error);
 				});
 				return "article-modify";
 			}
-			
+
 		}
 	}
-	
-	
-	
+
 	@GetMapping("/cancelArticle")
-	public String cancelArticle(@RequestParam(name="articleId") int articleId,
+	public String cancelArticle(@RequestParam(name = "articleId") int articleId,
 			@SessionAttribute("userSession") User userSession) {
 		Article articleToCancel = auctionService.findArticleById(articleId);
-		
+
 		// On vérifie si c'est bien le vendeur de l'article qui accède à ce lien
-		if(articleToCancel.getSeller().getUserId()==userSession.getUserId()) { 
-			
+		if (articleToCancel.getSeller().getUserId() == userSession.getUserId()) {
+
 			auctionService.cancelArticle(articleToCancel);
-			
-		}else { //Sinon c'est un imposteur
+
+		} else { // Sinon c'est un imposteur
 			return "redirect:/auctions";
 		}
-		
+
 		return "redirect:/auctions";
 	}
 
@@ -271,5 +266,24 @@ public class AuctionController {
 	public List<Category> loadCategories() {
 		List<Category> categories = auctionService.findCategories();
 		return categories;
+	}
+
+	@ModelAttribute("research")
+	public SearchCriteria research() {
+		System.out.println("création du ModelAttribute research");
+		SearchCriteria research = new SearchCriteria();
+		research.setWordToFind("");
+		Category category = new Category();
+		research.setCategory(category);
+		research.setRadioButton("purchases");
+		Map<String, Boolean> filters = new HashMap<String, Boolean>();
+		filters.put("open", true);
+		filters.put("current", false);
+		filters.put("won", false);
+		filters.put("currentVente", false);
+		filters.put("notstarted", false);
+		filters.put("finished", false);
+		research.setFilters(filters);
+		return research;
 	}
 }

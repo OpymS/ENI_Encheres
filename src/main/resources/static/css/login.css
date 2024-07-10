@@ -60,6 +60,7 @@ button[type="submit"] {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
@@ -98,12 +99,14 @@ button[type="submit"]:hover {
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
 .create-account-container a:hover {
   background-color: #1976D2;
 }
 
+/* Responsive login */
 
 @media only screen and (min-width: 300px) and (max-width: 1280px) {
     main {

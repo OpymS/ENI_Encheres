@@ -2,7 +2,7 @@ package fr.eni.tp.encheres.dal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -18,6 +18,7 @@ import fr.eni.tp.encheres.bo.ArticleState;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 
 @Repository
 public class ArticleDAOImpl implements ArticleDAO{
@@ -218,13 +219,13 @@ public class ArticleDAOImpl implements ArticleDAO{
 		return jdbcTemplate.query(FIND_TO_UPDATE_TO_STARTED, new ArticleRowMapper());
 	}
 	
-	
-	
 	@Override
-	public List<Article> findWithFilters(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){
+	public List<Article> findWithFilters(SearchCriteria research, int userId){
 		//Récupérer les paramètres de filtre :
-		String textFilter = "%"+article.getArticleName()+"%";
-		int categoryId = article.getCategory().getCategoryId();
+    
+		String textFilter = "%"+research.getWordToFind()+"%";
+		int categoryId = research.getCategory().getCategoryId();
+    
 		// Construire la requête à envoyée en fonction des filtres
 		String SQLQuery = "";
 
@@ -236,9 +237,8 @@ public class ArticleDAOImpl implements ArticleDAO{
 		
 		
 		//Si filters.containsValue(true) OU un categoryId est sélectionné OU le texte a recherché est vide, on ajoute WHERE
-		if(filters.containsValue(true) || categoryId!=0 || !textFilter.isBlank()) {
+		if(research.getFilters().containsValue(true) ||categoryId!=0 || !research.getWordToFind().isBlank()) {
 			containsConditions = true;
-			
 			SQLQuery = SQLQuery.concat(" WHERE");
 			
 			//Ajout du filtre de catégorie
@@ -252,7 +252,7 @@ public class ArticleDAOImpl implements ArticleDAO{
 			
 			// On boucle à travers filters
 			String[] filterSQL = {""}; // Astuce pour faire passer une variable dans une forEach ...
-			filters.forEach((key, value)->{
+			research.getFilters().forEach((key, value)->{
 				// on ajoute la condition de requête si la value est true !
 				String conditionSQL = value ? mapToSQLCondition(key) : "";
 				filterSQL[0] = filterSQL[0].concat(conditionSQL);
@@ -262,16 +262,10 @@ public class ArticleDAOImpl implements ArticleDAO{
 		
 		//Il y aura un AND ou OR en trop si true
 		if(containsConditions) {
-			
-			//Si le dernier caractère est un R, alors il y a un OR en trop
-			if(SQLQuery.charAt(SQLQuery.length()-1)=='R') {
-				SQLQuery = SQLQuery.substring(0, SQLQuery.length()-2);
-				
-			// Sinon c'est qu'il y a un AND en trop
-			}else if(SQLQuery.charAt(SQLQuery.length()-1)=='D') {
 				SQLQuery = SQLQuery.substring(0, SQLQuery.length()-3);
-			}
-			
+		} else { // s'il n'y a aucune case cochée, on retourne une liste vide.
+			List<Article> listeVide = new ArrayList<Article>();
+			return listeVide;
 		}
 		
 		

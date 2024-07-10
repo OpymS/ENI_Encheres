@@ -4,11 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +24,7 @@ import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.PickupLocation;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 import fr.eni.tp.encheres.dal.ArticleDAO;
 import fr.eni.tp.encheres.dal.AuctionDAO;
 import fr.eni.tp.encheres.dal.CategoryDAO;
@@ -70,19 +77,46 @@ public class AuctionServiceImpl implements AuctionService {
 		return articleDAO.findAll();
 	}
 	
-	
 	@Override
-	public List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buyOrSale, int userId){
+	public Page<Article> selectArticles(SearchCriteria research, int userId, Pageable pageable){
+		if (research.getRadioButton()==null) {
+			research.setRadioButton("purchases");
+		}
 		
-		List<Article> articleList = articleDAO.findWithFilters(article,filters,buyOrSale,userId);
-
-		return articleList;
+		if (research.getFilters().isEmpty() && research.getRadioButton().equals("purchases")) {
+			Map<String, Boolean> filters = new HashMap<String, Boolean>();
+			filters.put("open", true);
+			research.setFilters(filters);
+		}
+		if (research.getCategory()==null) {
+			Category category = new Category();
+			category.setCategoryId(0);
+			research.setCategory(category);
+		}
+		List<Article> articleList = articleDAO.findWithFilters(research,userId);
+		
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<Article> shortArticleList;
+		
+		if (articleList.size()< startItem) {
+			shortArticleList = Collections.emptyList();
+		}else {
+			int endIndex = Math.min(startItem+pageSize, articleList.size());
+			shortArticleList = articleList.subList(startItem, endIndex);
+		}
+		
+		Page<Article> articlesPage = new PageImpl<Article>(shortArticleList, PageRequest.of(currentPage, pageSize), articleList.size());
+		
+		return articlesPage;
 			
 	}
 
 	
 
 	@Override
+	@Deprecated
 	public List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won,
 			boolean currentVente, boolean notstarted, boolean finished, String buySale) {
 		List<Article> articlesList;
@@ -145,7 +179,6 @@ public class AuctionServiceImpl implements AuctionService {
 				}
 				articlesList.clear();
 				articlesList = tmpArticlesList;
-				// System.out.println(articlesList);
 			}
 		}
 		/*
@@ -171,7 +204,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -184,11 +217,11 @@ public class AuctionServiceImpl implements AuctionService {
 		// On enlève 2 minutes pour se laisser le temps du traitement.
 		LocalDateTime now = LocalDateTime.now().minusMinutes(2);
 		if (startDate == null || endDate == null) {
-			be.add("Vente impossible. Les dates de début et de fin d'enchères doivent être renseignées");
+			be.add("error.sales.nodate");
 		} else if (startDate.isBefore(now)) {
-			be.add("Vente impossible. Les enchères ne peuvent pas commencer avant maintenant");
+			be.add("error.sales.begintooearly");
 		} else if (startDate.isAfter(endDate)) {
-			be.add("Vente impossible. Les enchères doivent finir après avoir commencé");
+			be.add("error.sales.endtooearly");
 		} else {
 			isValid = true;
 		}
@@ -199,7 +232,7 @@ public class AuctionServiceImpl implements AuctionService {
 		boolean isValid = false;
 		if (pickupLocation.getStreet().isEmpty() || pickupLocation.getZipCode().isEmpty()
 				|| pickupLocation.getCity().isEmpty()) {
-			be.add("Vente impossible. Remplissez tous les champs du lieu de retrait de l'article");
+			be.add("error.sales.pickuplocation");
 		} else {
 			isValid = true;
 		}
@@ -226,7 +259,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -312,7 +345,7 @@ public class AuctionServiceImpl implements AuctionService {
 				userDAO.updateCredit(userSession);
 			} catch (DataAccessException e) {
 				e.printStackTrace();
-				be.add("Un problème est survenu lors de l'accès à la base de données");
+				be.add("error.database.access");
 				throw be;
 			}
 		} else {
@@ -325,7 +358,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (user.getCredit() >= bidOffer) {
 			isValid = true;
 		} else {
-			be.add("Vous n'avez pas suffisamment de crédit pour enchérir à un tel niveau.");
+			be.add("error.auction.notenoughcredit");
 		}
 		return isValid;
 	}
@@ -335,7 +368,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (auction.getArticle().getCurrentPrice() < auction.getBidAmount()) {
 			isValid = true;
 		} else {
-			be.add("Votre offre est inférieure à la meilleure offre.");
+			be.add("error.auction.weakoffer");
 		}
 		return isValid;
 	}
@@ -345,7 +378,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (auction.getAuctionDate().isBefore(auction.getArticle().getAuctionEndDate())) {
 			isValid = true;
 		} else {
-			be.add("L'enchère est finie. Il n'est pas possible de surenchérir.");
+			be.add("error.auction.toolate");
 		}
 		return isValid;
 	}
@@ -362,7 +395,7 @@ public class AuctionServiceImpl implements AuctionService {
 		if (date != null && time != null) {
 			dateTime = LocalDateTime.of(date, time);
 		} else {
-			be.add("Les dates et heures doivent être renseignées");
+			be.add("error.missingdate");
 			throw be;
 		}
 		return dateTime;

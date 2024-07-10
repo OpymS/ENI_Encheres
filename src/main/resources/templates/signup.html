@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
 <meta charset="UTF-8">
-<title>ENI Enchères</title>
+<title th:text="#{title.signup}"></title>
 <link rel="stylesheet" href="/css/general.css">
 <link rel="stylesheet" href="/css/signup.css">
 	<link rel="icon" href="images/favicon.png"/>
@@ -13,70 +13,77 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 	<main>
-		<h1 class="title">Mon Profil</h1>
+	
+		<div>
+			<a th:href="@{/signup(language='en')}" data-th-text="#{label.lang.en}"></a>
+			<a th:href="@{/signup(language='fr')}" data-th-text="#{label.lang.fr}"></a>
+		</div>
+	
+	
+		<h1 class="title" th:text="#{title.signup2}"></h1>
 		
 		<form th:action="@{/signup}" method="POST" th:object="${user}" class="user-create-form">
 			<div class="inputs-container">
 				<div class="pseudo-input">
-					<label for="inputPseudo">Pseudo :</label>
+					<label for="inputPseudo" th:text="#{label.pseudo}"></label>
 <!--					<input id="inputPseudo" th:field="*{pseudo}" type="text" pattern="^\w+$" maxlength="30" required>-->
 					<input id="inputPseudo" th:field="*{pseudo}" type="text">
 				</div>
 				<div class="lastname-input">
-					<label for="inputLastName">Nom :</label>
+					<label for="inputLastName" th:text="#{label.lastname}"></label>
 <!--					<input id="inputLastName" th:field="*{name}" type="text" maxlength="30" required>-->
 					<input id="inputLastName" th:field="*{name}" type="text">
 				</div>
 				<div class="firstname-input">
-					<label for="inputFirstName">Prénom :</label>
+					<label for="inputFirstName" th:text="#{label.firstname}"></label>
 <!--					<input id="inputFirstName" th:field="*{firstName}" type="text" maxlength="30">-->
 					<input id="inputFirstName" th:field="*{firstName}" type="text">
 				</div>
 				
 				<div class="email-input">
-					<label for="inputEmail">Email :</label>
+					<label for="inputEmail" th:text="#{label.email}"></label>
 <!--					<input id="inputEmail" th:field="*{email}" type="email" required>-->
 					<input id="inputEmail" th:field="*{email}" type="email">
 				</div>
 				
 				<div class="telephone-input">
-					<label for="inputTelephone">Téléphone :</label>
+					<label for="inputTelephone" th:text="#{label.phone}"></label>
 <!--					<input id="inputTelephone" th:field="*{phoneNumber}" type="text" pattern="^(0|\+33|0033)[1-9]\d{8}$">-->
 					<input id="inputTelephone" th:field="*{phoneNumber}" type="text">
 				</div>
 				
 				<div class="street-input">
-					<label for="inputStreet">Rue :</label>
+					<label for="inputStreet" th:text="#{label.street}"></label>
 <!--					<input id="inputStreet" th:field="*{street}" type="text" maxlength="30">-->
 					<input id="inputStreet" th:field="*{street}" type="text">
 				</div>
 				
 				<div class="cpo-input">
-					<label for="inputCpo">Code postal :</label>
+					<label for="inputCpo" th:text="#{label.zipCode}"></label>
 <!--					<input id="inputCpo" th:field="*{zipCode}" type="text" pattern="^\d{5}$">-->
 					<input id="inputCpo" th:field="*{zipCode}" type="text">
 				</div>
 				
 				<div class="city-input">
-					<label for="inputCity">Ville :</label>
+					<label for="inputCity" th:text="#{label.city}"></label>
 <!--					<input id="inputCity" th:field="*{city}" type="text" maxlength="30">-->
 					<input id="inputCity" th:field="*{city}" type="text">
 				</div>
 				
 				<div class="password-input">
-					<label for="inputPassword">Mot de passe :</label>
+					<label for="inputPassword" th:text="#{password}"></label>
 					<input id="inputPassword" th:field="*{password}" type="password">
 				</div>
 				<div class="confirm-password-input">
-					<label for="inputPasswordConfirm">Confirmation : </label>
+					<label for="inputPasswordConfirm" th:text="#{label.confirmPassword}"></label>
 					<input id="inputPasswordConfirm" th:field="*{passwordConfirm}" type="password">
 				</div>
 				
 			</div>
 			
 			<div class="buttons-container">
-				<button type="submit" class="button create">Créer</button>
-				<a th:href="@{/}" class="button cancel">Annuler</a>
+				<button type="submit" class="button create" th:text="#{button.create}"></button>
+				<a th:href="@{/}" class="button cancel" th:text="#{button.cancel}"></a>
 			</div>
 			<div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
 			<div th:replace="~{/fragments/errors/fragment-error::frag-error(pseudo)}"></div>

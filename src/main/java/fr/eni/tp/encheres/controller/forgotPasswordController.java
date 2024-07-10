@@ -42,7 +42,7 @@ public class forgotPasswordController {
             emailService.sendPasswordResetEmail(user.getEmail(), token);
         }
 
-        model.addAttribute("message", "If your email is registered, you will receive a password reset link.");
+        model.addAttribute("message", "message.password");
         return "forgot-password";
     }
 	
