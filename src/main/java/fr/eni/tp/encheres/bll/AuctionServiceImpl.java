@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,6 +36,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
 
 @Service
 public class AuctionServiceImpl implements AuctionService {
+	private static final Logger auctionServiceLogger = LoggerFactory.getLogger(AuctionServiceImpl.class);
 
 	private AuctionDAO auctionDAO;
 	private CategoryDAO categoryDAO;
@@ -424,7 +427,7 @@ public class AuctionServiceImpl implements AuctionService {
 		}else {
 			//Trouver un moyen de notifié l'utilisateur que ce n'est pas possible
 			//Après l'utilisateur ne devrai pas avoir accès au bouton d'annulation d'une vente donc ....
-			System.err.println("Impossible d'annuler la vente ! Déjà annulée ou terminée !");
+			auctionServiceLogger.error("Impossible d'annuler la vente ! Déjà annulée ou terminée ! Article id : " + article.getArticleId());
 		}
 	}
 
