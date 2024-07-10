@@ -3,13 +3,16 @@ package fr.eni.tp.encheres.bll;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import fr.eni.tp.encheres.bo.Article;
 import fr.eni.tp.encheres.bo.Auction;
 import fr.eni.tp.encheres.bo.Category;
 import fr.eni.tp.encheres.bo.User;
+import fr.eni.tp.encheres.bo.dto.SearchCriteria;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface AuctionService {
@@ -19,6 +22,7 @@ public interface AuctionService {
 	List<Article> findArticlesByCategoryAndName(Category category, String name);
 	List<Article> findArticles();
 	List<Article> selectArticles(Article article, User user, boolean open, boolean current, boolean won, boolean currentVente, boolean notstarted, boolean finished, String buySale);
+	Page<Article> selectArticles(SearchCriteria research, int userId, Pageable pageable);
 	void sell(Article article) throws BusinessException;
 	void deleteArticle(int articleId);
 	void updateArticle(Article article) throws BusinessException;
@@ -37,6 +41,6 @@ public interface AuctionService {
 	
 	LocalDateTime convertDate(LocalDate date, LocalTime time) throws BusinessException;
 	void cancelArticle(Article article);
-	List<Article> selectArticlesBis(Article article, HashMap<String, Boolean> filters, String buySale, int userId);
+	
 
 }
