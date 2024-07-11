@@ -114,7 +114,6 @@ public class AuctionController {
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
 		auctionLogger.info("Méthode showArticleCreation en Get");
-		System.err.println("je suis dans newArticle");
 		
 		// Si utilisateur désactivé, on empèche l'enchère
 		if (!userSession.isActivated()) {
@@ -214,6 +213,7 @@ public class AuctionController {
 		model.addAttribute("endTime", article.getAuctionEndDate().toLocalTime());
 		model.addAttribute("isCancelPossible",
 				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("isModifyPossible", article.getState().equals(ArticleState.NOT_STARTED));
 		model.addAttribute("imageSource", "/uploadedImages/" + article.getImageUUID());
 
 		auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
@@ -243,7 +243,10 @@ public class AuctionController {
 		model.addAttribute("startTime", startTime);
 		model.addAttribute("endDate", endDate);
 		model.addAttribute("endTime", endTime);
-
+		model.addAttribute("isCancelPossible",
+				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("isModifyPossible", article.getState().equals(ArticleState.NOT_STARTED));
+		
 		if (bindingResult.hasErrors()) {
 			bindingResult.getAllErrors().forEach(err -> auctionLogger.error("id utilisateur connecté : "
 					+ userSession.getUserId() + " - erreur sur formulaire modifyArticle : " + err));

@@ -12,11 +12,6 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
-	<div>
-        <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='en')}" th:text="#{label.lang.en}">English</a>
-        <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='fr')}" th:text="#{label.lang.fr}">Français</a>
-    </div>
-
     <h1 class="title" th:text="#{title.saleDetail2}"></h1>
     <div class="fields-container">
         <div class="field-container-title">
@@ -71,7 +66,7 @@
             <label for="seller" th:text="#{label.seller}"></label>
             <span th:text="${articleDisplay.seller.pseudo}"></span>
         </div>
-       
+       	<img th:src="@{'/uploadedImages/'+${articleDisplay.imageUUID}}" alt="image de l'article" class="article-image"/>
         <div class="bid-offer-container" th:if="${isBidPossible}">
          <form th:action="@{/bid(articleId=${articleDisplay.articleId})}" method="POST">
              <label for="bid-offer" th:text="#{label.myBid}"></label>
@@ -111,7 +106,7 @@
 					<tr th:each="bid : ${bids}"> 
 						<td th:text="${bid.user.pseudo}">...</td>
 						<td th:text="${bid.bidAmount}">...</td>
-						<td th:text="${bid.formatedDate}">...</td>
+						<td th:text="${#temporals.format(bid.auctionDate, 'dd/MM/yyyy - HH:mm:ss')}">...</td>
 					</tr>
 				</tbody>
 			</table>

@@ -57,6 +57,12 @@ body {
 	padding:5px 10px;
 }
 
+.article-image{
+	width: 100%;
+	object-fit: cover;
+	margin-bottom:30px;
+}
+
 .article-name{
 	font-size:20px;
 	text-align:center;	
@@ -201,5 +207,3 @@ button {
 .auction-details-container table tr:hover {
 	background-color: #ddd;
 }
-
-

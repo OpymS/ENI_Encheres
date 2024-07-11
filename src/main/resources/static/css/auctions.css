@@ -95,18 +95,24 @@ main{
 	display:grid;
 	grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
 	gap:30px;
-	margin-bottom:100px;
+	margin-bottom:20px;
 }
 
 .article-card{
-	padding:10px 20px 30px;
+	padding:10px 20px;
 	border: 1px solid #999;
 	border-radius:10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: stretch;
+	gap:5%;
 }
 
 .article-card p{
 	margin-top:5px;
 }
+
 
 /* Responsive page d'accueil auction*/
 @media only screen and (min-width: 300px) and (max-width: 1280px) {
@@ -193,4 +199,41 @@ main{
 }
 
 
+
+
+.image-card{
+	width: 30%;
+	display: flex;
+	align-items: center;
+}
+
+.image-card img{
+	width:100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+
+.pagination-control{
+	display: flex;
+	justify-content: flex-start;
+	gap: 5px;
+	margin-bottom: 20px;
+}
+
+.pagination-control a{
+	color: black;
+	text-decoration: none;
+}
+
+.pagination-control a:not(.current):hover{
+	background-color: black;
+	color: white;
+	text-decoration: none;
+}
+
+.pagination-control a.current{
+	color: gray;
+	pointer-events: none;
+	cursor: default;
+}
 

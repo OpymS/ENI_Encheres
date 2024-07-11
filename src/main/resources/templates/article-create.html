@@ -12,12 +12,6 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
-
-		<div>
-			<a th:href="@{/auctions/newArticle(language='en')}" data-th-text="#{label.lang.en}"></a>
-			<a th:href="@{/auctions/newArticle(language='fr')}" data-th-text="#{label.lang.fr}"></a>
-		</div>
-
     <h1 class="title" th:text="#{title.newSale2}"></h1>
     <form th:action="@{/auctions/newArticle}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
         <div class="inputs-container">
