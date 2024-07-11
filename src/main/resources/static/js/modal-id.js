@@ -42,6 +42,12 @@ function openModal(e){
 
             let confirmBtn = modal.querySelector(".confirm-btn")
 
+
+            let warnings = document.querySelector("#modal2 ul")
+            warnings.style.display = "block"
+            let warningsTitle = document.querySelector("#modal2 .modal-description")
+            warningsTitle.style.visibility = "visible"
+
             let deleteHref = `/admin/desacAccount?userId=${userId}`
             confirmBtn.setAttribute("href", deleteHref)
             confirmBtn.textContent = "Je confirme la désactivation"
@@ -50,6 +56,11 @@ function openModal(e){
 
             let confirmBtn = modal.querySelector(".confirm-btn")
             console.log(confirmBtn)
+
+            let warnings = document.querySelector("#modal2 ul")
+            warnings.style.display = "none"
+            let warningsTitle = document.querySelector("#modal2 .modal-description")
+            warningsTitle.style.visibility = "hidden"
 
             let deleteHref = `/admin/reactivateAccount?userId=${userId}`
             confirmBtn.setAttribute("href", deleteHref)
