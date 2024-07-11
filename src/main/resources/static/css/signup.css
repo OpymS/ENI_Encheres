@@ -71,22 +71,23 @@
 }
 
 /* bouton enregistrer et supp compte de modifier le profil*/
+
 .buttons-container .button.save {
-	background-color: #2196F3;
+	background-color: #262626;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons-container .button.save:hover {
-	background-color: #1976D2;
+	background-color: #4a4a4a;
 }
 
-.buttons-container .button.delete {
-	background-color: #f44336;
+.buttons-container .button.js-modal.button {
+	background-color: #262626;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.buttons-container .button.delete:hover {
-    background-color: darkred;
+.buttons-container .button.js-modal.button:hover {
+  	background-color: #4a4a4a;
 }
 
 /* bouton pour s'inscrire créer et annuler */
