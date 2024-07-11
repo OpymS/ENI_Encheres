@@ -48,6 +48,8 @@ public class SecurityConfig {
 		    .requestMatchers("/auctions/*").hasAnyRole("ADMIN","MEMBRE")
 		    .requestMatchers("/admin/**").hasRole("ADMIN")
 		    .requestMatchers("/error").permitAll()
+		    .requestMatchers("/js/**").permitAll()
+		    .requestMatchers("/changeLanguage").permitAll()
 				.anyRequest().authenticated()
 			)
 			.formLogin(form -> form
