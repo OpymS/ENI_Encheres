@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
     <meta charset="UTF-8">
-    <title>ENI Enchères - Nouvelle Vente</title>
+    <title th:text="#{title.editProfile}"></title>
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/article-create.css">
 	<link rel="icon" href="/images/favicon.png"/>
@@ -11,29 +11,29 @@
 
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
-<main>
-    <h1 class="title">NOUVELLE VENTE</h1>
+<main>   
+    <h1 class="title" th:text="#{title.editProfile2}"></h1>
     <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
         <div class="inputs-container">
 			<div th:if="${!isModifyPossible}" th:text="#{article.modify.impossible}" class="error-message"></div>
             <div class="input-container">
-                <label for="inputName">Article :</label>
+                <label for="inputName" th:text="#{label.article}"></label>
 <!--                <input id="inputName" th:field="*{articleName}" type="text" maxlength="30" required>-->
                 <input id="inputName" th:field="*{articleName}" type="text">
             </div>
             <div class="input-container">
-                <label for="inputDesc">Description :</label>
+                <label for="inputDesc" th:text="#{label.description}"></label>
 <!--                <textarea id="inputDesc" th:field="*{description}" maxlength="300"></textarea>-->
                 <textarea id="inputDesc" th:field="*{description}"></textarea>
             </div>
             <div class="input-container">
-                <label for="inputCategory">Catégorie :</label>
+                <label for="inputCategory" th:text="#{label.category}"></label>
                 <select name="inputCategory" id="inputCategory" th:field="*{category}">
                     <option th:each="item : ${categoriesSession}" th:value="${item.categoryId}" th:text="${item.label}"></option>
                 </select>	
             </div>
             <div class="input-container">
-                <label for="inputImage">Photo de l'article :</label>
+                <label for="inputImage" th:text="#{label.photo}"></label>
 <!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
                 <input id="inputImage" name="inputImage" type="file" accept="image/png, image/jpeg">
             </div>

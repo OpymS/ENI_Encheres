@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
 <meta charset="UTF-8">
-<title>ENI Enchères</title>
+<title th:text="#{title.editProfile}"></title>
 <link rel="stylesheet" href="/css/general.css">
 <link rel="stylesheet" href="/css/signup.css">
 	<link rel="icon" href="images/favicon.png"/>
@@ -15,58 +15,58 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 	<main>
-		<h1 class="title">Mon Profil</h1>
+		<h1 class="title" th:text="#{title.editProfile2}"></h1>
 		
 		<form th:action="@{/profil/modify}" method="POST" th:object="${user}" class="user-create-form">
 			<div class="inputs-container">
 				<div class="pseudo-input">
-					<label for="inputPseudo">Pseudo :</label>
+					<label for="inputPseudo" th:text="#{label.pseudo}"></label>
 <!--					<input id="inputPseudo" th:field="*{pseudo}" type="text" pattern="^\w+$" maxlength="30" required>-->
 					<input id="inputPseudo" th:field="*{pseudo}" type="text">
 				</div>
 				<div class="lastname-input">
-					<label for="inputLastName">Nom :</label>
+					<label for="inputLastName" th:text="#{label.lastname}"></label>
 <!--					<input id="inputLastName" th:field="*{name}" type="text" maxlength="30" required>-->
 					<input id="inputLastName" th:field="*{name}" type="text">
 				</div>
 				<div class="firstname-input">
-					<label for="inputFirstName">Prénom :</label>
+					<label for="inputFirstName" th:text="#{label.firstname}"></label>
 <!--					<input id="inputFirstName" th:field="*{firstName}" type="text" maxlength="30">-->
 					<input id="inputFirstName" th:field="*{firstName}" type="text">
 				</div>
 				
 				<div class="email-input">
-					<label for="inputEmail">Email :</label>
+					<label for="inputEmail" th:text="#{label.email}"></label>
 <!--					<input id="inputEmail" th:field="*{email}" type="email" required>-->
 					<input id="inputEmail" th:field="*{email}" type="email">
 				</div>
 				
 				<div class="telephone-input">
-					<label for="inputTelephone">Téléphone :</label>
+					<label for="inputTelephone" th:text="#{label.phone}"></label>
 <!--					<input id="inputTelephone" th:field="*{phoneNumber}" type="text" pattern="^(0|\+33|0033)[1-9]\d{8}$">-->
 					<input id="inputTelephone" th:field="*{phoneNumber}" type="text">
 				</div>
 				
 				<div class="street-input">
-					<label for="inputStreet">Rue :</label>
+					<label for="inputStreet" th:text="#{label.street}"></label>
 <!--					<input id="inputStreet" th:field="*{street}" type="text" maxlength="30">-->
 					<input id="inputStreet" th:field="*{street}" type="text">
 				</div>
 				
 				<div class="cpo-input">
-					<label for="inputCpo">Code postal :</label>
+					<label for="inputCpo" th:text="#{label.zipCode}">Code postal :</label>
 <!--					<input id="inputCpo" th:field="*{zipCode}" type="text" pattern="^\d{5}$">-->
 					<input id="inputCpo" th:field="*{zipCode}" type="text">
 				</div>
 				
 				<div class="city-input">
-					<label for="inputCity">Ville :</label>
+					<label for="inputCity" th:text="#{label.city}"></label>
 <!--					<input id="inputCity" th:field="*{city}" type="text" maxlength="30">-->
 					<input id="inputCity" th:field="*{city}" type="text">
 				</div>
 				
 				<div class="currentPassword-input">
-					<label for="inputCurrentPassword">Mot de passe actuel :</label>
+					<label for="inputCurrentPassword" th:text="#{label.actualPassword}"></label>
 					<input id="inputCurrentPassword" name="currentPassword" type="password">
 				</div>
 				
@@ -74,19 +74,19 @@
 				</div>
 				
 				<div class="password-input">
-					<label for="inputUpdatedPassword">Nouveau mot de passe :</label>
+					<label for="inputUpdatedPassword" th:text="#{label.newPassword}"></label>
 					<input id="inputUpdatedPassword" name="updatedPassword" type="password">
 				</div>
 				<div class="confirm-password-input">
-					<label for="inputPasswordConfirm">Confirmation : </label>
+					<label for="inputPasswordConfirm" th:text="#{label.confirmNewPassword}"></label>
 					<input id="inputPasswordConfirm" th:field="*{passwordConfirm}" type="password">
 				</div>
 			</div>
 			
 			<div class="buttons-container">
 
-				<button type="submit" class="button save">Enregistrer</button>
-				<a href="#modal1" class="js-modal button">Supprimer mon compte</a>
+				<button type="submit" class="button save" th:text="#{button.save}"></button>
+				<a href="#modal1" class="js-modal button" th:text="#{button.delete}"></a>
 
 			</div>
 			
@@ -106,17 +106,17 @@
 		<aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
 			<div class="modal-wrapper js-modal-stop">
 				<div class="modal-content">
-					<h2 id="modaltitle">Êtes vous sûr ?</h2>
+					<h2 id="modaltitle" th:text="#{modal.title.confirmDeletion}"></h2>
 
-					<p class="modal-description">La suppression  de votre compte entrainera :</p>
+					<p class="modal-description" th:text="#{modal.description.confirmDeletion}"></p>
 					<ul>
-						<li>- L'annulation des ventes/enchères concernant vos articles en cours de vente.</li>
-						<li>- L'annulation des ventes de vos articles qui n'ont pas encore commencées.</li>
-						<li>- La perte de tous vos crédits</li>
+						<li th:text="#{modal.item.cancelCurrentSales}"></li>
+						<li th:text="#{modal.item.cancelFutureSales}"></li>
+						<li th:text="#{modal.item.lossCredits}"></li>
 					</ul>
 				</div>
 				<div class="confirm-container">	
-					<a th:href="@{/profil/deleteAccount(userId=${userSession.userId})}" class="confirm-delete">Je confirme la suppression</a>
+					<a th:href="@{/profil/deleteAccount(userId=${userSession.userId})}" class="confirm-delete" th:text="#{modal.button.confirmDeletion}"></a>
 				</div>
 				<button class="close-button js-close-modal">
 					<img src="/images/closing-cross.svg" alt="">
