@@ -116,9 +116,7 @@ class AuctionRowMapper implements RowMapper<Auction> {
 		auction.setAuctionDate(rs.getTimestamp("date_enchere").toLocalDateTime());
 		auction.setBidAmount(rs.getInt("montant_enchere"));
 		
-		String BidDateDisplayFormat = "dd/MM/yyyy - HH:mm:ss";
-		DateTimeFormatter BidDtFormater = DateTimeFormatter.ofPattern(BidDateDisplayFormat);
-		auction.setFormatedDate(BidDtFormater.format(auction.getAuctionDate()));
+		System.err.println(auction);
 		
 		return auction;
 	}
