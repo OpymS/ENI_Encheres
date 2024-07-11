@@ -14,6 +14,16 @@
 <main>   
     <h1 class="title" th:text="#{title.editProfile2}"></h1>
     <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
+        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionStartDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionEndDate)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
+		
         <div class="inputs-container">
 			<div th:if="${!isModifyPossible}" th:text="#{article.modify.impossible}" class="error-message"></div>
             <div class="input-container">
@@ -80,21 +90,12 @@
             </div>
             <div class="buttons-container">
                 <button th:if="${isModifyPossible}" type="submit" class="button button-submit">Enregistrer</button>
-                <button th:if="${isModifyPossible}" type="button" class="button button-cancel">Annuler</button>
+                <a th:if="${isModifyPossible}" th:href="@{/auctions}" class="button-styled-link button-cancel" style="background-color:crimson;">Annuler</a>
                 <a href="#modal1" class="js-modal button button-styled-link" th:if="${isCancelPossible}">Annuler la vente</a>
                 <button th:if="${!isCancelPossible}" style="visibility:hidden;">placeholder</button>
             </div>
         </div>
-        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionStartDate)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(auctionEndDate)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
-		
+     
     </form>
 
     <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 

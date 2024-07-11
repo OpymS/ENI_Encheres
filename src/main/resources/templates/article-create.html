@@ -13,7 +13,16 @@
 	
 <main>
     <h1 class="title" th:text="#{title.newSale2}"></h1>
+    	
     <form th:action="@{/auctions/newArticle}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
+       	<div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
+		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
+	
         <div class="inputs-container">
             <div class="input-container">
                 <label for="inputName" th:text="#{label.article}"></label>
@@ -79,14 +88,7 @@
                 <button style="visibility:hidden;"  th:text="#{button.cancelSale}"></button>
             </div>
         </div>
-        <div th:replace="~{/fragments/errors/fragment-errors-global::frag-errors}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(articleName)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(description)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(beginningPrice)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.street)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.zipCode)}"></div>
-		<div th:replace="~{/fragments/errors/fragment-error::frag-error(pickupLocation.city)}"></div>
-		
+        
     </form>
 </main>
 

@@ -32,9 +32,14 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public void saveFile(MultipartFile file, Article article) throws IOException {
 		fileServiceLogger.info("Méthode saveFile");
+		
+		
         if (file.isEmpty()) {
-           String NonUniqueFilename = "placeholderImage.jpg";
-           affectAndUpdateArticle(article, NonUniqueFilename);
+	    	String NonUniqueFilename = "placeholderImage.jpg";
+	    	affectAndUpdateArticle(article, NonUniqueFilename);
+	    	Path existingImagePath = Paths.get(uploadPath, article.getImageUUID()).normalize();
+	    	System.err.println(existingImagePath);
+	        
         }else {
         	
 	        // Créer le répertoire de sauvegarde s'il n'existe pas
@@ -57,6 +62,63 @@ public class FileServiceImpl implements FileService {
 	        Files.copy(file.getInputStream(), destinationFile);
 	
 	        affectAndUpdateArticle(article, uniqueFilename);
+	        
+	        Path existingImagePath = Paths.get(uploadPath, article.getImageUUID()).normalize();
+	        System.err.println(existingImagePath);
+	        
+        }
+        
+    }
+	
+	@Override
+	public void saveFileFromModify(MultipartFile file, Article article) throws IOException {
+		fileServiceLogger.info("Méthode saveFile");
+		
+		Article articleToCheck = articleDAO.read(article.getArticleId());
+		
+        if (file.isEmpty()) {
+        	System.err.println("uuid :" +articleToCheck.getImageUUID());
+        	
+        	Path existingImagePathCheck = Paths.get(uploadPath, articleToCheck.getImageUUID()).normalize();
+        	
+        	System.err.println("pathFile : "+existingImagePathCheck);
+	        System.err.println("exists : "+Files.exists(existingImagePathCheck));	
+	        if (Files.exists(existingImagePathCheck)) {
+	            // Si l'image existe déjà, on modifie les autres attributs passé par article
+	            fileServiceLogger.info("Image already exists, no need to update the image.");
+	            affectAndUpdateArticle(article, articleToCheck.getImageUUID());
+	            return;
+	        }else {
+	        	String NonUniqueFilename = "placeholderImage.jpg";
+	        	affectAndUpdateArticle(article, NonUniqueFilename);
+	        	Path existingImagePath = Paths.get(uploadPath, article.getImageUUID()).normalize();
+	        	System.err.println(existingImagePath);
+	        }
+        }else {
+        	
+	        // Créer le répertoire de sauvegarde s'il n'existe pas
+	        File uploadDir = new File(uploadPath);
+	        if (!uploadDir.exists()) {
+	            uploadDir.mkdirs();
+	        }
+	
+	        // Générer un nom de fichier unique
+	        String originalFilename = file.getOriginalFilename();
+	        String extension = "";
+	        if(originalFilename != null && originalFilename.contains(".")) {
+	        	// On récupère l'extension du fichier (jpg, jpeg, png etc....)
+	        	extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+	        }
+	        String uniqueFilename = UUID.randomUUID().toString() + extension;
+	        Path destinationFile = Paths.get(uploadDir.getAbsolutePath(), uniqueFilename).normalize();
+	
+	        // Copier le fichier uploadé dans le répertoire de destination
+	        Files.copy(file.getInputStream(), destinationFile);
+	
+	        affectAndUpdateArticle(article, uniqueFilename);
+	        
+	        Path existingImagePath = Paths.get(uploadPath, article.getImageUUID()).normalize();
+	        System.err.println(existingImagePath);
 	        
         }
         
