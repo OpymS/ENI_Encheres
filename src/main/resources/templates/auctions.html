@@ -99,14 +99,15 @@
 							th:text="${art.seller.pseudo}"></a></p>
 				</div>
 			</div>
+			
 		</section>
-		<!-- Pagination Controls -->
-        <div th:if="${articles.totalPages>0}" class="pagination-controls" th:each="pageNumber:${pageNumbers}">
-			<a th:href="@{/auctions(size=${articles.size}, currentPage=${pageNumber}, criteria=${criteria})}" th:text="${pageNumber}" th:class="${pageNumber==articles.number+1}?active"></a>
-<!--            <button th:if="${currentPage > 0}" th:href="@{/auctions(page=${currentPage - 1})}">Précédent</button>-->
-<!--            <span>Page <span th:text="${currentPage + 1}"></span> sur <span th:text="${totalPages}"></span></span>-->
-<!--            <button th:if="${currentPage + 1 < totalPages}" th:href="@{/auctions(page=${currentPage + 1})}">Suivant</button>-->
-        </div>
+		<div class="pagination-control">
+				<div th:if="${articles.totalPages>0}" class="pagination-controls" th:each="pageNumber:${pageNumbers}">
+					<a th:href="@{/auctions(size=${articles.size}, currentPage=${pageNumber}, criteria=${criteria})}" th:text="${pageNumber}" th:class="${pageNumber==articles.number+1}?current"></a>
+				        	</div>
+				    
+			</div>
+        
 	</main>
 
 	<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>

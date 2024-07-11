@@ -95,7 +95,7 @@ main{
 	display:grid;
 	grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
 	gap:30px;
-	margin-bottom:100px;
+	margin-bottom:20px;
 }
 
 .article-card{
@@ -120,6 +120,30 @@ main{
 
 .image-card img{
 	width:100%;
-	height: auto;
+	aspect-ratio: 1;
 	object-fit: cover;
+}
+
+.pagination-control{
+	display: flex;
+	justify-content: flex-start;
+	gap: 5px;
+	margin-bottom: 20px;
+}
+
+.pagination-control a{
+	color: black;
+	text-decoration: none;
+}
+
+.pagination-control a:not(.current):hover{
+	background-color: black;
+	color: white;
+	text-decoration: none;
+}
+
+.pagination-control a.current{
+	color: gray;
+	pointer-events: none;
+	cursor: default;
 }
