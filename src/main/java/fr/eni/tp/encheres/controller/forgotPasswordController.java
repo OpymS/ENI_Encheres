@@ -65,11 +65,10 @@ public class forgotPasswordController {
 					redirectAttributes.addFlashAttribute("globalError", errorMessage);
 					forgotPasswordLogger.error("id utilisateur connecté : " + user.getUserId() +" " + err);
 				});
-				
 			}
         }
 
-        model.addAttribute("message", "message.password");
+        model.addAttribute("message", "");
         return "forgot-password";
     }
 	
