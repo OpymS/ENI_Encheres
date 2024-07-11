@@ -49,6 +49,7 @@ public class SecurityConfig {
 		    .requestMatchers("/admin/**").hasRole("ADMIN")
 		    .requestMatchers("/error").permitAll()
 		    .requestMatchers("/js/**").permitAll()
+		    .requestMatchers("/uploadedImages/**").permitAll()
 		    .requestMatchers("/changeLanguage").permitAll()
 				.anyRequest().authenticated()
 			)

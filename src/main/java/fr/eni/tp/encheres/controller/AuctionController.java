@@ -114,7 +114,6 @@ public class AuctionController {
 	@GetMapping("/newArticle")
 	public String showArticleCreation(Model model, @ModelAttribute("userSession") User userSession) {
 		auctionLogger.info("Méthode showArticleCreation en Get");
-		System.err.println("je suis dans newArticle");
 		
 		// Si utilisateur désactivé, on empèche l'enchère
 		if (!userSession.isActivated()) {

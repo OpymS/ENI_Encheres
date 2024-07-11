@@ -106,6 +106,7 @@ main{
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: stretch;
+	gap:5%;
 }
 
 .article-card p{
