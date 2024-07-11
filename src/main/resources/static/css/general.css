@@ -104,6 +104,77 @@ footer p {
     border-radius: 5px;
 }
 
+.error-message{
+    padding:20px;
+    color:rgb(156, 13, 13);
+}
+
+.error-message h2{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.error-message li{
+    list-style: none;
+    margin-bottom:5px;
+}
+
+
+.error-card-container{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	text-align:center;
+	padding:20px;
+	max-width:90%;
+	width:50%;
+	min-height: 300px;
+	margin:0 auto;
+	border:1px solid #888;
+	border-radius:5px;
+	box-shadow:0 5px 5px rgba(0,0,0,0.3);
+}
+
+.error-card-container form{
+	height:50%;
+	flex-grow:1;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+}
+
+.error-card-container li{
+	list-style:none;
+}
+
+.error-card-container li{
+	list-style:none;
+	
+}
+
+.error-card-container li label{
+	font-size:18px;
+	font-weight:600;
+}
+
+
+.error-card-container li a{
+	margin:0 auto;
+	display:block;
+	text-align:center;
+	text-decoration:none;
+	width:fit-content;
+	padding: 20px 40px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 120px; 
+    background-color: #555;
+    color:#f1f1f1;
+    margin-top:30px;
+}
+
 
 /* Responsive de la nav et footer */
 @media only screen and (min-width: 300px) and (max-width: 1280px) {

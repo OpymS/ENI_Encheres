@@ -9,10 +9,11 @@
 <body>
 
 
-<div data-th-replace="~{fragments/fragment-header :: header}"></div>
+<div data-th-replace="~{fragments/fragment-clean-header :: header-clean}"></div>
 
 <main>
-	<h1 class="error-message title" data-th-text="Erreur + ${status}"></h1>
+	<div class="error-card-container">
+		<h1 class="error-message title" data-th-text="Erreur + ${status}"></h1>
 		<form>
 			<ul class="flex-outer cards">
 				<li data-th-switch="${status}">
@@ -21,9 +22,10 @@
 					<label data-th-case="500" th:text="#{error.500}"></label>
 					<label data-th-case="*" th:text="#{error.*}"></label>
 				</li>
-				<li><a data-th-href="@{/auctions}" th:text="#{label.home}"></a></li>
+				<li><a class="button" data-th-href="@{/auctions}" th:text="#{label.home}"></a></li>
 			</ul>
 		</form>
+</div>
 </main>
 
 
