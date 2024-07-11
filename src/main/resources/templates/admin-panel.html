@@ -12,35 +12,35 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>
-<!-- 	<div> -->
-<!--         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='en')}" th:text="#{label.lang.en}">English</a> -->
-<!--         <a th:href="@{/bid(articleId=${articleDisplay.articleId}, language='fr')}" th:text="#{label.lang.fr}">Français</a> -->
-<!--     </div> -->
-
-    <h1 class="page-title">Gestion des utilisateurs</h1>
+    <h1 class="page-title" th:text="#{pageTitle.userManagement}"></h1>
     <div class="user-table-container">
     	<div class="user-container">
-    	<h2 class="section-title">Liste des utilisateurs</h2>
+    	<h2 class="section-title" th:text="#{sectionTitle.userList}"></h2>
     	
 	    	<table>
 				<thead>
 					<tr>
-						<th>Pseudo</th>
-						<th>Mail</th>
-						<th>Crédits</th>
-						<th>Droits</th>
-						<th>Actions</th>
+						<th th:text="#{tableHeader.pseudo}"></th>
+						<th th:text="#{tableHeader.mail}"></th>
+						<th th:text="#{tableHeader.credits}"></th>
+						<th th:text="#{tableHeader.rights}"></th>
+						<th th:text="#{tableHeader.actions}"></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="user : ${users}"> 
-						<td th:text="${user.pseudo}">...</td>
-						<td th:text="${user.email}">...</td>
-						<td th:text="${user.credit}">...</td>
+                        <td th:text="${user.pseudo}">...</td>
+                        <td th:text="${user.email}">...</td>
+                        <td th:text="${user.credit}">...</td>
 						<td th:text="${user.admin ? 'Administrateur' : 'Membre'}">...</td>
 						<td class="buttons-container">
-							<a href="#modal2" th:class="'js-modal button desac-button'+${user.activated ? ' activated' : ' desactivated'}" th:attr="data-user-id=${user.userId}"  th:text="${user.activated ? 'Désactiver' : 'Réactiver'}">...</a>
-							<a href="#modal1" class="js-modal button delete-button" th:attr="data-user-id=${user.userId}">Supprimer</a>
+                           <th:block th:if="${user.activated}">
+                                <a href="#modal2" th:class="'js-modal button desac-button activated'" th:attr="data-user-id=${user.userId}" th:text="#{button.deactivate}"></a>
+                            </th:block>
+                            <th:block th:unless="${user.activated}">
+                                <a href="#modal2" th:class="'js-modal button desac-button desactivated'" th:attr="data-user-id=${user.userId}" th:text="#{button.reactivate}"></a>
+                            </th:block>
+                            <a href="#modal1" class="js-modal button delete-button" th:attr="data-user-id=${user.userId}" th:text="#{button.delete2}"></a>
 						</td>
 				</tbody>
 			</table>
@@ -52,48 +52,44 @@
     <div th:if="${globalError}" th:text="${globalError}" class="error-message"></div>
     
     <aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
-			<div class="modal-wrapper js-modal-stop">
-				<div class="modal-content">
-					<h2 id="modaltitle">Êtes vous sûr ?</h2>
+        <div class="modal-wrapper js-modal-stop">
+            <div class="modal-content">
+                <h2 id="modaltitle" th:text="#{modal.title.confirmDeletion}"></h2>
+                <p class="modal-description" th:text="#{modal.description.confirmDeletion}"></p>
+                <ul>
+                    <li th:text="#{modal.item.cancelCurrentSales}"></li>
+                    <li th:text="#{modal.item.cancelFutureSales}"></li>
+                    <li th:text="#{modal.item.lossCredits}"></li>
+                </ul>
+            </div>
+            <div class="confirm-container">
+                <a href="/" class="confirm-btn" th:text="#{modal.button.confirmDeletion}"></a>
+            </div>
+            <button class="close-button js-close-modal">
+                <img src="/images/closing-cross.svg" alt="">
+            </button>
+        </div>
+    </aside>
 
-					<p class="modal-description">La suppression du compte entrainera :</p>
-					<ul>
-						<li>- L'annulation des ventes/enchères concernant les articles en cours de vente.</li>
-						<li>- L'annulation des ventes des articles qui n'ont pas encore commencées.</li>
-						<li>- La perte de tous les crédits</li>
-					</ul>
-				</div>
-				<div class="confirm-container">	
-					<a href="/" class="confirm-btn">Je confirme la suppression</a>
-				</div>
-				<button class="close-button js-close-modal">
-					<img src="/images/closing-cross.svg" alt="">
-				</button>
-			</div>
-
-		</aside>
-
- 		<aside id="modal2" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
-			<div class="modal-wrapper js-modal-stop">
-				<div class="modal-content">
-					<h2 id="modaltitle">Êtes vous sûr ?</h2>
-
-					<p class="modal-description">La désactivation du compte entrainera :</p>
-					<ul>
-						<li>- L'annulation des ventes/enchères concernant les articles en cours de vente.</li>
-						<li>- L'annulation des ventes des articles qui n'ont pas encore commencées.</li>
-						<li>- L'impossibilité de créer de nouvelles ventes ou d'enchérir.</li>
-					</ul>
-				</div>
-				<div class="confirm-container">	
-					<a href="/" class="confirm-btn">Je confirme la désactivation</a>
-				</div>
-				<button class="close-button js-close-modal">
-					<img src="/images/closing-cross.svg" alt="">
-				</button>
-			</div>
-
-		</aside>
+    <aside id="modal2" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modaltitle" aria-modal="false" style="display: none;"> 
+        <div class="modal-wrapper js-modal-stop">
+            <div class="modal-content">
+                <h2 id="modaltitle" th:text="#{modal.title.confirmDeletion}"></h2>
+                <p class="modal-description" th:text="#{modal.description.deactivateAccount}"></p>
+                <ul>
+                    <li th:text="#{modal.item.cancelCurrentSales}"></li>
+                    <li th:text="#{modal.item.cancelFutureSales}"></li>
+                    <li th:text="#{modal.item.preventNewSales}"></li>
+                </ul>
+            </div>
+            <div class="confirm-container">
+                <a href="/" class="confirm-btn" th:text="#{modal.button.confirmDeactivation}"></a>
+            </div>
+            <button class="close-button js-close-modal">
+                <img src="/images/closing-cross.svg" alt="">
+            </button>
+        </div>
+    </aside>
      
 </main>
 
