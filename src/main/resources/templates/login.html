@@ -12,11 +12,7 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
-		<div>
-			<a th:href="@{/login(language='en')}" data-th-text="#{label.lang.en}"></a>
-			<a th:href="@{/login(language='fr')}" data-th-text="#{label.lang.fr}"></a>
-		</div>
-           	
+          	
     <h1 class="title" th:text="#{title.login2}"></h1>
     <form th:action="@{/login}" method="post">
 		<div th:if="${param.error}" class="error-message"></div>

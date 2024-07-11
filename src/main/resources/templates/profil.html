@@ -12,13 +12,6 @@
 <div th:replace="~{fragments/fragment-header :: header}"></div>
 
 <main>
-
-    <div>
-        <a th:href="@{/profil(userId=${userDisplay.userId}, language='en')}" th:text="#{label.lang.en}">English</a>
-        <a th:href="@{/profil(userId=${userDisplay.userId}, language='fr')}" th:text="#{label.lang.fr}">Français</a>
-    </div>
-
-
     <h1 class="title" th:text="#{title.profile2}"></h1>
 	<div class="profil-info">
         <h2 class="profil-username" th:text="${userDisplay.pseudo}"></h2>

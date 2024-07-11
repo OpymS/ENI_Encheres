@@ -13,13 +13,6 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 	<main>
-	
-		<div>
-			<a th:href="@{/signup(language='en')}" data-th-text="#{label.lang.en}"></a>
-			<a th:href="@{/signup(language='fr')}" data-th-text="#{label.lang.fr}"></a>
-		</div>
-	
-	
 		<h1 class="title" th:text="#{title.signup2}"></h1>
 		
 		<form th:action="@{/signup}" method="POST" th:object="${user}" class="user-create-form">
