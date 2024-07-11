@@ -116,8 +116,6 @@ class AuctionRowMapper implements RowMapper<Auction> {
 		auction.setAuctionDate(rs.getTimestamp("date_enchere").toLocalDateTime());
 		auction.setBidAmount(rs.getInt("montant_enchere"));
 		
-		System.err.println(auction);
-		
 		return auction;
 	}
 
