@@ -214,6 +214,7 @@ public class AuctionController {
 		model.addAttribute("endTime", article.getAuctionEndDate().toLocalTime());
 		model.addAttribute("isCancelPossible",
 				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
+		model.addAttribute("isModifyPossible", article.getState().equals(ArticleState.NOT_STARTED));
 		model.addAttribute("imageSource", "/uploadedImages/" + article.getImageUUID());
 
 		auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
@@ -245,7 +246,8 @@ public class AuctionController {
 		model.addAttribute("endTime", endTime);
 		model.addAttribute("isCancelPossible",
 				article.getState().equals(ArticleState.NOT_STARTED) || article.getState().equals(ArticleState.STARTED));
-
+		model.addAttribute("isModifyPossible", article.getState().equals(ArticleState.NOT_STARTED));
+		
 		if (bindingResult.hasErrors()) {
 			bindingResult.getAllErrors().forEach(err -> auctionLogger.error("id utilisateur connecté : "
 					+ userSession.getUserId() + " - erreur sur formulaire modifyArticle : " + err));
