@@ -107,3 +107,90 @@ main{
 .article-card p{
 	margin-top:5px;
 }
+
+/* Responsive page d'accueil auction*/
+@media only screen and (min-width: 300px) and (max-width: 1280px) {
+  .filter-container form {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 40px; 
+  }
+
+  .inputs-container {
+    width: 100%;
+  }
+
+  .button-container {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .button-container button {
+    min-width: initial;
+    width: 100%;
+    font-size: 2.4rem; 
+  }
+
+  .inputs-container #inputSearch {
+    font-size: 2.4rem; 
+  }
+
+ 	.inputs-container .category select {
+    font-size: 2.4rem; 
+  }
+
+	.inputs-container .category select option {
+    font-size: 1.2rem;
+  }
+  
+   .inputs-container .category select {
+    border: 1px solid #888;
+    border-radius: 10px;
+    padding: 10px 20px;
+  }
+
+  .subtitle {
+    font-size: 2.4rem;
+  }
+
+  .achat-vente-container > div > label {
+    font-size: 2.4rem; 
+  }
+
+  .achat-vente-container .sub-container input + label {
+    font-size: 2.6rem; 
+  }
+
+  .article-card {
+    font-size: 2.4rem; 
+  }
+
+
+  .achat-main-check label,
+  .ventes-main-check label {
+    font-size: 2.8rem;
+  }
+  
+   .category label {
+    font-size: 2.8rem;
+  }
+  
+  .sub-container input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+    margin-right:10px;
+  }
+  
+  .ventes-main-check input[type="radio"] {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .achat-main-check input[type="radio"] {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+
+
