@@ -99,11 +99,27 @@ main{
 }
 
 .article-card{
-	padding:10px 20px 30px;
+	padding:10px 20px;
 	border: 1px solid #999;
 	border-radius:10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: stretch;
 }
 
 .article-card p{
 	margin-top:5px;
+}
+
+.image-card{
+	width: 30%;
+	display: flex;
+	align-items: center;
+}
+
+.image-card img{
+	width:100%;
+	height: auto;
+	object-fit: cover;
 }
