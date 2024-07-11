@@ -77,28 +77,24 @@ public class forgotPasswordController {
     public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
         PasswordResetToken resetToken = passwordResetService.findByToken(token);
         if (resetToken == null) {
-            model.addAttribute("error", "Le token est invalide.");
             return "error";
         }
         if (resetToken.getExpiryDate().before(new Date())) {
-            model.addAttribute("error", "Le token a expiré.");
             return "error";
         }
         model.addAttribute("token", token);
         return "reset-password";
     }
 
+    
     @PostMapping("/reset-password")
     public String handleResetPassword(@RequestParam("token") String token,
-                                      @RequestParam("password") String password,
-                                      Model model) {
+                                      @RequestParam("password") String password) {
         PasswordResetToken resetToken = passwordResetService.findByToken(token);
         if (resetToken == null) {
-            model.addAttribute("error", "Le token est invalide.");
             return "error";
         }
         if (resetToken.getExpiryDate().before(new Date())) {
-            model.addAttribute("error", "Le token a expiré.");
             return "error";
         }
 
@@ -106,11 +102,9 @@ public class forgotPasswordController {
             userService.updatePassword(resetToken.getUserId(), password);
             passwordResetService.deleteToken(resetToken);
         } catch (Exception e) {
-            model.addAttribute("error", "Une erreur s'est produite lors de la réinitialisation du mot de passe.");
             return "error";
         }
 
-        model.addAttribute("message", "Votre mot de passe a été réinitialisé avec succès.");
         return "login";
     }
 }
