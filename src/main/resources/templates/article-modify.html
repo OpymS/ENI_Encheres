@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.com">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{title.editProfile}"></title>
+    <title th:text="#{title.editArticle}"></title>
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/article-create.css">
 	<link rel="icon" href="/images/favicon.png"/>
@@ -12,7 +12,7 @@
 <div data-th-replace="~{fragments/fragment-header :: header}"></div>
 	
 <main>   
-    <h1 class="title" th:text="#{title.editProfile2}"></h1>
+    <h1 class="title" th:text="#{title.editArticle2}"></h1>
     <form th:action="@{/auctions/modifyArticle(articleId=${article.articleId})}" method="POST" class="article-create-form" th:object="${article}" enctype="multipart/form-data">
         <div class="inputs-container">
 			<div th:if="${!isModifyPossible}" th:text="#{article.modify.impossible}" class="error-message"></div>
@@ -38,38 +38,38 @@
                 <input id="inputImage" name="inputImage" type="file" accept="image/png, image/jpeg">
             </div>
             <div class="input-container">
-                <label for="inputPrice">Mise à prix :</label>
+                <label for="inputPrice" th:text="#{label.startingPrice}"></label>
 <!--                <input id="inputPrice" th:field="*{beginningPrice}" type="number" min="0" required>-->
                 <input id="inputPrice" th:field="*{beginningPrice}" type="number">
             </div>
-            <div class="input-container">
-                <label for="inputStartDate">Début de l'enchère :</label>
+            <div class="input-container" >
+                <label for="inputStartDate" th:text="#{label.startingAuction}"></label>
                 <div class="input-dateTime-container">
                     <input id="inputStartDate" name="startDateTemp" type="date" th:value="${startDate}">
                     <input id="inputStartTime" name="startTimeTemp" type="time" th:value="${startTime}">
                 </div>
             </div>
             <div class="input-container">
-                <label for="inputEndDate">Fin de l'enchère :</label>
+                <label for="inputEndDate" th:text="#{label.endingAuction}"></label>
                 <div class="input-dateTime-container">
                     <input id="inputEndDate" name="endDateTemp" type="date" th:value="${endDate}">
                     <input id="inputEndTime" name="endTimeTemp" type="time" th:value="${endTime}">
                 </div>
             </div>
             <fieldset class="retrait-input">
-                <legend>Retrait</legend>
+                <legend th:text="#{legend.Withdrawal}"></legend>
                 <div class="input-container">
-                    <label for="inputStreet">Rue :</label>
+                    <label for="inputStreet" th:text="#{label.street}"></label>
 <!--                    <input id="inputStreet" type="text" th:field="*{pickupLocation.street}" maxlength="30">-->
                     <input id="inputStreet" type="text" th:field="*{pickupLocation.street}">
                 </div>
                 <div class="input-container">
-                    <label for="inputCpo">Code Postal :</label>
+                    <label for="inputCpo" th:text="#{label.zipCode}"></label>
 <!--                    <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}" pattern="^\d{5}$">-->
                     <input id="inputCpo" type="text" th:field="*{pickupLocation.zipCode}">
                 </div>
                 <div class="input-container">
-                    <label for="inputCity">Ville :</label>
+                    <label for="inputCity" th:text="#{label.city}"></label>
 <!--                    <input id="inputCity" type="text" th:field="*{pickupLocation.city}" maxlength="30">-->
                     <input id="inputCity" type="text" th:field="*{pickupLocation.city}">
                 </div>
@@ -79,9 +79,9 @@
             	<img th:src="@{${imageSource}}" alt="image de l'article" class="article-image"/>
             </div>
             <div class="buttons-container">
-                <button th:if="${isModifyPossible}" type="submit" class="button button-submit">Enregistrer</button>
-                <button th:if="${isModifyPossible}" type="button" class="button button-cancel">Annuler</button>
-                <a href="#modal1" class="js-modal button button-styled-link" th:if="${isCancelPossible}">Annuler la vente</a>
+                <button th:if="${isModifyPossible}" type="submit" class="button button-submit" th:text="#{button.save}"></button>
+                <button th:if="${isModifyPossible}" type="button" class="button button-cancel" th:text="#{button.cancel}"></button>
+                <a href="#modal1" class="js-modal button button-styled-link" th:if="${isCancelPossible}" th:text="#{button.cancelSale}"></a>
                 <button th:if="${!isCancelPossible}" style="visibility:hidden;">placeholder</button>
             </div>
         </div>
