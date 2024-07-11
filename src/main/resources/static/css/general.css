@@ -119,7 +119,7 @@ footer p {
 
 .error-message{
     padding:20px;
-    color:rgb(156, 13, 13);
+    color: #ff0000;
 }
 
 .error-message h2{
@@ -143,9 +143,11 @@ footer p {
 	width:50%;
 	min-height: 300px;
 	margin:0 auto;
-	border:1px solid #888;
+	border:1px solid #262626;
 	border-radius:5px;
-	box-shadow:0 5px 5px rgba(0,0,0,0.3);
+	box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2); 
+	background-color: #262626;
+	color: #ffffff;
 }
 
 .error-card-container form{
@@ -183,8 +185,9 @@ footer p {
     border-radius: 5px;
     cursor: pointer;
     min-width: 120px; 
-    background-color: #555;
-    color:#f1f1f1;
+    background-color: #fbc123;
+    color:#262626;
+    font-weight: bold;
     margin-top:30px;
 }
 

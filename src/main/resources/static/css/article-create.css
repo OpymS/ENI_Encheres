@@ -145,13 +145,14 @@ input[type="file"]::-webkit-file-upload-button {
     -webkit-appearance: none;
     -moz-appearance: none; 
     outline: none; 
+    transition: background-color 0.3s ease;
 }
 
 
 input[type="file"]::-webkit-file-upload-button:hover,
 input[type="file"]::-webkit-file-upload-button:focus {
-    background-color: #4a4a4a; 
-    color: #262626; 
+    background-color: #905D51;
+    
 }
 /* MODALE */
 
@@ -286,5 +287,9 @@ input[type="file"]::-webkit-file-upload-button:focus {
    .button {
         font-size: 2rem;
         padding: 15px 30px;
+    }
+    
+    input[type="file"]::-webkit-file-upload-button{
+    	font-size:2rem;
     }
 }
