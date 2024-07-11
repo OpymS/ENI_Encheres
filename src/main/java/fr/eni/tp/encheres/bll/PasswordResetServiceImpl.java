@@ -34,19 +34,12 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         passwordResetDAO.save(myToken);
         return myToken;
     }
-    
-    @Override
-    @Transactional
-    public PasswordResetToken generateToken(int userId) {
-        String token = UUID.randomUUID().toString();
-        return createPasswordResetToken(token, userId);
-    }
-    
+        
     @Override
     public PasswordResetToken findByToken(String token) {
         return passwordResetDAO.findByToken(token);
     }
-
+    
     @Override
     public void deleteToken(PasswordResetToken token) {
         passwordResetDAO.delete(token);
