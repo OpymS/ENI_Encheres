@@ -66,7 +66,7 @@
             <label for="seller" th:text="#{label.seller}"></label>
             <span th:text="${articleDisplay.seller.pseudo}"></span>
         </div>
-       
+       	<img th:src="@{'/uploadedImages/'+${articleDisplay.imageUUID}}" alt="image de l'article" class="article-image"/>
         <div class="bid-offer-container" th:if="${isBidPossible}">
          <form th:action="@{/bid(articleId=${articleDisplay.articleId})}" method="POST">
              <label for="bid-offer" th:text="#{label.myBid}"></label>

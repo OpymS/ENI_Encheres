@@ -77,6 +77,12 @@ textarea {
     font-weight: bold;
 }
 
+.article-image{
+	width: 100%;
+	object-fit: cover;
+	margin-top: 20px;
+}
+
 .buttons-container {
     display: flex;
     justify-content: space-between;

@@ -81,21 +81,29 @@
 		</section>
 		<section class="articles-cards-container">
 			<div th:each="art : ${articles}" class="article-card">
-				<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
-				<p th:text="'Prix : '+${art.currentPrice > art.beginningPrice ? art.currentPrice : art.beginningPrice}+' points'"></p>
-				<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
-				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
-				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}"
-						th:text="${art.seller.pseudo}"></a></p>
+
+				<div class="image-card">
+            		<img th:src="@{'/uploadedImages/'+${art.imageUUID}}" alt="test-image" />
+            	</div>
+				<div class="article-description">
+					<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
+					<p th:text="'Prix : '+${art.currentPrice > art.beginningPrice ? art.currentPrice : art.beginningPrice}+' points'"></p>
+					<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
+					<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
+					<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}"
+							th:text="${art.seller.pseudo}"></a></p>
+				</div>
+
 			</div>
+			
 		</section>
-		<!-- Pagination Controls -->
-        <div th:if="${articles.totalPages>0}" class="pagination-controls" th:each="pageNumber:${pageNumbers}">
-			<a th:href="@{/auctions(size=${articles.size}, currentPage=${pageNumber}, criteria=${criteria})}" th:text="${pageNumber}" th:class="${pageNumber==articles.number+1}?active"></a>
-<!--            <button th:if="${currentPage > 0}" th:href="@{/auctions(page=${currentPage - 1})}">Précédent</button>-->
-<!--            <span>Page <span th:text="${currentPage + 1}"></span> sur <span th:text="${totalPages}"></span></span>-->
-<!--            <button th:if="${currentPage + 1 < totalPages}" th:href="@{/auctions(page=${currentPage + 1})}">Suivant</button>-->
-        </div>
+		<div class="pagination-control">
+				<div th:if="${articles.totalPages>0}" class="pagination-controls" th:each="pageNumber:${pageNumbers}">
+					<a th:href="@{/auctions(size=${articles.size}, currentPage=${pageNumber}, criteria=${criteria})}" th:text="${pageNumber}" th:class="${pageNumber==articles.number+1}?current"></a>
+				        	</div>
+				    
+			</div>
+        
 	</main>
 
 	<div data-th-replace="~{/fragments/fragment-footer :: footer}"></div>
