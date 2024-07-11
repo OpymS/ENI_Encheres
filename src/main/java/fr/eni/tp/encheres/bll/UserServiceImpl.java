@@ -106,6 +106,16 @@ public class UserServiceImpl implements UserService {
 		return isValid;
 	}
 
+	private boolean checkPasswordForModify(String password, String passwordConfirm, BusinessException be) {
+		userServiceLogger.info("Méthode checkPassword");
+		boolean isValid = false;
+		if (password.equals(passwordConfirm)) {
+			isValid = true;
+		} else {
+			be.add("error.password.different");
+		}
+		return isValid;
+	}
 	
 	@Override
 	public List<User> getAllUsers(){
@@ -326,7 +336,7 @@ public class UserServiceImpl implements UserService {
 	public void updateProfile(User userWithUpdate, User currentUser) throws BusinessException {
 		userServiceLogger.info("Méthode updateProfile");
 		BusinessException be = new BusinessException();
-		boolean isValid = false;
+		boolean isValid = true;
 
 		String updatedPseudo = userWithUpdate.getPseudo();
 		String currentPseudo = currentUser.getPseudo();
@@ -336,11 +346,16 @@ public class UserServiceImpl implements UserService {
 
 		String currentPassword = currentUser.getPassword();
 
-		String updatedPassword = userWithUpdate.getPassword();
-		String updatedPasswordConfirm = userWithUpdate.getPasswordConfirm();
+		if (userWithUpdate.getPassword().isBlank() && userWithUpdate.getPasswordConfirm().isBlank()) {
+			userWithUpdate.setPassword(currentPassword);
+		} else {
+			String updatedPassword = userWithUpdate.getPassword();
+			String updatedPasswordConfirm = userWithUpdate.getPasswordConfirm();
+			isValid &= checkPassword(updatedPassword, updatedPasswordConfirm, be);
+		}
+			
 
-		isValid = verifyPasswordMatch(currentPassword, userDAO.readPasswordById(userWithUpdate.getUserId()), be)
-				&& checkPassword(updatedPassword, updatedPasswordConfirm, be);
+		isValid &= verifyPasswordMatch(currentPassword, userDAO.readPasswordById(userWithUpdate.getUserId()), be);
 
 		isValid &= (updatedPseudo.equals(currentPseudo) || checkPseudoAvailable(updatedPseudo, be));
 		isValid &= (updatedEmail.equals(currentEmail) || checkEmailAvailable(updatedEmail, be));

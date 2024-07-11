@@ -66,6 +66,7 @@ public class ProfilController {
 		
 		userForm.setUserId(userSession.getUserId());
 		userForm.setCredit(userSession.getCredit());
+		userForm.setActivated(userSession.isActivated());
 		userForm.setPassword(updatedPassword);
 		userSession.setPassword(currentPassword); // On met le mot de passe actuel renseigné dans le formulaire dans
 													// l'utilsateur en session pour le récupérer dans le service.
