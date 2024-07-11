@@ -16,8 +16,8 @@
 	<main>
 		
 		<div>
-			<a th:href="@{|auctions?language=en|}" data-th-text="#{label.lang.en}"></a>
-			<a th:href="@{|auctions?language=fr|}" data-th-text="#{label.lang.fr}"></a>
+			<a href="auctions?language=en" data-th-text="#{label.lang.en}"></a>
+			<a href="auctions?language=fr" data-th-text="#{label.lang.fr}"></a>
 		</div>
 	
 		<h1 class="title" th:text="#{h1.auctions}"></h1>
@@ -88,7 +88,7 @@
 		<section class="articles-cards-container">
 			<div th:each="art : ${articles}" class="article-card">
 				<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
-				<p th:text="'Prix : '+${art.currentPrice}+' points'"></p>
+				<p th:text="'Prix : '+${art.currentPrice > art.beginningPrice ? art.currentPrice : art.beginningPrice}+' points'"></p>
 				<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
 				<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
 				<p sec:authorize="isAuthenticated()">Vendeur : <a th:href="@{/profil(userId=${art.seller.userId})}"
