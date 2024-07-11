@@ -1,3 +1,7 @@
+body {
+  background-color: #fbc123;
+}
+
 .title {
     text-align: center;
     margin-bottom: 40px;
@@ -18,7 +22,7 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 40px 20px 25px rgba(0, 0, 0, 0.2); /* Modifiez cette ligne pour accentuer l'ombre de la boîte */
 }
 
 .inputs-container > div {
@@ -26,6 +30,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.inputs-container > div label {
+    font-weight: bold; /* Ajoutez cette ligne pour mettre le texte en gras */
 }
 
 .inputs-container > div input {
@@ -88,12 +96,12 @@
 /* bouton pour s'inscrire créer et annuler */
 
 .buttons-container .button.create {
-    background-color: #4CAF50;
+    background-color: #262626;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons-container .button.create:hover {
-    background-color: darkgreen;
+    background-color: #4a4a4a;
 }
 
 .buttons-container .button.cancel {

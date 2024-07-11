@@ -1,15 +1,22 @@
+body {
+  background-color: #fbc123;
+  color: #262626;
+}
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh; 
+  height: 100vh;
   padding: 20px;
+  background-color: #fbc123;
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 20px;
+  color: #262626;
 }
 
 form {
@@ -18,10 +25,10 @@ form {
   align-items: center;
   width: 100%;
   max-width: 400px;
-  background-color: #ffffff;  
+  background-color: #fff;
   border-radius: 5px;
-  padding: 20px; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 20px;
+  box-shadow: 40px 20px 25px rgba(0, 0, 0, 0.2);
 }
 
 .input-container {
@@ -35,13 +42,16 @@ label {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
+  color: #262626;
 }
 
 input[type="text"],
 input[type="password"] {
   padding: 10px;
   font-size: 1.2rem;
-  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #262626;
+  border: 1px solid #262626;
   border-radius: 5px;
 }
 
@@ -55,7 +65,7 @@ input[type="password"] {
 button[type="submit"] {
   padding: 15px 30px;
   font-size: 1.2rem;
-  background-color: #4CAF50;
+  background-color: #262626;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -64,13 +74,14 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #3e8e41;
+  background-color: #4a4a4a;
 }
 
 .remember-forgot-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  color: #262626;
 }
 
 .remember-me-container {
@@ -80,6 +91,15 @@ button[type="submit"]:hover {
 
 .forgot-password-container {
   margin-bottom: 20px;
+}
+
+.forgot-password-container a {
+  color: #262626;
+  text-decoration: none;
+}
+
+.forgot-password-container a:hover {
+  text-decoration: underline;
 }
 
 .create-account-container {
@@ -93,7 +113,7 @@ button[type="submit"]:hover {
 .create-account-container a {
   padding: 20px 40px;
   font-size: 1.2rem;
-  background-color: #2196F3;
+  background-color: #262626;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -103,63 +123,61 @@ button[type="submit"]:hover {
 }
 
 .create-account-container a:hover {
-  background-color: #1976D2;
+  background-color: #4a4a4a;
 }
 
-/* Responsive login */
-
 @media only screen and (min-width: 300px) and (max-width: 1280px) {
-    main {
-        justify-content: center;
-    }
+  main {
+    justify-content: center;
+  }
 
-    .title {
-        font-size: 4.5rem;
-    }
+  .title {
+    font-size: 4.5rem;
+  }
 
-    label {
-        font-size: 2.25rem;
-    }
+  label {
+    font-size: 2.25rem;
+  }
 
-    input[type="text"],
-    input[type="password"],
-    input[type="username"] {
-        font-size: 3rem;
-        padding: 30px;
-    }
+  input[type="text"],
+  input[type="password"],
+  input[type="username"] {
+    font-size: 3rem;
+    padding: 30px;
+  }
 
-    button[type="submit"] {
-        font-size: 2.75rem;
-        padding: 35px 80px;
-    }
+  button[type="submit"] {
+    font-size: 2.75rem;
+    padding: 35px 80px;
+  }
 
-    .create-account-container a {
-        font-size: 2.75rem;
-        padding: 40px 90px;
-    }
+  .create-account-container a {
+    font-size: 2.75rem;
+    padding: 40px 90px;
+  }
 
-    form {
-        max-width: 95%;
-        width: 100%;
-    }
+  form {
+    max-width: 95%;
+    width: 100%;
+  }
 
-    .input-container {
-        width: 100%;
-    }
+  .input-container {
+    width: 100%;
+  }
 
-    .button-container {
-        width: 100%;
-    }
+  .button-container {
+    width: 100%;
+  }
 
-    .create-account-container {
-        width: 100%;
-    }
+  .create-account-container {
+    width: 100%;
+  }
 
-    .remember-me-container label {
-        font-size: 2.25rem;
-    }
+  .remember-me-container label {
+    font-size: 2.25rem;
+  }
 
-    .forgot-password-container a {
-        font-size: 2.25rem;
-    }
+  .forgot-password-container a {
+    font-size: 2.25rem;
+  }
 }
