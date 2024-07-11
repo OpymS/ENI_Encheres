@@ -262,7 +262,7 @@ public class AuctionController {
 				article.setCurrentPrice(article.getBeginningPrice());
 
 				// Sauvegarde de l'image dans le dossier static/uploadedImages
-				fileService.saveFile(fileImage, article);
+				fileService.saveFileFromModify(fileImage, article);
 
 				auctionService.updateArticle(article);
 				auctionLogger.info("id utilisateur connecté : " + userSession.getUserId()
