@@ -14,12 +14,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
+    width: 55%;
     max-width: 800px; 
     background-color: #ffffff;
     border-radius: 5px;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
     margin: 20px auto;
 }
 
@@ -48,7 +48,7 @@ textarea,
 select {
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid #262626;
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
@@ -68,7 +68,7 @@ textarea {
 .retrait-input {
     margin-top: 20px;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #262626; 
     border-radius: 5px;
 }
 
@@ -98,15 +98,14 @@ textarea {
     cursor: pointer;
     min-width: 120px; 
     transition: background-color 0.3s ease;
+    background-color: #262626;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white; 
 }
 
-.button-submit {
-    background-color: #4CAF50;
-    color: #fff;
-}
-
-.button-submit:hover {
-    background-color: #3e8e41;
+.button-submit:hover,
+.button-styled-link:hover {
+    background-color: #4a4a4a;
 }
 
 .button-cancel {
@@ -133,13 +132,29 @@ textarea {
     color:#f1f1f1;
 }
 
-
-.button-styled-link:hover{
-	opacity:0.8;
+input[type="file"]::-webkit-file-upload-button {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #fbc123;
+    color: #262626; 
+    font-weight: bold;
+    cursor: pointer;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    outline: none; 
+    transition: background-color 0.3s ease;
 }
 
-/* MODALE */
 
+input[type="file"]::-webkit-file-upload-button:hover,
+input[type="file"]::-webkit-file-upload-button:focus {
+    background-color: #905D51;
+    
+}
+/* MODALE */
 
 .modal{
     position: fixed;
@@ -152,7 +167,6 @@ textarea {
     justify-content: center;
     align-items: center;
 }
-
 
 .modal-wrapper{
 	border-radius:5px;
@@ -186,7 +200,7 @@ textarea {
     margin-left:5px;
 }
 
-.modal .close-button{
+.modal.close-button{
     border-radius: 3px;
     width:40px;
     aspect-ratio: 1;
@@ -231,48 +245,51 @@ textarea {
 /* Responsive vendre un article */
 
 @media only screen and (max-width: 1280px) {
-    .title {
+   .title {
         font-size: 3.5rem;
     }
 
-    .article-create-form {
+   .article-create-form {
         width: 150%;
     }
 
-    .inputs-container {
+   .inputs-container {
         gap: 10px;
     }
 
-    .input-container label {
+   .input-container label {
         font-size: 2rem;
     }
 
-    .input-container input,
-    .input-container textarea,
-    .input-container select {
+   .input-container input,
+   .input-container textarea,
+   .input-container select {
         font-size: 2.2rem;
         padding: 15px;
     }
 
-    .input-dateTime-container {
+   .input-dateTime-container {
         gap: 5px;
     }
 
-    .retrait-input {
+   .retrait-input {
         padding: 10px;
     }
 
-    .retrait-input legend {
+   .retrait-input legend {
         font-size: 2rem;
     }
 
-    .buttons-container {
+   .buttons-container {
         gap: 10px;
     }
 
-    .button {
+   .button {
         font-size: 2rem;
         padding: 15px 30px;
     }
+    
+    input[type="file"]::-webkit-file-upload-button{
+    	font-size:2rem;
+    }
 }
-

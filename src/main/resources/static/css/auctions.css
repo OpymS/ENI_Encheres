@@ -1,8 +1,13 @@
+body{
+	background-color: #fbc123;
+}
+
 
 main{
 	width:90%;
 	max-width:1200px;
 	margin:150px auto 0;
+	
 }
 
 .title{
@@ -17,11 +22,11 @@ main{
 	display:flex;
 	gap:10%;
 	align-items:center;
-	border-bottom:1px solid #888;
+	border-bottom:1px solid #262626;
 	background-color: #ffffff;  
   	border-radius: 5px;
   	padding: 20px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2); 
 	margin-bottom:50px;
 }
 .inputs-container{
@@ -33,7 +38,7 @@ main{
 	width:100%;
 	padding:10px 20px;
 	font-size:18px;
-	border:1px solid #888;
+	border:1px solid #262626;
 	border-radius:10px;
 }
 
@@ -48,6 +53,7 @@ main{
 .inputs-container .category select{
 	font-size:16px;
 	flex-grow:1;
+	border: 1px solid #262626;
 }
 
 .achat-vente-container{
@@ -76,20 +82,39 @@ main{
 	min-height:80px;
 	min-width:150px;
 	padding:20px 50px;
-	background-color: #2196F3;
 	color:#f1f1f1;
 	font-size:18px;
 	font-weight:500;
 	border-radius:5px;
 	border:none;
 	transition: background-color 0.3s ease;
+	background-color: #262626;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	
 }
 
 .button-container button:hover{
-	background-color: #1976D2;
+	background-color: #4a4a4a;
 	cursor:pointer;
 }
+
+.sub-container input[type="checkbox"] {
+   	outline: 2px solid #262626;
+  }
+  
+  .ventes-main-check input[type="radio"] {
+  	width: 20px;
+  	height: 20px;
+  	border: 1px solid #262626;
+  	border-radius: 50%;
+  }
+  
+  .achat-main-check input[type="radio"] {
+    width: 20px;
+  	height: 20px;
+  	border: 1px solid #262626;
+  	border-radius: 50%;
+  }
 
 .articles-cards-container{
 	display:grid;
@@ -98,19 +123,67 @@ main{
 	margin-bottom:20px;
 }
 
-.article-card{
-	padding:10px 20px;
-	border: 1px solid #999;
-	border-radius:10px;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: stretch;
-	gap:5%;
+.article-card {
+    padding: 10px 20px;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 5%;
+    background-color: #262626;
+    color: #ffffff;
+}
+
+.article-card h3 {
+    font-weight: bold;
+}
+
+.article-card a {
+    color: #fbc123;
+    text-decoration: none;
 }
 
 .article-card p{
 	margin-top:5px;
+}
+
+.image-card{
+	width: 30%;
+	display: flex;
+	align-items: center;
+}
+
+.image-card img{
+	width:100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border: 2px solid white;
+}
+
+.pagination-control{
+	display: flex;
+	justify-content: flex-start;
+	gap: 5px;
+	margin-bottom: 20px;
+}
+
+.pagination-control a{
+	color: black;
+	text-decoration: none;
+}
+
+.pagination-control a:not(.current):hover{
+	background-color: black;
+	color: white;
+	text-decoration: none;
+}
+
+.pagination-control a.current{
+	color: gray;
+	pointer-events: none;
+	cursor: default;
 }
 
 
@@ -198,42 +271,4 @@ main{
   }
 }
 
-
-
-
-.image-card{
-	width: 30%;
-	display: flex;
-	align-items: center;
-}
-
-.image-card img{
-	width:100%;
-	aspect-ratio: 1;
-	object-fit: cover;
-}
-
-.pagination-control{
-	display: flex;
-	justify-content: flex-start;
-	gap: 5px;
-	margin-bottom: 20px;
-}
-
-.pagination-control a{
-	color: black;
-	text-decoration: none;
-}
-
-.pagination-control a:not(.current):hover{
-	background-color: black;
-	color: white;
-	text-decoration: none;
-}
-
-.pagination-control a.current{
-	color: gray;
-	pointer-events: none;
-	cursor: default;
-}
 

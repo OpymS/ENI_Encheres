@@ -1,8 +1,7 @@
 
 
 .page-title{
-	text-align:center;
-	margin-top:70px;
+	text-align:center;	
 }
 
 
@@ -190,6 +189,3 @@
 .user-container table tr:hover {
 	background-color: #ddd;
 }
-
-
-
