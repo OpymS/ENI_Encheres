@@ -89,8 +89,8 @@
 					<h3><a th:href="@{/bid(articleId=${art.articleId})}" th:text="${art.articleName}"></a></h3>
 					<p th:text="'Prix : '+${art.currentPrice > art.beginningPrice ? art.currentPrice : art.beginningPrice}+' points'"></p>
 					<p th:text="'Fin de l\'enchère : '+${#temporals.format(art.auctionEndDate, 'dd-MM-yyyy HH:mm')}"></p>
-					<p sec:authorize="!isAuthenticated()" th:text="'Vendeur : '+${art.seller.pseudo}"></p>
-					<p sec:authorize="isAuthenticated()" th:text="#{label.seller}"> <a th:href="@{/profil(userId=${art.seller.userId})}"
+					<p sec:authorize="!isAuthenticated()" th:text="#{label.seller}+' '+${art.seller.pseudo}"></p>
+					<p sec:authorize="isAuthenticated()"><span th:text="#{label.seller}+' '"></span> <a th:href="@{/profil(userId=${art.seller.userId})}"
 							th:text="${art.seller.pseudo}"></a></p>
 				</div>
 
